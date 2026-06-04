@@ -103,7 +103,7 @@ const UserOrders = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#7a1113] mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6e4fca] mb-4"></div>
         <p className="text-gray-600 text-lg">Loading your orders...</p>
       </div>
     );
@@ -122,7 +122,7 @@ const UserOrders = () => {
               <h1 className="text-3xl font-bold text-gray-900">Order History</h1>
               <p className="text-gray-600 mt-2">View and manage your orders</p>
             </div>
-            <div className="bg-blue-100 text-[#7a1113] px-4 py-2 rounded-lg flex items-center">
+            <div className="bg-gray-50 text-[#6e4fca] px-4 py-2 rounded-lg flex items-center">
               <FileText className="w-5 h-5 mr-2" />
               <span>{orders.length} order{orders.length !== 1 ? 's' : ''}</span>
             </div>
@@ -135,7 +135,7 @@ const UserOrders = () => {
               <p className="text-gray-500 mb-4">You haven't placed any orders yet.</p>
               <button 
                 onClick={() => window.location.href = '/'}
-                className="px-6 py-2 bg-[#7a1113] text-white rounded-lg hover:bg-[#7a1113] transition"
+                className="px-6 py-2 bg-[#6e4fca] text-white rounded-lg hover:bg-[#6e4fca] transition"
               >
                 Start Shopping
               </button>
@@ -150,7 +150,7 @@ const UserOrders = () => {
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center mb-3 sm:mb-0">
                           <div className="bg-blue-100 p-2 rounded-lg mr-4">
-                            <Package className="w-5 h-5 text-[#7a1113]" />
+                            <Package className="w-5 h-5 text-[#6e4fca]" />
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">Order #{order.orderid}</h3>
@@ -162,7 +162,7 @@ const UserOrders = () => {
                         </div>
                         <div className="flex items-center">
                           <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${order.status === "Order Placed"
-                              ? "bg-blue-100 text-[#7a1113]"
+                              ? "bg-blue-50 text-[#6e4fca]"
                               : order.status === "Cancelled"
                               ? "bg-red-100 text-red-700"
                               : order.status === "Returned"
@@ -206,7 +206,7 @@ const UserOrders = () => {
                         <div className="flex flex-wrap gap-3">
                           <button
                             onClick={() => toggleExpand(order._id)}
-                            className="flex items-center text-[#7a1113] hover:text-[#7a1113] transition"
+                            className="flex items-center text-[#6e4fca] hover:text-black transition"
                           >
                             {expandedOrder === order._id ? (
                               <>
@@ -364,7 +364,7 @@ const UserOrders = () => {
                         onClick={() => setCurrentPage(i + 1)}
                         className={`w-10 h-10 rounded-md ${
                           currentPage === i + 1
-                            ? "bg-[#7a1113] text-white"
+                            ? "bg-[#6e4fca] text-white"
                             : "text-gray-700 hover:bg-gray-100"
                         }`}
                       >

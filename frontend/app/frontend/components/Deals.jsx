@@ -264,7 +264,7 @@ const DealsOfTheDay = () => {
               className="w-full max-w-[280px] object-contain"
             />
 
-            <h3 className="text-black text-2xl mb-4">Expires in</h3>
+            <h3 className="text-black text-2xl mb-4 font-semibold">Expires in</h3>
 
             <div className="flex gap-3 mb-6">
               <div className="bg-white rounded-xl p-3 min-w-[75px]">
@@ -315,7 +315,7 @@ const DealsOfTheDay = () => {
               className="w-full max-w-[350px] object-contain"
             />
 
-            <h3 className="text-black text-2xl mb-4">Expires in</h3>
+            <h3 className="text-black text-2xl mb-4 font-semibold">Expires in</h3>
 
             <div className="flex gap-3">
               <div className="bg-white rounded-xl p-3 min-w-[75px]">

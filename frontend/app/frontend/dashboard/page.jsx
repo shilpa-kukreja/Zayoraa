@@ -172,7 +172,7 @@ export default function Dashboard() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#7a1113] mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6e4fca] mb-4"></div>
                     <p className="text-gray-500">Loading your dashboard...</p>
                 </div>
             </div>
@@ -209,7 +209,7 @@ export default function Dashboard() {
                                     className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm"
                                 />
                             ) : (
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#7a1113] to-[#7a1113] flex items-center justify-center text-white text-sm font-medium shadow-sm">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#a998da] to-[#6e4fca] flex items-center justify-center text-white text-sm font-medium shadow-sm">
                                     {user?.username?.charAt(0)?.toUpperCase() || "U"}
                                 </div>
                             )}
@@ -256,7 +256,7 @@ export default function Dashboard() {
                         <button
                             onClick={() => setActiveTab("profile")}
                             className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "profile"
-                                ? "border-[#7a1113] text-[#7a1113]"
+                                ? "border-[#6e4fca] text-[#6e4fca]"
                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                 } transition-colors duration-200`}
                         >
@@ -266,7 +266,7 @@ export default function Dashboard() {
                         <Link href="/frontend/orders">
                         <button          
                             className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "orders"
-                                ? "border-[#7a1113] text-[#7a1113]"
+                                ? "border-[#6e4fca] text-[#6e4fca]"
                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                 } transition-colors duration-200`}
                         >
@@ -286,7 +286,7 @@ export default function Dashboard() {
                                 {!isEditing && (
                                     <button 
                                         onClick={handleEdit}
-                                        className="flex items-center text-[#7a1113] hover:text-[#7a1113] font-medium transition-colors"
+                                        className="flex items-center text-black hover:text-[#6e4fca] font-medium transition-colors"
                                     >
                                         <FiEdit className="h-5 w-5 mr-1" />
                                         Edit Profile
@@ -310,7 +310,7 @@ export default function Dashboard() {
                                             </div>
                                         )}
 
-                                        <label className="cursor-pointer bg-white text-[#7a1113] border border-[#7a1113] rounded-md px-4 py-2 text-sm font-medium hover:bg-blue-50 transition-colors flex items-center">
+                                        <label className="cursor-pointer bg-white text-[#6e4fca] border border-[#6e4fca] rounded-md px-4 py-2 text-sm font-medium hover:bg-blue-50 transition-colors flex items-center">
                                             <FiCamera className="h-4 w-4 mr-2" />
                                             Change Photo
                                             <input

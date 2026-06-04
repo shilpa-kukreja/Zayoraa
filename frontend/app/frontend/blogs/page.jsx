@@ -24,12 +24,12 @@ const BlogPage = () => {
         <meta name="description" content="Discover the latest trends, styling tips, and inspiration from our experts" />
       </Head>
       <Navbar/>
-      
-      <div className="min-h-screen bg-gray-50 pb-16">
-        <div className="container mx-auto ">
-            <div>
+      <div>
                 <img src="/banner/Blog.jpg" alt="" />
             </div>
+      <div className="min-h-screen bg-gray-50 pb-16">
+        <div className="container mx-auto ">
+            
           <div className="text-center pt-4 mb-12">
             <h1 className="text-2xl md:text-4xl  font-bold text-gray-900 mb-4">Our Blog</h1>
             <p className="text-gray-600 max-w-2xl mx-auto">

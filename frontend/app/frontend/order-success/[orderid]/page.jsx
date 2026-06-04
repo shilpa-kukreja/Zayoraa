@@ -24,6 +24,8 @@ export default function OrderSuccessPage() {
         .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/${orderid}`)
         .then((res) => {
           if (res.data.success) setOrder(res.data.order);
+           console.log("this is the order success data",res.data.order);
+
           // clearCart(); // Clear cart on successful order fetch
         })
         .catch(() => {})
@@ -31,7 +33,6 @@ export default function OrderSuccessPage() {
     }
   }, [orderid]);
 
- 
 
 
 
@@ -73,10 +74,10 @@ const downloadInvoice = () => {
 
     pdf.setFontSize(11);
     pdf.setTextColor(60);
-    const { firstName, lastName, address1, address2, city, country, postalCode, phone, email } =
+    const { fullName, address1, address2, city, country, postalCode, phone, email } =
       order.address;
 
-    pdf.text(`${firstName} ${lastName}`, 14, 58);
+    pdf.text(`${fullName} `, 14, 58);
     pdf.text(address1, 14, 64);
     if (address2) pdf.text(address2, 14, 70);
     pdf.text(`${city}, ${country} - ${postalCode}`, 14, 76);
@@ -89,9 +90,9 @@ const downloadInvoice = () => {
       const total = item.price * item.quantity;
       tableData.push([
         { content: item.name, styles: { halign: "left" } },
-        `₹${item.price.toFixed(2)}`,
+        `Rs. ${item.price.toFixed(2)}`,
         item.quantity.toString(),
-        `₹${total.toFixed(2)}`,
+        `Rs. ${total.toFixed(2)}`,
       ]);
     }
 
@@ -117,18 +118,18 @@ const downloadInvoice = () => {
 
     pdf.setFontSize(12);
     pdf.text("Subtotal:", 140, finalY);
-    pdf.text(`₹${subtotal.toFixed(2)}`, 190, finalY, { align: "right" });
+    pdf.text(`Rs. ${subtotal.toFixed(2)}`, 190, finalY, { align: "right" });
 
     pdf.text("Shipping:", 140, finalY + 7);
     pdf.text("Free", 190, finalY + 7, { align: "right" });
 
     pdf.text("Tax:", 140, finalY + 14);
-    pdf.text("₹0.00", 190, finalY + 14, { align: "right" });
+    pdf.text("Rs. 0.00", 190, finalY + 14, { align: "right" });
 
     pdf.setFontSize(13);
     pdf.setFont("helvetica", "bold");
     pdf.text("Grand Total:", 140, finalY + 25);
-    pdf.text(`₹${subtotal.toFixed(2)}`, 190, finalY + 25, { align: "right" });
+    pdf.text(`Rs. ${subtotal.toFixed(2)}`, 190, finalY + 25, { align: "right" });
 
     // ===== Footer =====
     pdf.setFontSize(10);

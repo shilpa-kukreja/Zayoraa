@@ -1803,6 +1803,22 @@ function loadRazorpayScript() {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
 
+function normalizeAddressForOrder(address) {
+  if (!address) return null;
+  return {
+    fullName: address.fullName || "",
+    email: address.email || "",
+    phone: address.phone || address.phoneNumber || "",
+    address1: address.address1 || address.addressLine1 || "",
+    address2: address.address2 || address.addressLine2 || "",
+    city: address.city || "",
+    state: address.state || "",
+    postalCode: address.postalCode || address.pincode || "",
+    landmark: address.landmark || "",
+    addresstype: address.addresstype || address.addressType || "Home",
+  };
+}
+
 const OrderSummary = ({ subtotal = 0 }) => {
   const router = useRouter();
   const { cartItems = [], clearCart = () => { }, user = null } = useContext(AppContext) || {};
@@ -2092,10 +2108,14 @@ const OrderSummary = ({ subtotal = 0 }) => {
       try {
         setLoadingPayment(true); // 🚀 Start loader
 
-        const res = await axios.post(`${API_BASE}/api/order/razorpay`, orderPayload);
+        const authToken =
+          typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const res = await axios.post(`${API_BASE}/api/order/razorpay`, orderPayload, {
+          headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+        });
         if (!res?.data?.success || !res?.data?.order?.id) {
           console.error("Failed to create Razorpay order:", res?.data);
-          toast.error("Failed to create Razorpay order. Try again.");
+          toast.error(res?.data?.message || "Failed to create Razorpay order. Try again.");
           setLoadingPayment(false);
           return;
         }
@@ -2138,7 +2158,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
           prefill: {
             name: selectedAddress?.fullName || user?.name || "",
             email: selectedAddress?.email || user?.email || "",
-            contact: selectedAddress?.phone || "",
+            contact: selectedAddress?.phone || selectedAddress?.phoneNumber || "",
           },
           theme: { color: "#ec4899" },
           modal: {
@@ -2152,8 +2172,9 @@ const OrderSummary = ({ subtotal = 0 }) => {
         const razorpay = new window.Razorpay(options);
         razorpay.open();
       } catch (error) {
-        console.error("Razorpay error:", error?.response?.data || error?.message);
-        toast.error("Error processing payment. Try again.");
+        const errData = error?.response?.data;
+        console.error("Razorpay error:", errData || error?.message);
+        toast.error(errData?.message || "Error processing payment. Try again.");
         setLoadingPayment(false);
       }
     },
@@ -2179,11 +2200,23 @@ const OrderSummary = ({ subtotal = 0 }) => {
   // Place order - handles COD and online
   const handlePlaceOrder = async () => {
     if (!validateBeforePlace()) return;
+
+    const resolvedUserId = userId || user?._id || null;
+    if (paymentMethod !== "cod" && !resolvedUserId) {
+      toast.error("Please sign in to pay online.");
+      return;
+    }
+    if (paymentMethod !== "cod" && total < 1) {
+      toast.error("Order total must be at least ₹1 for online payment.");
+      return;
+    }
+
     setIsSubmitting(true);
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const authToken = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const normalizedAddress = normalizeAddressForOrder(selectedAddress);
 
     const orderPayload = {
-      userId: userId || user?._id || null,   // 👈 use decoded userId here
+      userId: resolvedUserId,
       items: cartItems.map((item) => ({
         productId: item._id || item.id,
         name: item.name,
@@ -2191,19 +2224,8 @@ const OrderSummary = ({ subtotal = 0 }) => {
         quantity: Number(item.quantity) || 1,
         image: item.image || "/default-product-image.jpg",
       })),
-      amount: total,
-      address: {
-        fullName: selectedAddress.fullName,
-        email: selectedAddress.email,
-        phone: selectedAddress.phone,
-        address1: selectedAddress.address1,
-        address2: selectedAddress.address2,
-        city: selectedAddress.city,
-        state: selectedAddress.state,
-        postalCode: selectedAddress.postalCode,
-        landmark: selectedAddress.landmark,
-        addresstype: selectedAddress.addresstype,
-      },
+      amount: Number(total) || 0,
+      address: normalizedAddress,
       couponCode: couponCode.trim() || "",
       discount: Number(discount) || 0,
       paymentMethod: paymentMethod === "cod" ? "COD" : "RAZORPAY",
@@ -2213,7 +2235,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
     try {
       if (paymentMethod === "cod") {
         const res = await axios.post(`${API_BASE}/api/order/cod`, orderPayload, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
         });
         if (res?.data?.success) {
 
@@ -2373,7 +2395,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
                                 <div className="flex items-center gap-2">
                                   <div>
                                     {selectedAddress?._id === address._id && (
-                                      <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={(e) => { e.stopPropagation(); setCheckoutStep("payment"); }} className="text-white bg-[#7a1113] hover:bg-[#7a1113] px-3 py-1.5 rounded text-xs font-medium transition-colors">
+                                      <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={(e) => { e.stopPropagation(); setCheckoutStep("payment"); }} className="text-white bg-black hover:bg-[#6b40c2] px-3 py-1.5 rounded text-xs font-medium transition-colors">
                                         Deliver Here
                                       </motion.button>
                                     )}
@@ -2537,7 +2559,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
                           Cancel
                         </motion.button>
                       )}
-                      <motion.button whileHover={{ scale: 1.00 }} whileTap={{ scale: 0.97 }} type="submit" className="px-5 py-2.5 bg-[#7a1113] text-white rounded-lg font-medium text-sm hover:bg-[#7a1113] transition-colors">
+                      <motion.button whileHover={{ scale: 1.00 }} whileTap={{ scale: 0.97 }} type="submit" className="px-5 py-2.5 bg-[#6b40c2] text-white rounded-lg font-medium text-sm hover:bg-[#7a1113] transition-colors">
                         {isFirstTimeUser ? "Continue to Payment" : "Save Address"}
                       </motion.button>
                     </div>
@@ -2749,7 +2771,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
                     whileTap={{ scale: 0.98 }}
                     onClick={handlePlaceOrder}
                     disabled={isSubmitting}
-                    className="flex-1 py-3 w-full  bg-[#7a1113] hover:bg-[#7a1113] text-white font-medium rounded-lg transition-all duration-200 text-sm shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex-1 py-3 w-full  bg-[#8357db] hover:bg-[#6b40c2] text-white font-medium rounded-lg transition-all duration-200 text-sm shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {paymentMethod === "cod"
                       ? isSubmitting
@@ -2765,7 +2787,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
 
             {checkoutStep == "address" && (
               <div className=" w-[100%] bg-white   gap-4 p-3 border-t  border-gray-300">
-                <motion.button whileHover={{ scale: 0.98 }} whileTap={{ scale: 0.99 }} onClick={() => setCheckoutStep("add-address")} className="w-full sticky bottom-0  px-4 py-3 border bg-white border-dashed border-gray-300 rounded-lg text-[#7a1113] font-medium flex items-center justify-center hover:border-blue-400 transition-colors text-sm">
+                <motion.button whileHover={{ scale: 0.98 }} whileTap={{ scale: 0.99 }} onClick={() => setCheckoutStep("add-address")} className="w-full sticky bottom-0  px-4 py-3 border bg-white border-dashed border-gray-300 rounded-lg text-[#6b40c2] font-medium flex items-center justify-center hover:border-blue-400 transition-colors text-sm">
                   <FiPlus className="mr-2" /> Add New Address
                 </motion.button>
               </div>
@@ -2872,7 +2894,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
                   <div className="p-4 border-t border-gray-200">
                     <button
                       onClick={() => setIsCouponDrawerOpen(false)}
-                      className="w-full py-3 bg-[#7a1113] text-white font-medium rounded-lg transition-all duration-200 hover:bg-[#7a1113] text-sm"
+                      className="w-full py-3 bg-black text-white font-medium rounded-lg transition-all duration-200 hover:bg-[#6b40c2] text-sm"
                     >
                       Close
                     </button>

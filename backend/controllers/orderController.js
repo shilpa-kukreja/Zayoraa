@@ -271,40 +271,65 @@ const placeOrderRazorpay = async (req, res) => {
   try {
     const { userId, items, amount, address, couponCode, discount } = req.body;
 
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User not logged in. Please sign in to pay online." });
+    }
+    if (!items?.length) {
+      return res.status(400).json({ success: false, message: "No items in cart" });
+    }
+    if (!address?.fullName || !address?.email || !address?.phone || !address?.address1 || !address?.city || !address?.state || !address?.postalCode) {
+      return res.status(400).json({ success: false, message: "Complete delivery address is required" });
+    }
+
+    const payable = Math.max(0, Number(amount) - (Number(discount) || 0));
+    const amountInPaise = Math.round(payable * 100);
+
+    if (amountInPaise < 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Order total must be at least ₹1 for online payment",
+      });
+    }
+
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return res.status(500).json({
+        success: false,
+        message: "Payment gateway is not configured on the server",
+      });
+    }
+
+    const pendingOrderId = `RP-PENDING-${Date.now()}-${crypto.randomBytes(3).toString("hex")}`;
+
     const newOrder = new orderModel({
-      orderid: "",
+      orderid: pendingOrderId,
       userId,
       items,
-      amount,
+      amount: payable,
       address,
       paymentMethod: "Razorpay",
       payment: false,
       couponCode,
-      discount,
+      discount: Number(discount) || 0,
     });
     await newOrder.save();
 
-    const options = {
-      // amount: (amount - (discount || 0)) * 100,
-       amount: amount * 100,
-       currency: "INR",
+    const razorpayOrder = await razorpayInstance.orders.create({
+      amount: amountInPaise,
+      currency: "INR",
       receipt: newOrder._id.toString(),
-    };
-
-    razorpayInstance.orders.create(options, async (error, razorpayOrder) => {
-      if (error) {
-        console.error("Razorpay error:", error);
-        return res.status(500).json({ success: false, message: "Razorpay order creation failed" });
-      }
-
-      newOrder.orderid = razorpayOrder.id;
-      await newOrder.save();
-
-      res.json({ success: true, order: razorpayOrder });
     });
+
+    newOrder.orderid = razorpayOrder.id;
+    await newOrder.save();
+
+    res.json({ success: true, order: razorpayOrder });
   } catch (error) {
     console.error("Error in placeOrderRazorpay:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    const razorpayMessage = error?.error?.description || error?.description;
+    res.status(500).json({
+      success: false,
+      message: razorpayMessage || error.message || "Server Error",
+    });
   }
 };
 
