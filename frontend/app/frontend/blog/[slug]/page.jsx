@@ -6,7 +6,8 @@ import Footer from "../../components/Footer";
 
 // ✅ Define metadata dynamically
 export async function generateMetadata({ params }) {
-  const blog = blogs.find((b) => b.blogSlug === params.slug);
+  const { slug } = await params;
+  const blog = blogs.find((b) => b.blogSlug === slug);
   if (!blog) return { title: "Blog Not Found | Miraggio Lifestyle" };
 
   return {
@@ -21,8 +22,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function BlogDetailPage({ params }) {
-  const { slug } = params;
+export default async function BlogDetailPage({ params }) {
+  const { slug } = await params;
   const blogData = blogs.find((b) => b.blogSlug === slug);
   const latestBlogs = blogs.slice(0, 4);
 

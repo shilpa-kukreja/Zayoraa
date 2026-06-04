@@ -107,12 +107,12 @@ const Cart = () => {
                       >
                         {(() => {
                           const imageFromVariant = item?.variant?.image
-                            ? `http://localhost:5000${item.variant.image}`
+                            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${item.variant.image}`
                             : null;
                           const imageFromItem = item?.image
                             ? (String(item.image).startsWith("http")
                               ? String(item.image)
-                              : `http://localhost:5000${item.image}`)
+                              : `${process.env.NEXT_PUBLIC_BACKEND_URL}${item.image}`)
                             : null;
                           const displayImage = imageFromVariant || imageFromItem || "/placeholder.png";
                           const itemId = item?._id || item?.id;

@@ -30,7 +30,7 @@ const Subscription = () => {
 
   const fetchSubscribers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/subscription/subscribers");
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/subscription/subscribers`);
       setSubscribers(response.data);
     } catch (error) {
       console.error("Failed to fetch subscribers", error);
@@ -41,7 +41,7 @@ const Subscription = () => {
 
 const handleUnsubscribe = async (email) => {
   try {
-    await axios.delete(`http://localhost:5000/api/subscription/unsubscribe/${email}`);
+    await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/subscription/unsubscribe/${email}`);
     toast.success("Subscriber deleted successfully");
     setSubscribers((prev) => prev.filter((sub) => sub.email !== email));
     setDeleteConfirm(null);

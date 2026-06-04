@@ -15,7 +15,7 @@ export const VideoDuration = ({ src }) => {
   return (
     <>
     <video
-      src={`http://localhost:5000${src}`}
+      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${src}`}
       className="w-20 h-20 object-cover"
       preload="metadata"
       onLoadedMetadata={(e) => {

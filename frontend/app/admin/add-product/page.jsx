@@ -103,7 +103,7 @@ const AddProductContent= ()=> {
 
     const fetchCategories = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/categories/get");
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/get`);
             setCategories(res.data.categories);
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -117,7 +117,7 @@ const AddProductContent= ()=> {
     const fetchProductDetails = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}`);
             if (response.data.success) {
                 const product = response.data.product;
 
@@ -146,19 +146,19 @@ const AddProductContent= ()=> {
                 });
 
                 if (product.thumbImg) {
-                    setThumbImgPreview(`http://localhost:5000${product.thumbImg}`);
+                    setThumbImgPreview(`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`);
                 }
 
                 if (product.galleryImg?.length > 0) {
                     const galleryUrls = product.galleryImg.map(img =>
-                        typeof img === 'string' ? `http://localhost:5000${img}` : img
+                        typeof img === 'string' ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${img}` : img
                     );
                     setGalleryPreviews(galleryUrls);
                 }
 
                 // variant image previews (edit mode)
                 const vPreviews = (product.variant || []).map(v =>
-                    v?.image ? `http://localhost:5000${v.image}` : ""
+                    v?.image ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${v.image}` : ""
                 );
                 setVariantImgPreviews(vPreviews);
                 setVariantImgs(new Array((product.variant || []).length).fill(null));
@@ -176,7 +176,7 @@ const AddProductContent= ()=> {
 
     const fetchproducts = async (selectedProducts = []) => {
         try {
-            const res = await axios.get("http://localhost:5000/api/products/get");
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/get`);
             setproducts(res.data.products);
             // If selectedProducts are provided (for edit mode), ensure they're in the options
             if (selectedProducts.length > 0) {
@@ -358,13 +358,13 @@ const AddProductContent= ()=> {
             let response;
             if (isEditMode) {
                 response = await axios.put(
-                    `http://localhost:5000/api/products/${id}`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}`,
                     payload,
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );
             } else {
                 response = await axios.post(
-                    "http://localhost:5000/api/products/create",
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/create`,
                     payload,
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );
@@ -860,9 +860,9 @@ const AddProductContent= ()=> {
                                                     onChange={(e) => handleVariantImgChange(e, i)}
                                                     className="w-full text-sm"
                                                 />
-                                                {(variantImgPreviews[i] || (v?.image && `http://localhost:5000${v.image}`)) && (
+                                                {(variantImgPreviews[i] || (v?.image && `${process.env.NEXT_PUBLIC_BACKEND_URL}${v.image}`)) && (
                                                     <img
-                                                        src={variantImgPreviews[i] || `http://localhost:5000${v.image}`}
+                                                        src={variantImgPreviews[i] || `${process.env.NEXT_PUBLIC_BACKEND_URL}${v.image}`}
                                                         alt="Variant preview"
                                                         className="w-12 h-12 object-cover rounded border border-gray-200"
                                                     />

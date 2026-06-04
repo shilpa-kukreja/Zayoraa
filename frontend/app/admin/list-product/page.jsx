@@ -23,7 +23,7 @@ export default function ListProducts() {
     const fetchProducts = async () => {
         try {
             setIsLoading(true);
-            const res = await axios.get("http://localhost:5000/api/products/get");
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/get`);
             if (res.data?.products) {
                 setProducts(res.data.products);
             }
@@ -38,7 +38,7 @@ export default function ListProducts() {
     // ✅ Fetch categories
     const fetchCategories = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/categories/get");
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/get`);
             if (res.data) {
                 setCategories(res.data.categories || []);
             }
@@ -56,8 +56,8 @@ export default function ListProducts() {
                 SKU: product.sku,
                 shortdescription: product.shortdescription,
                 description: product.description,
-                thumbImg: product.thumbImg ? `http://localhost:5000${product.thumbImg}` : "N/A",
-                galleryImg: product.galleryImg ? product.galleryImg.map(img => `http://localhost:5000${img}`).join(", ") : "N/A",
+                thumbImg: product.thumbImg ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}` : "N/A",
+                galleryImg: product.galleryImg ? product.galleryImg.map(img => `${process.env.NEXT_PUBLIC_BACKEND_URL}${img}`).join(", ") : "N/A",
                 Price: product?.variant?.[0]?.price ?? "N/A",
                 Stock: product.stock ?? 0,
 
@@ -93,7 +93,7 @@ export default function ListProducts() {
         if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
         try {
-            await axios.delete("http://localhost:5000/api/products/" + id);
+            await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}`);
             toast.success("Product deleted successfully");
             fetchProducts();
         } catch (err) {
@@ -306,7 +306,7 @@ export default function ListProducts() {
                                                                 <img
                                                                     src={
                                                                         product.thumbImg
-                                                                            ? `http://localhost:5000${product.thumbImg}`
+                                                                            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`
                                                                             : "/placeholder.jpg"
                                                                     }
                                                                     alt={product.name}

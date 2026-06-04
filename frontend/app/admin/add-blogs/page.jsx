@@ -53,7 +53,7 @@ const AdminAddBlogContent = () => {
 
   const fetchBlogDetails = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/blog/${id}`);
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/${id}`);
       const blog = res.data;
       
       const formattedDate = blog.blogDate
@@ -71,7 +71,7 @@ const AdminAddBlogContent = () => {
         metatag: blog.metatag || "",
       });
 
-      setImagePreview(`http://localhost:5000${blog.blogImg}` || "");
+      setImagePreview(`${process.env.NEXT_PUBLIC_BACKEND_URL}${blog.blogImg}` || "");
     } catch (error) {
       toast.error("Failed to fetch blog details.");
       console.error(error);
@@ -168,7 +168,7 @@ const AdminAddBlogContent = () => {
     try {
       setLoading(true);
 
-      const url = isEditMode ? `http://localhost:5000/api/blog/${id}` : "http://localhost:5000/api/blog/createblog";
+      const url = isEditMode ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/${id}` : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/createblog`;
       const method = isEditMode ? "PUT" : "POST";
 
       const res = await fetch(url, {

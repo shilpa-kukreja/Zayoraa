@@ -59,10 +59,10 @@ const AddCategoryPageContent= () => {
           setLoading(true);
 
           // agar tumhare backend route query use karta hai
-          // const res = await axios.get(`http://localhost:5000/api/categories/get-category-by-id?id=${categoryId}`);
+          // const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/get-category-by-id?id=${categoryId}`);
 
           // agar tumhare backend route params use karta hai
-          const res = await axios.get(`http://localhost:5000/api/categories/${categoryId}`);
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/${categoryId}`);
 
           console.log("API Response:", res.data);
 
@@ -78,13 +78,13 @@ const AddCategoryPageContent= () => {
               metaTitle: cat.metaTitle || "",
               metaDescription: cat.metaDescription || "",
               // DB ke liye sirf path save hoga
-              img: cat?.img ? `http://localhost:5000${cat.img}` : "",
-              banner: cat?.banner ? `http://localhost:5000${cat.banner}` : ""
+              img: cat?.img ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.img}` : "",
+              banner: cat?.banner ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.banner}` : ""
             });
 
             // setPreview({
-            //   img: cat?.img ? `http://localhost:5000${cat.img}` : "",
-            //   banner: cat?.banner ? `http://localhost:5000${cat.banner}` : ""
+            //   img: cat?.img ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.img}` : "",
+            //   banner: cat?.banner ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.banner}` : ""
             // });
 
           } else {
@@ -152,7 +152,7 @@ const AddCategoryPageContent= () => {
     try {
       if (editingCategory) {
         await axios.put(
-          `http://localhost:5000/api/categories/${editingCategory._id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/${editingCategory._id}`,
           formDataToSend,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -160,7 +160,7 @@ const AddCategoryPageContent= () => {
         router.push("/admin/list-categories");
       } else {
         await axios.post(
-          "http://localhost:5000/api/categories/create",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/create`,
           formDataToSend,
           { headers: { "Content-Type": "multipart/form-data" } }
         );

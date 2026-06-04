@@ -1,25 +1,23 @@
 /** @type {import('next').NextConfig} */
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig = {
   images: {
+    // Next.js 16 blocks localhost/private IPs unless this is enabled (dev only).
+    dangerouslyAllowLocalIP: isDev,
     remotePatterns: [
       {
         protocol: "http",
         hostname: "localhost",
         port: "5000",
-        pathname: "/uploads/blogs/**",   // blogs folder
+        pathname: "/uploads/**",
       },
       {
         protocol: "http",
-        hostname: "localhost",
+        hostname: "127.0.0.1",
         port: "5000",
-        pathname: "/uploads/categories/**",  // categories folder
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "5000",
-        pathname: "/uploads/products/**",  // products folder
+        pathname: "/uploads/**",
       },
     ],
   },

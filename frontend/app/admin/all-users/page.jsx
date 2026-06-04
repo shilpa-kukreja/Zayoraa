@@ -47,7 +47,7 @@ const AdminAllUsers = () => {
   const fetchAllUsers = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("http://localhost:5000/api/users/getalluser");
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/getalluser`);
       setUsers(data.users);
     } catch (error) {
       toast.error(error.response?.data?.error || "Failed to fetch users");
@@ -75,7 +75,7 @@ const AdminAllUsers = () => {
   // Delete user function
   const deleteUser = async (userId) => {
     try {
-      const { data } = await axios.post(`http://localhost:5000/api/users/deleteuser`, { id: userId });
+      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/deleteuser`, { id: userId });
       toast.success(data.message);
       fetchAllUsers(); // Refresh the list
       setDeleteConfirm(null);
@@ -324,7 +324,7 @@ const AdminAllUsers = () => {
                             <div className="flex items-center">
                               <div className="flex-shrink-0 h-10 w-10">
                                 {user.img ? (
-                                  <img className="h-10 w-10 rounded-full object-cover" src={`http://localhost:5000${user.img}`} alt={user.username} />
+                                  <img className="h-10 w-10 rounded-full object-cover" src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user.img}`} alt={user.username} />
                                 ) : (
                                   <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                                     <User className="h-6 w-6 text-blue-600" />
@@ -463,7 +463,7 @@ const AdminAllUsers = () => {
                 <div className="p-6">
                   <div className="flex flex-col items-center mb-6">
                     {selectedUser.img ? (
-                      <img className="h-24 w-24 rounded-full object-cover mb-4" src={`http://localhost:5000${selectedUser.img}`} alt={selectedUser.username} />
+                      <img className="h-24 w-24 rounded-full object-cover mb-4" src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${selectedUser.img}`} alt={selectedUser.username} />
                     ) : (
                       <div className="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                         <User className="h-12 w-12 text-blue-600" />

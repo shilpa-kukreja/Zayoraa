@@ -22,7 +22,7 @@ export default function AddVideo() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get("http://localhost:5000/api/products/get");
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/get`);
         if (res.data?.products) {
           setProducts(res.data.products);
         }
@@ -128,7 +128,7 @@ export default function AddVideo() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/videos/video",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/videos/video`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

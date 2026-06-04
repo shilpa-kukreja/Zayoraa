@@ -79,8 +79,8 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [statsRes, revenueRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/dashboard/stats"),
-        axios.get("http://localhost:5000/api/dashboard/revenue")
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/dashboard/stats`),
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/dashboard/revenue`)
       ]);
 
       if (statsRes.data.success) {

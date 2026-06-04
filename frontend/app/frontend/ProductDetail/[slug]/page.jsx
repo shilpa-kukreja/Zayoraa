@@ -973,7 +973,7 @@ const ProductDetailContent = ({ productIDs }) => {
                       className={`w-16 h-16 border rounded-md overflow-hidden transition-all ${mainImage === img ? 'ring-2 ring-blue-500' : 'border-gray-200 hover:border-gray-400'}`}
                     >
                       <Image
-                        src={`http://localhost:5000${img}`}
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${img}`}
                         alt={`${product.name} thumbnail ${i + 1}`}
                         width={64}
                         height={64}
@@ -995,7 +995,7 @@ const ProductDetailContent = ({ productIDs }) => {
                   <div className="relative aspect-square w-full overflow-hidden">
                     <Image
                       src={mainImage && mainImage !== ""
-                        ? `http://localhost:5000${mainImage}`
+                        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${mainImage}`
                         : "/placeholder.png"}
 
                       alt={product?.name || "product image"}
@@ -1107,7 +1107,7 @@ const ProductDetailContent = ({ productIDs }) => {
                       src={
                         p.thumbImg?.startsWith("http")
                           ? p.thumbImg
-                          : `http://localhost:5000${p.thumbImg}`
+                          : `${process.env.NEXT_PUBLIC_BACKEND_URL}${p.thumbImg}`
                       }
                       alt={p.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
@@ -1229,7 +1229,7 @@ const ProductDetailContent = ({ productIDs }) => {
                   }`}
               >
                 <video
-                  src={`http://localhost:5000${vid.videourl} `}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${vid.videourl} `}
                   className="w-full h-full object-cover"
                   muted
                   loop
@@ -1272,7 +1272,7 @@ const ProductDetailContent = ({ productIDs }) => {
 
                 {/* Video Player */}
                 <video
-                  src={`http://localhost:5000${selectedVideo} `}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${selectedVideo} `}
                   controls
                   autoPlay
                   className="w-full max-h-[80vh] rounded-2xl"

@@ -36,7 +36,7 @@ const SignUpContent = () => {
     }
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/users/loginotp', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/loginotp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ number: formData.mobile }),
@@ -66,7 +66,7 @@ const SignUpContent = () => {
   //   }
   //   setIsLoading(true);
   //   try {
-  //     const response = await fetch('http://localhost:5000/api/users/verify-otp', {
+  //     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/verify-otp`, {
   //       method: 'POST',
   //       headers: { 'Content-Type': 'application/json' },
   //       body: JSON.stringify({
@@ -102,7 +102,7 @@ const SignUpContent = () => {
     }
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/users/verify-otp', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

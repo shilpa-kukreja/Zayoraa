@@ -49,7 +49,7 @@
 //             const totalAmount = cartTotal; // Total before discount
 
 //             const { data } = await axios.post(
-//                 "http://localhost:5000/api/coupons/apply",
+//                 "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/coupons/apply",
 //                 { couponCode, totalAmount },
 //                 { headers: { token } }
 
@@ -542,7 +542,7 @@
 //       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
 //       const { data } = await axios.post(
-//         "http://localhost:5000/api/coupons/apply",
+//         "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/coupons/apply",
 //         { couponCode: promoCode, totalAmount: subtotal },
 //         { headers: { token } }
 //       );
@@ -963,7 +963,7 @@
 //   return razorpayScriptPromise;
 // }
 
-// const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+// const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // const OrderSummary = ({ subtotal }) => {
 //   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -995,7 +995,7 @@
 //   useEffect(() => {
 //   const token = localStorage.getItem("token");
 //   axios
-//   .get("http://localhost:5000/api/users/getaddress", {
+//   .get("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/getaddress", {
 //     headers: { Authorization: `Bearer ${token}` },
 //   })
 //   .then((res) => {
@@ -1028,7 +1028,7 @@
 
 //     try {
 //       const res =await axios.post(
-//         "http://localhost:5000/api/users/addaddress",
+//         "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/addaddress",
 //         {
 
 //           fullName: newAddress.fullName,
@@ -1801,7 +1801,7 @@ function loadRazorpayScript() {
   return razorpayScriptPromise;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const OrderSummary = ({ subtotal = 0 }) => {
   const router = useRouter();

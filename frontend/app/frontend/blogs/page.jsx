@@ -43,7 +43,7 @@ const BlogPage = () => {
               <article key={blog._id} className="bg-white rounded-md overflow-hidden  border border-[#6447bb] shadow-md hover:shadow-xl transition-all duration-300">
                 <div className="relative h-60 overflow-hidden">
                   <Image
-                    src={`http://localhost:5000${blog.blogImg}`}
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${blog.blogImg}`}
                     alt={blog.blogName}
                     fill
                     className="object-cover h-full transition-transform duration-500 hover:scale-105"

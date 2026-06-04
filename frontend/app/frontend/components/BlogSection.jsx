@@ -38,7 +38,7 @@ const BlogSection = () => {
   >
     <div className="relative h-60 overflow-hidden">
       <Image
-        src={`http://localhost:5000${blog.blogImg}`} 
+        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${blog.blogImg}`} 
         alt={blog.blogName}
         fill
         className="h-full transition-transform duration-700 group-hover:scale-110"

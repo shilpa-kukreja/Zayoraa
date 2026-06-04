@@ -104,12 +104,12 @@
 //             >
 //               <div className="relative aspect-square overflow-hidden bg-gray-50">
 //                 <img
-//                   src={`http://localhost:5000${product.thumbImg}`}
+//                   src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`}
 //                   alt={product.name}
 //                   className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
 //                 />
 //                 <img
-//                   src={`http://localhost:5000${product.galleryImg?.[1] || product.thumbImg}`}
+//                   src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.galleryImg?.[1] || product.thumbImg}`}
 //                   alt={product.name}
 //                   className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
 //                 />
@@ -327,13 +327,13 @@ const CategoryShowcase = () => {
                 >
                   <div className="group relative aspect-square bg-gray-50 overflow-hidden">
                     <img
-                      src={`http://localhost:5000${mainCardImg}`}
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${mainCardImg}`}
                       alt={product.name}
                       className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                     />
 
                     <img
-                      src={`http://localhost:5000${
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
                         product.galleryImg?.[1] || product.thumbImg
                       }`}
                       alt={product.name}

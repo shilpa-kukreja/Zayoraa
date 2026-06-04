@@ -22,8 +22,8 @@ export default function ListVideos() {
             try {
                 setIsLoading(true);
                 const [videosRes, productsRes] = await Promise.all([
-                    axios.get("http://localhost:5000/api/videos/listvideo"),
-                    axios.get("http://localhost:5000/api/products/get")
+                    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/videos/listvideo`),
+                    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/get`)
                 ]);
 
                 // Handle different API response structures
@@ -56,7 +56,7 @@ export default function ListVideos() {
                 Order: video.order !== undefined ? video.order : "",
                 Size: formatFileSize(video.size),
                 Uploaded: formatDate(video.createdAt),
-                URL: video.videourl ? `http://localhost:5000${video.videourl}` : "N/A",
+                URL: video.videourl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${video.videourl}` : "N/A",
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
@@ -98,7 +98,7 @@ export default function ListVideos() {
         if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
 
         try {
-            await axios.delete(`http://localhost:5000/api/videos/${id}`);
+            await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/videos/${id}`);
             toast.success("Video deleted successfully");
             setVideos(videos.filter(video => video._id !== id));
         } catch (err) {
@@ -484,7 +484,7 @@ export default function ListVideos() {
                                                         <td className="p-4 text-right">
                                                             <div className="flex justify-end space-x-2">
                                                                 <a
-                                                                    href={`http://localhost:5000${video.videourl}`}
+                                                                    href={`${process.env.NEXT_PUBLIC_BACKEND_URL}${video.videourl}`}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
                                                                     className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-md p-2 transition-colors"

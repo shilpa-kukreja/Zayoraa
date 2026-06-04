@@ -66,7 +66,7 @@ const AdminOrders = () => {
   const fetchAllOrders = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("http://localhost:5000/api/order/all");
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/all`);
       setOrders(data.orders);
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch orders");
@@ -94,7 +94,7 @@ const AdminOrders = () => {
   const changeStatus = async (orderid, status) => {
     setUpdatingOrder(orderid);
     try {
-      const { data } = await axios.put("http://localhost:5000/api/order/status", { orderid, status });
+      const { data } = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/status`, { orderid, status });
       toast.success(data.message);
       fetchAllOrders();
     } catch (error) {

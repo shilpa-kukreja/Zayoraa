@@ -143,7 +143,7 @@ const VideoShowcase = () => {
                   {/* Video Container */}
                   <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                     <video
-                      src={`http://localhost:5000${video.videourl} `}
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${video.videourl} `}
                       autoPlay={index === 0}
                       muted
                       loop

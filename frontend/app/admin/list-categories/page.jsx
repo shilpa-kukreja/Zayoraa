@@ -21,7 +21,7 @@ const ListCategory = () => {
   const fetchCategories = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:5000/api/categories/get");
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/get`);
       setCategories(res.data.categories || []);
     } catch (error) {
       toast.error("Failed to fetch categories");
@@ -35,7 +35,7 @@ const ListCategory = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this category? This action cannot be undone.")) return;
     try {
-      await axios.delete("http://localhost:5000/api/categories/" + id);
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/${id}`);
       toast.success("Category deleted successfully");
       fetchCategories();
     } catch (error) {
@@ -63,8 +63,8 @@ const ListCategory = () => {
       const dataToExport = filteredCategories.map(cat => ({
         Name: cat.name,
         Slug: cat.slug,
-        Image: cat.img ? `http://localhost:5000${cat.img}` : 'Not available',
-        Banner: cat.banner ? `http://localhost:5000${cat.banner}` : 'Not available',
+        Image: cat.img ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.img}` : 'Not available',
+        Banner: cat.banner ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.banner}` : 'Not available',
         Created: cat.createdAt ? new Date(cat.createdAt).toLocaleDateString() : 'Unknown'
       }));
 
@@ -276,7 +276,7 @@ const ListCategory = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                          src={cat.img ? `http://localhost:5000${cat.img}` : '/placeholder.jpg'}
+                          src={cat.img ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.img}` : '/placeholder.jpg'}
                           alt={cat.name}
                           className="h-full w-full object-cover object-center"
                         />
@@ -285,7 +285,7 @@ const ListCategory = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="h-12 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                          src={cat.banner ? `http://localhost:5000${cat.banner}` : '/placeholder.jpg'}
+                          src={cat.banner ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.banner}` : '/placeholder.jpg'}
                           alt={cat.name}
                           className="h-full w-full object-cover object-center"
                         />

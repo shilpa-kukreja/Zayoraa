@@ -90,7 +90,7 @@
 //   //     return;
 //   //   }
 //   //   try {
-//   //     const res = await axios.post("http://localhost:5000/api/coupons/apply", {
+//   //     const res = await axios.post("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/coupons/apply", {
 //   //       code: couponCode,
 //   //       subtotal,
 //   //     });
@@ -116,7 +116,7 @@
 //       return;
 //     }
 //     try {
-//       const res = await axios.post("http://localhost:5000/api/coupons/apply", {
+//       const res = await axios.post("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/coupons/apply", {
 //         couponCode: couponCode,
 //         totalAmount: subtotal,
 //       });
@@ -158,7 +158,7 @@
 
 //   const handleRazorpay = async (orderPayload) => {
 //     try {
-//       const res = await axios.post("http://localhost:5000/api/order/razorpay", orderPayload);
+//       const res = await axios.post("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/razorpay", orderPayload);
 
 //       if (!res.data.success) {
 //         alert("Failed to create Razorpay order");
@@ -175,7 +175,7 @@
 //         description: "Order Payment",
 //         order_id: res.data.order.id,
 //         handler: async (response) => {
-//           const verifyRes = await axios.post("http://localhost:5000/api/order/verify", {
+//           const verifyRes = await axios.post("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/verify", {
 //             ...response,
 //             orderId: res.data.order.id
 //           });
@@ -255,7 +255,7 @@
 
 //     try {
 //       if (paymentMethod === "COD") {
-//         const res = await axios.post("http://localhost:5000/api/order/cod", orderPayload);
+//         const res = await axios.post("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/cod", orderPayload);
 
 //         if (res.data.success) {
 //           clearCart();
@@ -686,7 +686,7 @@ function loadRazorpayScript() {
   return razorpayScriptPromise;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const CheckoutPage = () => {
   const router = useRouter();

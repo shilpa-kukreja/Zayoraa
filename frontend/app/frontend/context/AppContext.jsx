@@ -48,7 +48,7 @@ export const AppContextProvider = ({ children }) => {
     const addToCart = (product, selectedVariant, quantity) => {
         const imgPath = selectedVariant?.image || product?.thumbImg || "";
         const imageUrl = imgPath
-            ? (String(imgPath).startsWith("http") ? String(imgPath) : `http://localhost:5000${imgPath}`)
+            ? (String(imgPath).startsWith("http") ? String(imgPath) : `${process.env.NEXT_PUBLIC_BACKEND_URL}${imgPath}`)
             : "/placeholder.png";
 
         const cartItem = {
@@ -141,18 +141,16 @@ export const AppContextProvider = ({ children }) => {
 
     const fetchVideos = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/videos/listvideo");
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/videos/listvideo`);
             console.log("response", response);
             if (response.data && Array.isArray(response.data.videos)) {
                 console.log("videos", response.data.videos);
                 setVideos(response.data.videos);
             } else {
                 setVideos([]);
-                setError("Invalid data format received from server");
             }
         } catch (error) {
             console.error("Error fetching videos", error);
-            setError("Failed to load videos. Please try again later.");
             setVideos([]);
         }
     };
@@ -167,17 +165,15 @@ export const AppContextProvider = ({ children }) => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/products/get");
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/get`);
             if (response.data && Array.isArray(response.data.products)) {
                 console.log("products", response.data.products);
                 setProducts(response.data.products);
             } else {
                 setProducts([]);
-                setError("Invalid data format received from server");
             }
         } catch (error) {
             console.error("Error fetching products", error);
-            setError("Failed to load products. Please try again later.");
             setProducts([]);
         }
     };
@@ -188,17 +184,15 @@ export const AppContextProvider = ({ children }) => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/categories/get");
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories/get`);
             if (response.data && Array.isArray(response.data.categories)) {
                 console.log("categories", response.data.categories);
                 setCategories(response.data.categories);
             } else {
                 setCategories([]);
-                setError("Invalid data format received from server");
             }
         } catch (error) {
             console.error("Error fetching categories", error);
-            setError("Failed to load categories. Please try again later.");
             setCategories([]);
         }
     };
@@ -209,16 +203,14 @@ export const AppContextProvider = ({ children }) => {
 
     const fetchblogs = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/blog/getblog");
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/getblog`);
             if (response.data && Array.isArray(response.data)) {
                 setBlogs(response.data);
             } else {
                 setBlogs([]);
-                setError("Invalid data format received from server");
             }
         } catch (error) {
             console.error("Error fetching blogs", error);
-            setError("Failed to load blogs. Please try again later.");
             setBlogs([]);
         }
     };

@@ -21,7 +21,7 @@ export default function OrderSuccessPage() {
   useEffect(() => {
     if (orderid) {
       axios
-        .get(`http://localhost:5000/api/order/${orderid}`)
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/${orderid}`)
         .then((res) => {
           if (res.data.success) setOrder(res.data.order);
           // clearCart(); // Clear cart on successful order fetch

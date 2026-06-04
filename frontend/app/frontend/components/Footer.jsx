@@ -20,7 +20,7 @@
 //       return;
 //     }
 //     try {
-//        const response = await fetch('http://localhost:5000/api/subscription/subscribe', {
+//        const response = await fetch('${process.env.NEXT_PUBLIC_BACKEND_URL}/api/subscription/subscribe', {
 //         method: 'POST',
 //         headers: { 'Content-Type': 'application/json' },
 //         body: JSON.stringify({ email }),
@@ -218,7 +218,7 @@ export default function Footer() {
     }
     try {
       const response = await fetch(
-        "http://localhost:5000/api/subscription/subscribe",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/subscription/subscribe`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

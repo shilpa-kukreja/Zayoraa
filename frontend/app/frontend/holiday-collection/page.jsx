@@ -533,7 +533,7 @@ export default function HolidayCollection() {
                                                 <Link href={`/frontend/ProductDetail/${product.slug}`} className="block">
                                                     <div className="relative aspect-square overflow-hidden">
                                                         <Image
-                                                            src={`http://localhost:5000${product.thumbImg}`}
+                                                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`}
                                                             alt={product.name}
                                                             fill
                                                             className="object-cover transition duration-300 group-hover:scale-105"

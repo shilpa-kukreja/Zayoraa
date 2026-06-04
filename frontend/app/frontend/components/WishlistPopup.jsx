@@ -91,7 +91,7 @@ const WishlistPopup = () => {
                           <>
                             <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
                               <Image
-                                src={`http://localhost:5000${img}`}
+                                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${img}`}
                                 alt={product.name}
                                 width={80}
                                 height={80}

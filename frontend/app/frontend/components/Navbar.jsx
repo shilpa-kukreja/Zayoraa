@@ -41,7 +41,7 @@ const Navbar = () => {
     setIsLoggedIn(!!token);
 
     if (token) {
-      fetch("http://localhost:5000/api/users/getuser", {
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/getuser`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -221,7 +221,7 @@ const Navbar = () => {
                         <Image
                           src={
                             category?.img
-                              ? `http://localhost:5000${category.img}`
+                              ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${category.img}`
                               : "/fallback.png"
                           }
                           alt={category?.name || "Category"}
@@ -317,7 +317,7 @@ const Navbar = () => {
                           onClick={() => handleResultClick(product.slug)}
                         >
                           <img
-                            src={`http://localhost:5000${product.thumbImg}`}
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`}
                             alt={product.name}
                             className="h-10 w-10 object-cover rounded-md mr-3"
                           />
@@ -341,7 +341,7 @@ const Navbar = () => {
                 >
                   {user?.img ? (
                     <img
-                      src={`http://localhost:5000${user.img}`}
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user.img}`}
                       alt="User profile"
                       className="h-9 w-9 rounded-full object-cover border-2 border-white shadow-md"
                     />
@@ -672,7 +672,7 @@ export default Navbar;
 //     setIsLoggedIn(!!token);
 
 //     if (token) {
-//       fetch("http://localhost:5000/api/users/getuser", {
+//       fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/getuser`, {
 //         headers: { Authorization: `Bearer ${token}` }
 //       })
 //         .then(res => res.json())
@@ -794,7 +794,7 @@ export default Navbar;
 //                     <div className="mt-3 max-h-60 overflow-y-auto">
 //                       {searchResults.map((product) => (
 //                         <div key={product._id} className="p-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center" onClick={() => handleResultClick(product.slug)}>
-//                           <img src={`http://localhost:5000${product.thumbImg}`} alt={product.name} className="h-10 w-10 object-cover rounded-md mr-3" />
+//                           <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`} alt={product.name} className="h-10 w-10 object-cover rounded-md mr-3" />
 //                           <p className="text-sm font-medium">{product.name}</p>
 //                         </div>
 //                       ))}

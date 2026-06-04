@@ -161,13 +161,13 @@ const CategoryPage = () => {
           >
             <div className="relative h-full w-full group transition-transform duration-500">
               <img
-                src={`http://localhost:5000${mainCardImg}`}
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${mainCardImg}`}
                 alt={product.name}
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
               />
 
               <img
-                src={`http://localhost:5000${
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
                   product.galleryImg?.[1] || mainCardImg
                 }`}
                 alt={product.name}
@@ -297,7 +297,7 @@ const CategoryPage = () => {
       {/* Category Hero */}
       <div className="relative h-[500px] bg-gray-200">
         <Image
-          src={`http://localhost:5000${category.banner}`}
+          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${category.banner}`}
 
           alt={category.name}
           fill

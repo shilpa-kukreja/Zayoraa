@@ -20,7 +20,7 @@ export default function ListCoupon({ token }) {
 
   const fetchCoupons = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/coupons/get", {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/coupons/get`, {
         headers: { token },
       });
       setCoupons(data.coupons);
@@ -34,7 +34,7 @@ export default function ListCoupon({ token }) {
   const toggleStatus = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/coupons/${id}/toggle`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/coupons/${id}/toggle`,
         {},
         { headers: { token } }
       );
@@ -51,7 +51,7 @@ export default function ListCoupon({ token }) {
 
   const deleteCoupon = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/coupons/${id}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/coupons/${id}`, {
         headers: { token },
       });
       setCoupons((prev) => prev.filter((c) => c._id !== id));

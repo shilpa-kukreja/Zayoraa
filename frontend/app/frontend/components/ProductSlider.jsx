@@ -119,13 +119,13 @@
 //                     <Link href={`/frontend/ProductDetail/${product.slug}`} >
 //                     <div className="relative h-full w-full transition-transform duration-500 group-hover:scale-105">
 //                       <img
-//                         src={`http://localhost:5000${product.thumbImg}`}
+//                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`}
 
 //                         alt={product.name}
 //                         className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
 //                       />
 //                       <img
-//                         src={`http://localhost:5000${product.galleryImg[1] || product.thumbImg }`}
+//                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.galleryImg[1] || product.thumbImg }`}
 //                         alt={product.name}
 //                         className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
 //                       />
@@ -312,14 +312,14 @@ const ProductSlider = ({ title, sectionType }) => {
                     <div className="relative h-full w-full group transition-transform duration-500">
                       {/* Main Image */}
                       <img
-                        src={`http://localhost:5000${mainCardImg}`}
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${mainCardImg}`}
                         alt={product.name}
                         className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                       />
 
                       {/* Hover Image */}
                       <img
-                        src={`http://localhost:5000${
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
                           product.galleryImg?.[1] || mainCardImg
                         }`}
                         alt={product.name}

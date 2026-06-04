@@ -41,7 +41,7 @@ export default function AdminContacts() {
 
   const fetchContacts = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/contact/contacts");
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/contacts`);
       setContacts(data.contacts);
       setLoading(false);
     } catch (error) {
@@ -53,7 +53,7 @@ export default function AdminContacts() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this contact?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/contact/contacts/${id}`);
+        await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/contacts/${id}`);
         toast.success("Contact deleted successfully");
         fetchContacts();
       } catch (error) {
