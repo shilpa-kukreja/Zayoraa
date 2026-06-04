@@ -517,7 +517,9 @@
 
 'use client';
 
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useRef, useEffect, Suspense, useContext } from "react";
+
+// import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 
 import Image from 'next/image';
@@ -536,7 +538,7 @@ import OrderSummary from '../../components/OrderSummary';
 
 
 
-const ProductDetail = ({ productIDs }) => {
+const ProductDetailContent = ({ productIDs }) => {
   const { slug } = useParams();
   const searchParams = useSearchParams();
   const initialVariantIndexParam = searchParams?.get("v");
@@ -1286,5 +1288,25 @@ const ProductDetail = ({ productIDs }) => {
     </div>
   );
 };
+
+
+
+const ProductDetail = () => (
+  <Suspense
+    fallback={
+  
+        <div className="max-w-7xl mx-auto p-6 flex items-center justify-center min-h-[40vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto" />
+            <p className="mt-3 text-gray-600">Loading...</p>
+          </div>
+        </div>
+    }
+  >
+    <ProductDetailContent/>
+  </Suspense>
+);
+
+
 
 export default ProductDetail;
