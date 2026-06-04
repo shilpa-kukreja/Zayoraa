@@ -18,7 +18,8 @@ if (typeof window !== 'undefined') {
     ClassicEditor = require('@ckeditor/ckeditor5-build-classic');
 }
 
-export default function AddProduct() {
+
+const AddProductContent= ()=> {
     const router = useRouter();
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
@@ -1121,7 +1122,24 @@ export default function AddProduct() {
 }
 
 
+const  AddProduct = () => (
+  <Suspense
+    fallback={
+      <AdminLayout>
+        <div className="max-w-7xl mx-auto p-6 flex items-center justify-center min-h-[40vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto" />
+            <p className="mt-3 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    }
+  >
+    < AddProductContent/>
+  </Suspense>
+);
 
+export default  AddProductContent;
 
 
 

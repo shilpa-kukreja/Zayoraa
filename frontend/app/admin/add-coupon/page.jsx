@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminLayout from "../components/AdminLayout";
 
-export default function AddCoupon() {
+const  AddCouponContent= ()=> {
   const [formData, setFormData] = useState({
     couponCode: "",
     discount: "",
@@ -384,3 +384,27 @@ export default function AddCoupon() {
     </AdminLayout>
   );
 };
+
+
+
+
+const AddCoupon = () => (
+  <Suspense
+    fallback={
+      <AdminLayout>
+        <div className="max-w-7xl mx-auto p-6 flex items-center justify-center min-h-[40vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto" />
+            <p className="mt-3 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    }
+  >
+    <AddCouponContent/>
+  </Suspense>
+);
+
+export default AddCoupon;
+
+
