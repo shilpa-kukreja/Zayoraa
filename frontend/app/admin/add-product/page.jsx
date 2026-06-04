@@ -1139,7 +1139,7 @@ const  AddProduct = () => (
   </Suspense>
 );
 
-export default  AddProductContent;
+export default  AddProduct;
 
 
 
