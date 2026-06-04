@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import AdminLayout from "../components/AdminLayout";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -16,7 +17,8 @@ import {
   FiType,
 } from "react-icons/fi";
 
-export default function AddCategoryPage() {
+const AddCategoryPageContent= () => {
+
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -522,5 +524,28 @@ export default function AddCategoryPage() {
     </AdminLayout>
   );
 };
+
+
+const AddCategoryPage = () => (
+  <Suspense
+    fallback={
+      <AdminLayout>
+        <div className="max-w-7xl mx-auto p-6 flex items-center justify-center min-h-[40vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto" />
+            <p className="mt-3 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    }
+  >
+    <AddCategoryPageContent />
+  </Suspense>
+);
+
+export default AddCategoryPage;
+
+
+
 
 
