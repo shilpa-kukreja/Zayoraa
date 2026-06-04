@@ -2,7 +2,7 @@
 "use client";
 import React, { useContext } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { getBackendImageUrl } from '@/lib/getBackendImageUrl';
 
 import { AppContext } from '../context/AppContext';
 
@@ -37,11 +37,11 @@ const BlogSection = () => {
     className="bg-white border border-[#6b40c2] rounded-md overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group"
   >
     <div className="relative h-60 overflow-hidden">
-      <Image
-        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${blog.blogImg}`} 
+      <img
+        src={getBackendImageUrl(blog.blogImg)}
         alt={blog.blogName}
-        fill
-        className="h-full transition-transform duration-700 group-hover:scale-110"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        loading="lazy"
       />
       <div className="absolute top-4 left-4 bg-[#6b40c2] px-3 py-0.5  rounded-md shadow-sm">
         <span className="text-xs font-medium text-white ">{blog.blogDate}</span>

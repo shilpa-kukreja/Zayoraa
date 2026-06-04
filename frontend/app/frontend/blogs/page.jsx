@@ -2,12 +2,11 @@
 "use client"
 import React, { useContext } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import Head from 'next/head';
-import { blogs } from '@/public/assets';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { AppContext } from '../context/AppContext';
+import { getBackendImageUrl } from '@/lib/getBackendImageUrl';
 
 const BlogPage = () => {
 
@@ -42,11 +41,11 @@ const BlogPage = () => {
             {blogs.map((blog) => (
               <article key={blog._id} className="bg-white rounded-md overflow-hidden  border border-[#6447bb] shadow-md hover:shadow-xl transition-all duration-300">
                 <div className="relative h-60 overflow-hidden">
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${blog.blogImg}`}
+                  <img
+                    src={getBackendImageUrl(blog.blogImg)}
                     alt={blog.blogName}
-                    fill
-                    className="object-cover h-full transition-transform duration-500 hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    loading="lazy"
                   />
                   <div className="absolute top-4 left-4 bg-[#5f44af] sm:px-3 px-2 py-1 rounded-md shadow-sm">
                     <span className="text-xs font-medium text-white">{blog.blogDate}</span>
