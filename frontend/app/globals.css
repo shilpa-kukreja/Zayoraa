@@ -103,6 +103,21 @@
   animation: announcement-scroll 18s linear infinite;
 }
 
+@keyframes video-showcase-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-video-showcase-marquee {
+  display: flex;
+  width: max-content;
+  animation: video-showcase-scroll linear infinite;
+}
+
 
 /* @media (prefers-color-scheme: dark) {
   :root {
@@ -116,3 +131,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+.slick-slider,
+.slick-list,
+.slick-track {
+  width: 100%;
+}
+
+.slick-track {
+  display: flex !important;
+}
+
+.slick-slide {
+  height: inherit !important;
+}
+
+.slick-slide > div {
+  height: 100%;
+}
+
+

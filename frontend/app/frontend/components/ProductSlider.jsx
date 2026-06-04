@@ -119,13 +119,13 @@
 //                     <Link href={`/frontend/ProductDetail/${product.slug}`} >
 //                     <div className="relative h-full w-full transition-transform duration-500 group-hover:scale-105">
 //                       <img
-//                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`}
+//                         src={`http://localhost:5000${product.thumbImg}`}
 
 //                         alt={product.name}
 //                         className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
 //                       />
 //                       <img
-//                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.galleryImg[1] || product.thumbImg }`}
+//                         src={`http://localhost:5000${product.galleryImg[1] || product.thumbImg }`}
 //                         alt={product.name}
 //                         className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
 //                       />
@@ -234,39 +234,49 @@ const ProductSlider = ({ title, sectionType }) => {
   };
 
   const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    arrows: true,
-    responsive: [
-      {
-        breakpoint: 1280,
-        settings: { slidesToShow: 3 },
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  arrows: true,
+  adaptiveHeight: true,
+  initialSlide: 0,
+  responsive: [
+    {
+      breakpoint: 1280,
+      settings: {
+        slidesToShow: 3,
       },
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 2 },
+    },
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
       },
-      {
-        breakpoint: 640,
-        settings: {
-          slidesToShow: 2,
-          arrows: false,
-          dots: true,
-        },
+    },
+    {
+      breakpoint: 640,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        arrows: false,
+        dots: true,
+        initialSlide: 0,
       },
-    ],
-  };
-
+    },
+  ],
+};
   return (
     <section className="max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 py-10">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-center">{title}</h2>
       </div>
 
-      <Slider {...settings}>
+      <Slider
+  key={filteredProducts.length}
+  {...settings}
+>
         {filteredProducts.map((product) => {
           const selectedIndex = selectedVariants[product._id] ?? 0;
 
@@ -312,19 +322,20 @@ const ProductSlider = ({ title, sectionType }) => {
                     <div className="relative h-full w-full group transition-transform duration-500">
                       {/* Main Image */}
                       <img
-                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${mainCardImg}`}
-                        alt={product.name}
-                        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
-                      />
+  loading="lazy"
+  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${mainCardImg}`}
+  alt={product.name}
+  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+/>
 
-                      {/* Hover Image */}
-                      <img
-                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
-                          product.galleryImg?.[1] || mainCardImg
-                        }`}
-                        alt={product.name}
-                        className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      />
+<img
+  loading="lazy"
+  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
+    product.galleryImg?.[1] || mainCardImg
+  }`}
+  alt={product.name}
+  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+/>
                     </div>
                   </Link>
 

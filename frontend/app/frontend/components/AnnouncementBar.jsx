@@ -3,22 +3,22 @@
 const announcements = [
   {
     id: 1,
-    image: "/announcementbar/star.png",
-    text: "Free Shipping Worldwide",
+    image: "/announcementbar/free.jpeg",
+    text: "Free Shipping ",
   },
   {
     id: 2,
-    image: "/announcementbar/star.png",
-    text: "Flat 50% OFF on New Collection",
+    image: "/announcementbar/no.jpeg",
+    text: "No Return & Exchange",
   },
   {
     id: 3,
-    image: "/announcementbar/star.png",
+    image: "/announcementbar/payment.jpeg",
     text: "100% Secure Payments",
   },
   {
     id: 4,
-    image: "/announcementbar/star.png",
+    image: "/announcementbar/customer.jpeg",
     text: "24/7 Premium Customer Support",
   },
 ];
@@ -40,7 +40,7 @@ export default function AnnouncementBar() {
                 alt=""
                 width={28}
                 height={28}
-                className="h-[22px] w-[22px] shrink-0 object-contain md:h-7 md:w-7"
+                className="h-[22px] w-[22px] rounded-full shrink-0 object-contain md:h-7 md:w-7"
               />
               <span className="text-[13px] font-medium tracking-wide text-white md:text-base">
                 {item.text}
