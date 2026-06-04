@@ -277,7 +277,7 @@ export default function BestSellers() {
 
             <div className="w-full">
                 <img
-                    src="/banner/BESTSELLER.png"
+                    src="/best-seller/banner.png"
                     alt="Best Sellers"
                     className="w-full object-cover"
                 />

@@ -271,15 +271,15 @@ export default function AllProducts() {
 
             <div className="w-full">
                 <img
-                    src="/banner/allProducts.png"
+                    src="/all-products/banner.png"
                     alt="All Products"
                     className="w-full object-cover"
                 />
             </div>
 
-            <div className='text-center sm:mt-6 mt-5'>
+            {/* <div className='text-center sm:mt-6 mt-5'>
                 <h1 className="text-2xl md:text-4xl font-bold mb-3">All Products</h1>
-            </div>
+            </div> */}
 
             <div className="container mx-auto px-4 sm:py-12 py-5">
                 <div className="flex flex-col lg:flex-row gap-8">

@@ -295,8 +295,8 @@ const CategoryPage = () => {
       <Navbar />
 
       {/* Category Hero */}
-      <div className="relative h-[500px] bg-gray-200">
-        <Image
+      <div className="relative  bg-gray-200">
+        <img
           src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${category.banner}`}
 
           alt={category.name}
@@ -305,14 +305,14 @@ const CategoryPage = () => {
         />
       </div>
 
-      <div className='flex flex-col justify-center items-center max-w-4xl mx-auto text-justify'>
+      {/* <div className='flex flex-col justify-center items-center max-w-4xl mx-auto text-justify'>
         <div className='py-2 text-gray-800 sm:text-4xl text-2xl font-semibold'>
           <h1>{category.name}</h1>
         </div>
         <div className='text-gray-600 py-2 sm:px-1 px-0 sm:text-sm text-xs font-base text-center'>
           <p>{category.description}</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="container mx-auto sm:px-4 px-2 sm:py-8 py-5">
         <div className="flex flex-col lg:flex-row gap-8">

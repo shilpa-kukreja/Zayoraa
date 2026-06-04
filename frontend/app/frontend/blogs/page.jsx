@@ -25,7 +25,7 @@ const BlogPage = () => {
       </Head>
       <Navbar/>
       <div>
-                <img src="/banner/Blog.jpg" alt="" />
+                <img src="/blogs/banner.png" alt="" />
             </div>
       <div className="min-h-screen bg-gray-50 pb-16">
         <div className="container mx-auto ">

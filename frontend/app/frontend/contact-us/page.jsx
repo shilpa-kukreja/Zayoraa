@@ -54,7 +54,7 @@ export default function ContactPage() {
       {/* Hero Banner */}
       <div className="relative w-full h-96 overflow-hidden">
         <img
-          src="/banner/Contact-Us.png"
+          src="/contact-us/banner.png"
           alt="Contact Us"
           className="w-full h-full object-cover"
         />

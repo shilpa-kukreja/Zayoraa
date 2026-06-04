@@ -4,9 +4,24 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AppContext } from "../context/AppContext";
-import Image from "next/image";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import { HeartPlus } from "lucide-react";
+
+const BACKEND_URL =
+  (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(
+    /\/$/,
+    "",
+  );
+
+const resolveMediaUrl = (path, fallback = "/logos/logo6.png") => {
+  if (!path || typeof path !== "string") return fallback;
+  const trimmed = path.trim();
+  if (!trimmed) return fallback;
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  return `${BACKEND_URL}${trimmed.startsWith("/") ? trimmed : `/${trimmed}`}`;
+};
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -214,16 +229,17 @@ const Navbar = () => {
                   {categories.map((category) => (
                     <Link
                       key={category._id}
-                      href={`/frontend/category/${category.slug}`}
+                      href={
+                        category.slug
+                          ? `/frontend/category/${category.slug}`
+                          : "/frontend/view-all"
+                      }
                       className="group flex flex-col items-center text-center"
+                      onClick={() => setIsCategoryOpen(false)}
                     >
                       <div className="w-16 h-16 rounded-full overflow-hidden mb-2 group-hover:shadow-md">
-                        <Image
-                          src={
-                            category?.img
-                              ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${category.img}`
-                              : "/fallback.png"
-                          }
+                        <img
+                          src={resolveMediaUrl(category?.img)}
                           alt={category?.name || "Category"}
                           width={64}
                           height={64}
@@ -317,7 +333,7 @@ const Navbar = () => {
                           onClick={() => handleResultClick(product.slug)}
                         >
                           <img
-                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.thumbImg}`}
+                            src={resolveMediaUrl(product.thumbImg)}
                             alt={product.name}
                             className="h-10 w-10 object-cover rounded-md mr-3"
                           />
@@ -341,7 +357,7 @@ const Navbar = () => {
                 >
                   {user?.img ? (
                     <img
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user.img}`}
+                      src={resolveMediaUrl(user.img)}
                       alt="User profile"
                       className="h-9 w-9 rounded-full object-cover border-2 border-white shadow-md"
                     />
@@ -607,9 +623,16 @@ const Navbar = () => {
                 {categories.map((category) => (
                   <Link
                     key={category._id}
-                    href={`/frontend/category/${category.slug}`}
+                    href={
+                      category.slug
+                        ? `/frontend/category/${category.slug}`
+                        : "/frontend/view-all"
+                    }
                     className="block py-2 px-3 rounded-md text-gray-600 hover:bg-gray-100 hover:text-black transition"
-                    onClick={() => setIsSidebarOpen(false)}
+                    onClick={() => {
+                      setIsSidebarOpen(false);
+                      setIsCategoryOpen(false);
+                    }}
                   >
                     {category.name}
                   </Link>
