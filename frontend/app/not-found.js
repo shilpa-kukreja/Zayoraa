@@ -32,8 +32,11 @@ export default function NotFound() {
             Page Not Found
           </h2>
 
-          <p className="mt-4 text-lg text-gray-600">
+          {/* <p className="mt-4 text-lg text-gray-600">
             Sorry, we couldn't find the page you're looking for.
+          </p> */}
+          <p className="mt-4 text-lg text-gray-600">
+            Sorry, we couldn&apos;t find the page you&apos;re looking for.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">

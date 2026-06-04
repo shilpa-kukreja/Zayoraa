@@ -3,6 +3,7 @@ import "./globals.css";
 import { AppContextProvider } from "./frontend/context/AppContext";
 import WishlistPopup from "./frontend/components/WishlistPopup";
 import { ToastContainer } from "react-toastify";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,11 @@ export default function RootLayout({ children }) {
         {children}
         <WishlistPopup/>
         </AppContextProvider>
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        {/* <script src="https://checkout.razorpay.com/v1/checkout.js"></script> */}
+        <Script
+  src="https://checkout.razorpay.com/v1/checkout.js"
+  strategy="afterInteractive"
+/>
       </body>
     </html>
   );
