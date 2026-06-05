@@ -268,13 +268,20 @@ const CategoryShowcase = () => {
   return (
     <section className="max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 sm:py-16 py-6">
       {/* Section Heading */}
-      <div className="text-center sm:mb-10 mb-5">
-        <h2 className="sm:text-4xl text-2xl font-semibold text-center sm:mb-6 mb-4 uppercase text-black">
+      <div className="text-center sm:mb-3">
+        <h2 className="sm:text-4xl text-2xl font-semibold text-center uppercase text-black">
           SHOP BY STYLE
         </h2>
-        <p className="text-gray-600 sm:text-lg text-sm">
+        <div className="flex items-center justify-center gap-3">
+     <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-28 h-[3px] bg-gray-300"></span>
+    <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-28 h-[3px] bg-gray-300"></span>
+     <span className="text-[#6b40c2] text-xl">✦</span>
+  </div>
+        {/* <p className="text-gray-600 sm:text-lg text-sm">
           Discover the latest Syuta bags, styled for every occasion.
-        </p>
+        </p> */}
       </div>
 
       {/* Category Tabs */}

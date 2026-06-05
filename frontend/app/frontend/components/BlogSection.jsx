@@ -18,16 +18,23 @@ const BlogSection = () => {
     <section className="sm:py-10  py-6 bg-gradient-to-b from-white to-gray-50">
       <div className="container max-w-[1650px] mx-auto sm:px-4 px-2">
         <div className="text-center sm:mb-10 mb-5">
-          <span className="text-[#6b40c2] font-semibold text-sm uppercase tracking-wider mb-2 block">
+          {/* <span className="text-[#6b40c2] font-semibold text-sm uppercase tracking-wider mb-2 block">
             Insights & Inspiration
-          </span>
-          <h2 className="sm:text-4xl text-2xl font-semibold text-center sm:mb-6 mb-4 uppercase text-black">
+          </span> */}
+          <h2 className="sm:text-4xl text-2xl font-semibold text-center uppercase text-black">
             Latest From Our Blog
           </h2>
+           <div className="flex items-center justify-center gap-3">
+     <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+    <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+     <span className="text-[#6b40c2] text-xl">✦</span>
+  </div>
           {/* <div className="w-20 h-1 bg-[#7a1113] mx-auto mb-6"></div> */}
-          <p className="text-gray-600 max-w-2xl mx-auto sm:text-lg text-sm">
+          {/* <p className="text-gray-600 max-w-2xl mx-auto sm:text-lg text-sm">
             Uncover fashion trends, styling advice, and inspiration curated by Syuta experts
-          </p>
+          </p> */}
         </div>
         
         <div className="grid   grid-cols-2 md:grid-cols-2 lg:grid-cols-4 sm:gap-8 gap-2">

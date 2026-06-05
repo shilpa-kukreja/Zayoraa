@@ -178,12 +178,19 @@ const VideoShowcase = () => {
   return (
     <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 sm:py-16 py-6 relative">
       <div className="text-center sm:mb-12 mb-6">
-        <h2 className="sm:text-4xl text-2xl font-semibold text-center sm:mb-12 mb-4 uppercase text-black">
+        <h2 className="sm:text-4xl text-2xl font-semibold text-center  uppercase text-black">
           TAKE A CLOSER LOOK
         </h2>
-        <p className="sm:text-lg text-sm text-gray-600 max-w-2xl mx-auto">
+         <div className="flex items-center justify-center gap-3">
+     <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+    <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+     <span className="text-[#6b40c2] text-xl">✦</span>
+  </div>
+        {/* <p className="sm:text-lg text-sm text-gray-600 max-w-2xl mx-auto">
           Discover the artistry of Syuta bags through dynamic, detailed views
-        </p>
+        </p> */}
       </div>
 
       <div className="relative group">

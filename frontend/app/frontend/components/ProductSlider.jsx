@@ -269,9 +269,17 @@ const ProductSlider = ({ title, sectionType }) => {
 };
   return (
     <section className="max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 py-10">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-center">{title}</h2>
-      </div>
+     <div className="mb-8">
+  <h2 className="text-3xl sm:text-4xl font-bold text-center">{title}</h2>
+
+  <div className="flex items-center justify-center gap-3">
+     <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-25 h-[3px] bg-gray-300"></span>
+    <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-25 h-[3px] bg-gray-300"></span>
+     <span className="text-[#6b40c2] text-xl">✦</span>
+  </div>
+</div>
 
       <Slider
   key={filteredProducts.length}
