@@ -268,8 +268,8 @@ const CategoryShowcase = () => {
   return (
     <section className="max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 sm:py-16 py-6">
       {/* Section Heading */}
-      <div className="text-center sm:mb-3">
-        <h2 className="sm:text-4xl text-2xl font-semibold text-center uppercase text-black">
+      <div className="text-center mb-3">
+        <h2 className="sm:text-4xl text-3xl font-semibold text-center uppercase text-black">
           SHOP BY STYLE
         </h2>
         <div className="flex items-center justify-center gap-3">

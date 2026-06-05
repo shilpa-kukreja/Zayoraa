@@ -1,31 +1,72 @@
-import Image from "next/image";
 import Link from "next/link";
-import { blogs } from "@/public/assets";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { getBackendImageUrl } from "@/lib/getBackendImageUrl";
 
-// ✅ Define metadata dynamically
+const stripHtml = (html) => {
+  if (!html) return "";
+  return html.replace(/<[^>]+>/g, "");
+};
+
+async function fetchBlogBySlug(slug) {
+  const base = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!base) return null;
+
+  try {
+    const res = await fetch(`${base}/api/blog/slug/${encodeURIComponent(slug)}`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function fetchAllBlogs() {
+  const base = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!base) return [];
+
+  try {
+    const res = await fetch(`${base}/api/blog/getblog`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const blog = blogs.find((b) => b.blogSlug === slug);
-  if (!blog) return { title: "Blog Not Found | Miraggio Lifestyle" };
+  const blog = await fetchBlogBySlug(slug);
+  if (!blog) return { title: "Blog Not Found | Zayoraa" };
+
+  const description = stripHtml(blog.blogDetail).substring(0, 160);
+  const imageUrl = getBackendImageUrl(blog.blogImg);
 
   return {
-    title: `${blog.blogName} | Miraggio Lifestyle`,
-    description: blog.blogDetail.substring(0, 160),
+    title: `${blog.metaTitle || blog.blogName} | Zayoraa`,
+    description: blog.metaDescription || description,
     openGraph: {
-      title: `${blog.blogName} | Miraggio Lifestyle`,
-      description: blog.blogDetail.substring(0, 160),
-      images: [blog.blogImg],
-      type: 'article',
+      title: `${blog.blogName} | Zayoraa`,
+      description: blog.metaDescription || description,
+      images: [imageUrl],
+      type: "article",
     },
   };
 }
 
 export default async function BlogDetailPage({ params }) {
   const { slug } = await params;
-  const blogData = blogs.find((b) => b.blogSlug === slug);
-  const latestBlogs = blogs.slice(0, 4);
+  const [blogData, allBlogs] = await Promise.all([
+    fetchBlogBySlug(slug),
+    fetchAllBlogs(),
+  ]);
+
+  const latestBlogs = allBlogs
+    .filter((b) => b.blogSlug !== slug)
+    .slice(0, 4);
 
   if (!blogData) {
     return (
@@ -33,16 +74,16 @@ export default async function BlogDetailPage({ params }) {
         <Navbar />
         <div className="flex-grow flex items-center justify-center bg-gray-50">
           <div className="text-center p-8 bg-white rounded-xl shadow-lg max-w-md mx-4">
-            <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Blog Post Not Found</h1>
-            <p className="text-gray-600 mb-6">The blog post you're looking for doesn't exist or has been moved.</p>
-            <Link 
-              href="/blog" 
-              className="inline-flex items-center px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors shadow-md"
+            <p className="text-gray-600 mb-6">The blog post you&apos;re looking for doesn&apos;t exist or has been moved.</p>
+            <Link
+              href="/frontend/blogs"
+              className="inline-flex items-center px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors shadow-md"
             >
               Return to Blog
             </Link>
@@ -53,11 +94,12 @@ export default async function BlogDetailPage({ params }) {
     );
   }
 
-  // Format date for better readability
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-US", options);
   };
+
+  const featuredImageUrl = getBackendImageUrl(blogData.blogImg);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -65,15 +107,13 @@ export default async function BlogDetailPage({ params }) {
       <main className="flex-grow bg-gray-50 border-t border-gray-400 pt-8 pb-16">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="flex flex-col lg:flex-row gap-10">
-            {/* Main Content */}
             <article className="lg:w-2/3">
-              {/* Breadcrumb */}
               <nav className="text-sm text-gray-600 mb-8">
                 <ol className="list-none p-0 inline-flex flex-wrap items-center">
                   <li className="flex items-center">
-                    <Link 
-                      href="/" 
-                      className="hover:text-amber-700 transition-colors duration-200"
+                    <Link
+                      href="/"
+                      className="hover:text-violet-700 transition-colors duration-200"
                     >
                       Home
                     </Link>
@@ -93,7 +133,7 @@ export default async function BlogDetailPage({ params }) {
                   </li>
                   <li className="flex items-center">
                     <Link
-                      href="/blog"
+                      href="/frontend/blogs"
                       className="hover:text-[#6a52b3] transition-colors duration-200"
                     >
                       Blog
@@ -118,9 +158,8 @@ export default async function BlogDetailPage({ params }) {
                 </ol>
               </nav>
 
-              {/* Blog Header */}
               <header className="mb-10">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight capitalize">
                   {blogData.blogName}
                 </h1>
                 <div className="flex flex-wrap items-center text-gray-600 mb-4 gap-2">
@@ -133,29 +172,21 @@ export default async function BlogDetailPage({ params }) {
                 <div className="w-20 h-1 bg-gradient-to-r from-[#8D6AF8] to-[#5236a8] rounded-full"></div>
               </header>
 
-              {/* Featured Image */}
               <div className="relative h-80 md:h-96 rounded-2xl overflow-hidden mb-10 shadow-xl">
-                <Image
-                  src={blogData.blogImg}
+                <img
+                  src={featuredImageUrl}
                   alt={blogData.blogName}
-                  fill
-                  className="object-cover  "
-                  priority
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-60"></div>
               </div>
 
-              {/* Blog Content */}
               <div className="prose prose-lg max-w-none mb-12">
-                <div className="text-gray-700 leading-relaxed space-y-6">
-                  {blogData.blogDetail.split('\n').map((paragraph, index) => (
-                    <p key={index} className="text-lg text-justify">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-                
-                {/* Social Sharing */}
+                <div
+                  className="text-gray-700 leading-relaxed blog-content"
+                  dangerouslySetInnerHTML={{ __html: blogData.blogDetail }}
+                />
+
                 <div className="sm:mt-12 mt-6 pt-8 border-t border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">Share this post</h3>
                   <div className="flex space-x-4">
@@ -183,11 +214,10 @@ export default async function BlogDetailPage({ params }) {
                 </div>
               </div>
 
-              {/* Back to Blog */}
               <div className="sm:mt-12 mt-6">
                 <Link
                   href="/frontend/blogs"
-                  className="inline-flex items-center px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-200 group shadow-sm"
+                  className="inline-flex items-center px-5 py-2.5 bg-violet-600 border border-gray-200 text-white font-medium rounded-lg hover:bg-black  transition-colors duration-200 group shadow-sm"
                 >
                   <svg
                     className="w-5 h-5 mr-2 transition-transform duration-200 group-hover:-translate-x-1"
@@ -207,27 +237,25 @@ export default async function BlogDetailPage({ params }) {
               </div>
             </article>
 
-            {/* Sidebar */}
             <aside className="lg:w-1/3">
               <div className="bg-white shadow-lg rounded-xl p-6 sticky sm:top-24 top-10">
                 <h2 className="text-xl font-bold text-gray-800 mb-5 pb-3 border-b border-gray-200">Latest Posts</h2>
                 <div className="space-y-5">
                   {latestBlogs.map((latestBlog) => (
-                    <Link 
+                    <Link
                       href={`/frontend/blog/${latestBlog.blogSlug}`}
-                      key={latestBlog.id}
+                      key={latestBlog._id}
                       className="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 transition duration-200 group"
                     >
                       <div className="relative w-16 h-16 flex-shrink-0">
-                        <Image
-                          src={latestBlog.blogImg}
+                        <img
+                          src={getBackendImageUrl(latestBlog.blogImg)}
                           alt={latestBlog.blogName}
-                          fill
-                          className="object-cover rounded-lg border border-gray-200 shadow-sm group-hover:shadow-md transition-shadow"
+                          className="absolute inset-0 w-full h-full object-cover rounded-lg border border-gray-200 shadow-sm group-hover:shadow-md transition-shadow"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-amber-700 transition-colors">
+                        <h3 className="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-violet-700 transition-colors capitalize">
                           {latestBlog.blogName}
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">{formatDate(latestBlog.blogDate)}</p>
@@ -235,26 +263,6 @@ export default async function BlogDetailPage({ params }) {
                     </Link>
                   ))}
                 </div>
-                
-                {/* Newsletter Subscription */}
-                {/* <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Stay Updated</h3>
-                  <p className="text-sm text-gray-600 mb-4">Subscribe to our newsletter for the latest blog posts and updates.</p>
-                  <form className="space-y-3">
-                    <input 
-                      type="email" 
-                      placeholder="Your email address" 
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
-                      required
-                    />
-                    <button 
-                      type="submit"
-                      className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-md"
-                    >
-                      Subscribe
-                    </button>
-                  </form>
-                </div> */}
               </div>
             </aside>
           </div>

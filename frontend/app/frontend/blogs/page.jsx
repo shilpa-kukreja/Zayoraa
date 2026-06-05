@@ -20,7 +20,7 @@ const BlogPage = () => {
   return (
     <>
       <Head>
-        <title>Blog | Suyta Lifestyle</title>
+        <title>Blog | Zayoraa</title>
         <meta name="description" content="Discover the latest trends, styling tips, and inspiration from our experts" />
       </Head>
       <Navbar/>
@@ -31,12 +31,12 @@ const BlogPage = () => {
         <div className="container mx-auto ">
             
           <div className="text-center pt-4 mb-12">
-            <h1 className="text-2xl md:text-4xl  font-bold text-gray-900">Our Blogs</h1>
+            <h1 className="text-3xl md:text-4xl  font-bold text-gray-900">Our Blogs</h1>
              <div className="flex items-center justify-center gap-3">
      <span className="text-[#6b40c2] text-xl">✦</span>
-    <span className="w-35 h-[3px] bg-gray-300"></span>
+    <span className="w-25 h-[3px] bg-gray-300"></span>
     <span className="text-[#6b40c2] text-xl">✦</span>
-    <span className="w-35 h-[3px] bg-gray-300"></span>
+    <span className="w-25 h-[3px] bg-gray-300"></span>
      <span className="text-[#6b40c2] text-xl">✦</span>
   </div>
             {/* <p className="text-gray-600 max-w-2xl mx-auto">

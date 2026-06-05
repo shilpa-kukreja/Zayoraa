@@ -17,11 +17,11 @@ const BlogSection = () => {
   return (
     <section className="sm:py-10  py-6 bg-gradient-to-b from-white to-gray-50">
       <div className="container max-w-[1650px] mx-auto sm:px-4 px-2">
-        <div className="text-center sm:mb-10 mb-5">
+        <div className="text-center sm:mb-10 mb-3">
           {/* <span className="text-[#6b40c2] font-semibold text-sm uppercase tracking-wider mb-2 block">
             Insights & Inspiration
           </span> */}
-          <h2 className="sm:text-4xl text-2xl font-semibold text-center uppercase text-black">
+          <h2 className="sm:text-4xl text-3xl font-semibold text-center uppercase text-black">
             Latest From Our Blog
           </h2>
            <div className="flex items-center justify-center gap-3">
@@ -57,9 +57,9 @@ const BlogSection = () => {
     
     <div className="py-3 px-4">
       <div className="flex items-center mb-3 text-xs text-gray-500">
-        <span className="mr-3">By {blog.author || "Admin"}</span>
-        {/* <span>•</span> */}
-        {/* <span className="ml-3">{blog.readTime || "5 min read"}</span> */}
+        {/* <span className="mr-3">By {blog.author || "Admin"}</span> */}
+        <span>•</span>
+        <span className="ml-3">{blog.readTime || "5 min read"}</span>
       </div>
       
       <h3 className="sm:text-xl text-lg capitalize font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#5c29c2] transition-colors duration-300">
@@ -91,7 +91,7 @@ const BlogSection = () => {
             href="/frontend/blogs"
             className="inline-flex items-center justify-center px-6 py-2 bg-[#6b40c2] border border-gray-200 rounded-xl text-white font-semibold hover:bg-black hover:border-black transition-all duration-300 hover:shadow-md group/button"
           >
-            View All Articles
+            View All Blogs
             <svg 
               className="w-5 h-5 ml-2 transition-transform group-hover/button:translate-x-1" 
               fill="none" 

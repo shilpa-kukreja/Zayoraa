@@ -157,7 +157,7 @@ const Navbar = () => {
               className="hidden sm:block flex-shrink-0 sm:mr-2 mr-0"
             >
               <img
-                src="/logos/logo6.png"
+                src="/logo/logo.png"
                 alt="Logo"
                 className="sm:h-12 h-10 w-auto"
               />
@@ -166,9 +166,9 @@ const Navbar = () => {
               href="/"
               className="block sm:hidden flex-shrink-0 sm:mr-2 mr-0"
             >
-              <div className="px-5 bg-[#a13045]  ">
+              <div className="px-5 ">
                 <img
-                  src="/logos/logo7.png"
+                  src="/logo/logo.png"
                   alt="Logo"
                   className="sm:h-12 h-8  w-auto"
                 />

@@ -15,7 +15,6 @@ export default function AboutPage() {
             src="/about-us/banner.png"
             alt="About Banner"
             className="w-full object-cover "
-
           />
         </div>
       </section>
@@ -49,24 +48,28 @@ export default function AboutPage() {
             {/* <span className="text-xs uppercase text-[#4c29b3] tracking-widest mb-4">
               About Us
             </span> */}
-            <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-8 leading-tight">
+            <h2 className="text-3xl sm:text-5xl font-light text-gray-900 mb-6 leading-tight">
               <span className="font-semibold text-[#6441ce] ">Crafting</span>{" "}
-              bags that blend <br />
-              <span className="font-medium">style with purpose</span>
+              Confidence Through{" "}
+              <span className="font-medium">Better Oral Care</span>
             </h2>
             <div className="prose prose-lg text-gray-600 mb-10">
               <p>
-                At Syuta, we craft more than just bags—we create companions for
-                modern women who balance multiple roles with grace. Every piece
-                reflects a fusion of elegance, utility, and trend, making it a
-                perfect fit for both daily life and special occasions.
+                At Zayoraa, we believe confidence begins with the smallest daily
+                rituals. That's why we create modern oral care solutions
+                designed to help you look, feel, and smile your best every day.
+                From advanced whitening innovations to essential oral hygiene
+                products, every detail is thoughtfully crafted to deliver
+                results without compromising comfort.
               </p>
+              <br />
               <p>
-                Our designs are carefully thought out, keeping practicality and
-                aesthetics at the forefront. With quality craftsmanship and
-                premium materials, each bag carries a story of confidence and
-                individuality. At Syuta, we aim to make every woman feel
-                empowered, stylish, and prepared for any moment.
+                Our products combine effectiveness, safety, and premium design
+                to elevate everyday oral care. Whether it's brighter-looking
+                teeth, fresher breath, or a cleaner oral care routine, Zayoraa
+                is here to make confidence a part of your daily life. Because a
+                great smile isn't just about appearance. It's about how you show
+                up in the world.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -75,7 +78,7 @@ export default function AboutPage() {
                 className="relative overflow-hidden group px-8 py-4 bg-[#6747c7] hover:bg-black text-white rounded-lg transition-all duration-300"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  Discover Our Collection
+                  Explore Our Collection
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -93,10 +96,10 @@ export default function AboutPage() {
                 <span className="absolute inset-0 bg-[#4c29b3]  opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               </Link>
               <Link
-                href="/frontend/about-us"
+                href="/frontend/contact-us"
                 className="px-8 py-4 border border-gray-300 hover:border-[#4c29b3]  text-gray-700 hover:text-[#4c29b3]  rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
               >
-                Our Craftsmanship
+                Contact Us
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -119,21 +122,28 @@ export default function AboutPage() {
       {/* Mission & Vision with Diagonal Divider */}
       <div className="relative bg-gray-50">
         <section className="max-w-7xl mx-auto px-8 py-8 relative z-10">
-          <div className="text-center mb-8">
-            <span className="text-xs uppercase text-[#4c29b3]  tracking-widest mb-4 inline-block">
+          <div className="text-center mb-4">
+            {/* <span className="text-xs uppercase text-[#4c29b3]  tracking-widest mb-4 inline-block">
               Our Philosophy
-            </span>
-            <h2 className="text-4xl font-medium">
+            </span> */}
+            <h2 className="text-3xl sm:text-4xl font-medium">
               <span className="font-semibold text-[#4c29b3]">Guiding</span>{" "}
               Principles
             </h2>
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-[#6b40c2] text-xl">✦</span>
+              <span className="w-35 h-[3px] bg-gray-300"></span>
+              <span className="text-[#6b40c2] text-xl">✦</span>
+              <span className="w-35 h-[3px] bg-gray-300"></span>
+              <span className="text-[#6b40c2] text-xl">✦</span>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-10">
             {/* Mission */}
             <div className="bg-white p-12 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500">
               <div className="flex sm:flex-row flex-col items-start mb-8">
-                <div className="border border-violet-400 shadow-xl p-4 rounded-lg mr-6">
+                <div className="border border-violet-400 shadow-xl p-4 rounded-lg mr-6 mb-3 sm:mb-0">
                   <svg
                     className="sm:w-8 sm:h-8 w-6 h-6 text-[#4c29b3] "
                     fill="none"
@@ -153,10 +163,11 @@ export default function AboutPage() {
                     Our Mission
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
-                    To design bags that empower women by blending timeless
-                    aesthetics with practical features. We want to make everyday
-                    living effortless and elegant, ensuring each design supports
-                    women in every step of their journey.
+                    To redefine everyday oral care through premium, effective,
+                    and thoughtfully designed solutions. We aim to help people
+                    build confidence through healthier habits, brighter smiles,
+                    and products that combine innovation, comfort, and
+                    simplicity in every daily ritual.
                   </p>
                 </div>
               </div>
@@ -165,7 +176,7 @@ export default function AboutPage() {
             {/* Vision */}
             <div className="bg-white p-12 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500">
               <div className="flex items-start sm:flex-row flex-col mb-8">
-                <div className="border border-violet-400 shadow-xl p-4 rounded-lg mr-6">
+                <div className="border border-violet-400 shadow-xl p-4 rounded-lg mr-6 mb-3 sm:mb-0">
                   <svg
                     className="sm:w-8 sm:h-8 w-6 h-6 text-[#4c29b3] "
                     fill="none"
@@ -185,11 +196,11 @@ export default function AboutPage() {
                     Our Vision
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
-                    To be recognized as a global brand known for its versatile
-                    and high-quality creations. We envision a world where every
-                    woman can express her individuality through a bag that
-                    adapts seamlessly to her lifestyle, whether at work, travel,
-                    or leisure.
+                    To become a trusted oral care brand that transforms routine
+                    into self-care. We envision a future where modern oral
+                    wellness is accessible, effective, and empowering, helping
+                    people smile with greater confidence in every moment of
+                    life.
                   </p>
                 </div>
               </div>
@@ -200,34 +211,41 @@ export default function AboutPage() {
 
       {/* Core Values with Floating Animation */}
       <section className="max-w-7xl mx-auto px-8 py-8">
-        <div className="text-center mb-20">
+        <div className="text-center mb-5">
           <span className="text-xs uppercase text-[#4c29b3] tracking-widest mb-4 inline-block">
             {/* The Health Story Standard */}
           </span>
-          <h2 className="text-4xl font-light text-gray-900 mb-6">
-            <span className="font-semibold text-[#4c29b3]">Our Design &</span>{" "}
-            Crafting Process
+          <h2 className="text-3xl sm:text-4xl font-light text-gray-900 ">
+            <span className="font-semibold text-[#4c29b3]">Our Approach To</span>{" "}
+            Oral Care
           </h2>
+          <div className="flex items-center justify-center gap-3">
+            <span className="text-[#6b40c2] text-xl">✦</span>
+            <span className="w-35 h-[3px] bg-gray-300"></span>
+            <span className="text-[#6b40c2] text-xl">✦</span>
+            <span className="w-35 h-[3px] bg-gray-300"></span>
+            <span className="text-[#6b40c2] text-xl">✦</span>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           {[
             {
-              title: "Design Belief",
+              title: "Confidence First",
               description:
-                "We believe great design is born from understanding women’s dynamic lifestyles. Every Syuta bag starts as a thoughtful sketch that merges fashion with everyday functionality.",
+                "We believe a confident smile can change how you show up every day. That's why every Zayoraa product is designed to support healthier habits, fresher breath, and brighter-looking teeth through simple rituals that fit effortlessly into modern lifestyles.",
               icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
             },
             {
-              title: "Material Belief",
+              title: "Innovation First",
               description:
-                "We believe in quality that lasts. That’s why we carefully source durable fabrics, fine textures, and premium hardware to ensure every bag is stylish yet resilient.",
+                "We combine advanced oral care technologies with thoughtful design to create products that are effective, comfortable, and easy to use. Every formula and tool is carefully developed to deliver results while maintaining everyday convenience.",
               icon: "M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4",
             },
             {
-              title: "Craftsmanship Belief",
+              title: "Wellness First",
               description:
-                " We believe true beauty lies in details. From precise stitching to finishing touches, our skilled artisans pour care and expertise into every step of creation.",
+                "Oral care is more than appearance. It's a part of overall well-being. From whitening solutions to daily hygiene essentials, we focus on creating products that help people feel cleaner, fresher, and more confident every day.",
               icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
             },
           ].map((value, index) => (

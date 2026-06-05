@@ -52,7 +52,7 @@ export default function ContactPage() {
       </div>
 
       {/* Hero Banner */}
-      <div className="relative w-full h-96 overflow-hidden">
+      <div className="">
         <img
           src="/contact-us/banner.png"
           alt="Contact Us"
@@ -69,12 +69,12 @@ export default function ContactPage() {
       </div>
 
       {/* Main Section */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="text-center mb-12">
           {/* <span className="uppercase text-sm text-[#8a6edd] font-semibold tracking-widest">
             Contact Us
           </span> */}
-          <h2 className="text-3xl font-bold text-gray-800 mt-2">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-800">
            We’re Here for You
         </h2>
          <div className="flex items-center justify-center gap-3">

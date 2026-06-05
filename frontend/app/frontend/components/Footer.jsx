@@ -252,7 +252,7 @@ export default function Footer() {
             onClick={() => toggleSection("contact")}
             className="w-full flex justify-between items-center md:cursor-default md:pointer-events-none"
           >
-            <h3 className="text-lg font-bold uppercase tracking-wider">
+            <h3 className="text-md sm:text-lg font-semibold uppercase tracking-wider">
               Contact Us
             </h3>
             <FiChevronDown

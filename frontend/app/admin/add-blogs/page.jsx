@@ -199,7 +199,7 @@ const AdminAddBlogContent = () => {
         setImagePreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
-        router.push("/admin/list-blogs");
+        router.push("/admin/list-blog");
       }
     } catch (err) {
       toast.error(err.message || "An error occurred while saving blog.");

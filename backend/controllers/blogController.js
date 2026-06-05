@@ -12,8 +12,15 @@ export const getBlogs = async (req, res) => {
   }
 };
 
-// Get single blog by slug
-
+export const getBlogBySlug = async (req, res) => {
+  try {
+    const blog = await blogModel.findOne({ blogSlug: req.params.slug });
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
+    res.json(blog);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export const getBlogById = async (req, res) => {
   try {

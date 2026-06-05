@@ -177,8 +177,8 @@ const VideoShowcase = () => {
 
   return (
     <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 sm:py-16 py-6 relative">
-      <div className="text-center sm:mb-12 mb-6">
-        <h2 className="sm:text-4xl text-2xl font-semibold text-center  uppercase text-black">
+      <div className="text-center sm:mb-12 mb-3">
+        <h2 className="sm:text-4xl text-3xl font-semibold text-center  uppercase text-black">
           TAKE A CLOSER LOOK
         </h2>
          <div className="flex items-center justify-center gap-3">
