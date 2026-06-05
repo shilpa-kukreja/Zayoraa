@@ -284,7 +284,14 @@ export default function BestSellers() {
             </div>
 
             <div className='text-center sm:mt-6 mt-5'>
-                <h1 className="text-2xl md:text-4xl font-bold mb-4">BestSellers</h1>
+                <h1 className="text-2xl md:text-4xl font-bold">BestSellers</h1>
+                 <div className="flex items-center justify-center gap-3">
+     <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-25 h-[3px] bg-gray-300"></span>
+    <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-25 h-[3px] bg-gray-300"></span>
+     <span className="text-[#6b40c2] text-xl">✦</span>
+  </div>
             </div>
 
             <div className="container mx-auto px-4 sm:py-8 py-5">

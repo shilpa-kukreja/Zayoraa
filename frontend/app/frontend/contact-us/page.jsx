@@ -71,12 +71,19 @@ export default function ContactPage() {
       {/* Main Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <span className="uppercase text-sm text-[#8a6edd] font-semibold tracking-widest">
+          {/* <span className="uppercase text-sm text-[#8a6edd] font-semibold tracking-widest">
             Contact Us
-          </span>
-          <h2 className="text-3xl font-bold text-gray-800 mt-2 mb-4">
+          </span> */}
+          <h2 className="text-3xl font-bold text-gray-800 mt-2">
            We’re Here for You
         </h2>
+         <div className="flex items-center justify-center gap-3">
+     <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+    <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+     <span className="text-[#6b40c2] text-xl">✦</span>
+  </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Have questions about our products or services? Fill out the form below and our team will get back to you shortly.
           </p>

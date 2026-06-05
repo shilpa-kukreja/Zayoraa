@@ -31,10 +31,17 @@ const BlogPage = () => {
         <div className="container mx-auto ">
             
           <div className="text-center pt-4 mb-12">
-            <h1 className="text-2xl md:text-4xl  font-bold text-gray-900 mb-4">Our Blog</h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h1 className="text-2xl md:text-4xl  font-bold text-gray-900">Our Blogs</h1>
+             <div className="flex items-center justify-center gap-3">
+     <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+    <span className="text-[#6b40c2] text-xl">✦</span>
+    <span className="w-35 h-[3px] bg-gray-300"></span>
+     <span className="text-[#6b40c2] text-xl">✦</span>
+  </div>
+            {/* <p className="text-gray-600 max-w-2xl mx-auto">
               Discover the latest trends, styling tips, and inspiration from our experts
-            </p>
+            </p> */}
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 sm:gap-8 gap-2 sm:px-10 px-2">
