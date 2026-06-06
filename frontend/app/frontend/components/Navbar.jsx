@@ -552,13 +552,13 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
+            {/* <Link
               href="/frontend/holiday-collection"
               className="hover:text-black text-sm text-gray-700 transition"
               onClick={() => setIsSidebarOpen(false)}
             >
               Holiday Collection
-            </Link>
+            </Link> */}
             <Link
               href="/frontend/new-arrivals"
               className="hover:text-black text-sm text-gray-700 transition"
@@ -573,26 +573,33 @@ const Navbar = () => {
             >
               Best Sellers
             </Link>
-            <Link
+            {/* <Link
               href="/frontend/featured-collection"
               className="hover:text-black text-sm text-gray-700 transition"
               onClick={() => setIsSidebarOpen(false)}
             >
               Featured Collection
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               href="/frontend/under-400"
               className="hover:text-black text-sm text-gray-700 transition"
               onClick={() => setIsSidebarOpen(false)}
             >
               Under 499
-            </Link>
+            </Link> */}
             <Link
-              href="/frontend/view-all"
+              href="/frontend/blogs"
               className="hover:text-black text-sm text-gray-700 transition"
               onClick={() => setIsSidebarOpen(false)}
             >
-              View All
+              Blogs
+            </Link>
+               <Link
+              href="/frontend/contact-us"
+              className="hover:text-black text-sm text-gray-700 transition"
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              Contact Us
             </Link>
           </div>
 
