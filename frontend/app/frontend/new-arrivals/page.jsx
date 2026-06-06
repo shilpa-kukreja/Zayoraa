@@ -6,6 +6,7 @@ import { FiFilter, FiX, FiChevronDown, FiChevronUp, FiHeart } from 'react-icons/
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { AppContext } from '../context/AppContext';
+import {toast} from "react-toastify"
 
 export default function NewArrivals() {
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -41,10 +42,15 @@ export default function NewArrivals() {
         const variant = product.variant?.[selectedVariantIndex];
 
         if (!variant || product.stock <= 0 || variant.stock <= 0) {
+            toast.error("This product is out of stock");
             return;
         }
 
         addToCart(product, variant, 1);
+        toast.success(`${product.name} added to the cart`,{
+            position:"top-right",
+            autoClose:2000,
+        })
     };
 
     const newArrivalProducts = useMemo(

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { FiFilter, FiX, FiChevronDown, FiChevronUp, FiHeart } from 'react-icons/fi';
+import {toast} from "react-toastify";
 
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
@@ -101,10 +102,15 @@ const CategoryPage = () => {
     const variant = product.variant?.[selectedVariantIndex];
 
     if (!variant || product.stock <= 0 || variant.stock <= 0) {
+      toast.error("This product is out of stock");
       return;
     }
 
     addToCart(product, variant, 1);
+    toast.success(`${product.name} added to the cart `,{
+      position:"top-right",
+      autoClose:2000,
+    })
   };
 
   const toggleFilterSection = (section) => {

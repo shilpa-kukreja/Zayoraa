@@ -198,6 +198,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
 
 const CategoryShowcase = () => {
   const { addToCart, categories, products } = useContext(AppContext);
@@ -248,15 +249,33 @@ const CategoryShowcase = () => {
   //   addToCart(product, variant, 1);
   // };
 
+  // const handleAddToCart = (product) => {
+  //   const selectedVariantIndex = selectedVariants[product._id] ?? 0;
+  //   const variant = product.variant?.[selectedVariantIndex];
+
+  //   // ❌ Stop if product stock is 0 or variant stock is 0
+  //   if (product.stock <= 0 || !variant || variant.stock <= 0) return;
+
+  //   addToCart(product, variant, 1);
+  // };
+
+
   const handleAddToCart = (product) => {
-    const selectedVariantIndex = selectedVariants[product._id] ?? 0;
-    const variant = product.variant?.[selectedVariantIndex];
+  const selectedVariantIndex = selectedVariants[product._id] ?? 0;
+  const variant = product.variant?.[selectedVariantIndex];
 
-    // ❌ Stop if product stock is 0 or variant stock is 0
-    if (product.stock <= 0 || !variant || variant.stock <= 0) return;
+  if (product.stock <= 0 || !variant || variant.stock <= 0) {
+    toast.error("This product is out of stock.");
+    return;
+  }
 
-    addToCart(product, variant, 1);
-  };
+  addToCart(product, variant, 1);
+
+  toast.success(`${product.name} added to cart!`, {
+    position: "top-right",
+    autoClose: 2000,
+  });
+};
 
   const activeCategory = categories.find((c) => c._id === activeCategoryId);
   const activeProducts = getProductsByCategory(activeCategoryId);

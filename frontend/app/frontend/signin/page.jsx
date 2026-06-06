@@ -146,7 +146,7 @@ const SignUpContent = () => {
             <div className="text-center">
               <Link href="/" className='hidden md:block'>
                 <img
-                  src="/logos/logo6.png"
+                  src="/logo/logo.png"
                   alt="Miraggiolife Logo"
                   className="mx-auto mb-4"
                   width={150}
@@ -244,7 +244,7 @@ const SignUpContent = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`w-full bg-[#7a1113] hover:bg-[#7a1113] text-white py-2 rounded-md transition-colors flex items-center justify-center ${
+                  className={`w-full bg-violet-600 hover:bg-violet-700 text-white py-2 rounded-md transition-colors flex items-center justify-center ${
                     isLoading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
                   }`}
                 >

@@ -3,6 +3,7 @@ import "./globals.css";
 import { AppContextProvider } from "./frontend/context/AppContext";
 import WishlistPopup from "./frontend/components/WishlistPopup";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Script from "next/script";
 
 const geistSans = Geist({

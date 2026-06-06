@@ -5,6 +5,7 @@ import { FiHeart } from "react-icons/fi";
 import Link from "next/link";
 import Slider from "react-slick";
 import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
 
 const DealsOfTheDay = () => {
   const { products, categories, toggleWishlist, isInWishlist, addToCart } =
@@ -18,17 +19,35 @@ const DealsOfTheDay = () => {
     }));
   };
 
+  // const handleAddToCart = (product) => {
+  //   const selectedVariantIndex = selectedVariants[product._id] ?? 0;
+
+  //   const variant = product.variant?.[selectedVariantIndex];
+
+  //   if (!variant || product.stock <= 0 || variant.stock <= 0) {
+  //     return;
+  //   }
+
+  //   addToCart(product, variant, 1);
+  // };
+
+
   const handleAddToCart = (product) => {
-    const selectedVariantIndex = selectedVariants[product._id] ?? 0;
+  const selectedVariantIndex = selectedVariants[product._id] ?? 0;
+  const variant = product.variant?.[selectedVariantIndex];
 
-    const variant = product.variant?.[selectedVariantIndex];
+  if (!variant || product.stock <= 0 || variant.stock <= 0) {
+    toast.error("This product is out of stock.");
+    return;
+  }
 
-    if (!variant || product.stock <= 0 || variant.stock <= 0) {
-      return;
-    }
+  addToCart(product, variant, 1);
 
-    addToCart(product, variant, 1);
-  };
+  toast.success(`${product.name} added to cart!`, {
+    position: "top-right",
+    autoClose: 2000,
+  });
+};
   // Change this date
   const dealEndDate = "2026-12-31T23:59:59";
 

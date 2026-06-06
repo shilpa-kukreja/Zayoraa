@@ -203,6 +203,7 @@ import Slider from "react-slick";
 import Link from "next/link";
 import { FiHeart } from "react-icons/fi";
 import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
 
 const ProductSlider = ({ title, sectionType }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
@@ -221,17 +222,34 @@ const ProductSlider = ({ title, sectionType }) => {
     }));
   };
 
+  // const handleAddToCart = (product) => {
+  //   const selectedVariantIndex = selectedVariants[product._id] ?? 0;
+  //   const variant = product.variant?.[selectedVariantIndex];
+
+  //   if (!variant || product.stock <= 0 || variant.stock <= 0) {
+  //     alert("This product is out of stock.");
+  //     return;
+  //   }
+
+  //   addToCart(product, variant, 1);
+  // };
+
   const handleAddToCart = (product) => {
-    const selectedVariantIndex = selectedVariants[product._id] ?? 0;
-    const variant = product.variant?.[selectedVariantIndex];
+  const selectedVariantIndex = selectedVariants[product._id] ?? 0;
+  const variant = product.variant?.[selectedVariantIndex];
 
-    if (!variant || product.stock <= 0 || variant.stock <= 0) {
-      alert("This product is out of stock.");
-      return;
-    }
+  if (!variant || product.stock <= 0 || variant.stock <= 0) {
+    toast.error("This product is out of stock.");
+    return;
+  }
 
-    addToCart(product, variant, 1);
-  };
+  addToCart(product, variant, 1);
+
+  toast.success(`${product.name} added to cart!`, {
+    position: "top-right",
+    autoClose: 2000,
+  });
+};
 
   const settings = {
   dots: false,
