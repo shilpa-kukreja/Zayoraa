@@ -198,19 +198,19 @@ const LoginContent = () => {
             {/* Progress indicator */}
             <div className="flex justify-center mb-6">
               <div className="flex items-center">
-                <div className={`flex flex-col items-center ${step >= 1 ? 'text-brown-600' : 'text-gray-400'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${step >= 1 ? 'border-brown-600 bg-brown-100' : 'border-gray-300'}`}>
+                <div className={`flex flex-col items-center ${step >= 1 ? 'text-violet-600' : 'text-gray-400'}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${step >= 1 ? 'border-violet-600 bg-violet-100' : 'border-gray-300'}`}>
                     {step > 1 ? (
-                      <RiShieldCheckLine className="w-4 h-4 text-brown-600" />
+                      <RiShieldCheckLine className="w-4 h-4 text-violet-600" />
                     ) : (
                       <span className="text-sm font-medium">1</span>
                     )}
                   </div>
                   <span className="text-xs mt-1">Enter Phone</span>
                 </div>
-                <div className={`w-16 h-1 mx-2 ${step >= 2 ? 'bg-brown-600' : 'bg-gray-300'}`}></div>
-                <div className={`flex flex-col items-center ${step >= 2 ? 'text-brown-600' : 'text-gray-400'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${step >= 2 ? 'border-brown-600 bg-brown-100' : 'border-gray-300'}`}>
+                <div className={`w-16 h-1 mx-2 ${step >= 2 ? 'bg-violet-600' : 'bg-gray-300'}`}></div>
+                <div className={`flex flex-col items-center ${step >= 2 ? 'text-violet-600' : 'text-gray-400'}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${step >= 2 ? 'border-violet-600 bg-violet-100' : 'border-gray-300'}`}>
                     <span className="text-sm font-medium">2</span>
                   </div>
                   <span className="text-xs mt-1">Verify OTP</span>
@@ -261,14 +261,14 @@ const LoginContent = () => {
                     required
                     maxLength={10}
                     placeholder="Enter your 10-digit mobile number"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-500 focus:border-brown-500 outline-none transition-colors"
+                    className="w-full pl-10 pr-4 py-3 border border-violet-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`w-full bg-[#7a1113] hover:bg-brown-700 text-white py-3 rounded-lg transition-colors flex items-center justify-center ${
+                  className={`w-full bg-violet-600 hover:bg-violet-800 text-white py-3 rounded-lg transition-colors flex items-center justify-center ${
                     isLoading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
                   }`}
                 >
@@ -304,7 +304,7 @@ const LoginContent = () => {
                         onKeyDown={(e) => handleOtpKeyDown(index, e)}
                         onPaste={index === 0 ? handleOtpPaste : undefined}
                         ref={(el) => (otpInputs.current[index] = el)}
-                        className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-500 focus:border-brown-500 outline-none"
+                        className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                       />
                     ))}
                   </div>
@@ -318,7 +318,7 @@ const LoginContent = () => {
                         type="button"
                         onClick={resendOtp}
                         disabled={isLoading}
-                        className="text-brown-600 hover:text-brown-700 font-medium disabled:opacity-50"
+                        className="text-violet-600 hover:text-violet-700 font-medium disabled:opacity-50"
                       >
                         Resend OTP
                       </button>
@@ -330,7 +330,7 @@ const LoginContent = () => {
                   type="submit"
                   disabled={isLoading || formData.otp.length !== 6}
                   className={`w-full bg-[#7a1113] text-white py-3 rounded-lg transition-colors flex items-center justify-center ${
-                    (isLoading || formData.otp.length !== 6) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-brown-700 cursor-pointer'
+                    (isLoading || formData.otp.length !== 6) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-violet-700 cursor-pointer'
                   }`}
                 >
                   {isLoading ? (
@@ -353,7 +353,7 @@ const LoginContent = () => {
                   type="button"
                   onClick={() => setStep(1)}
                   disabled={isLoading}
-                  className="w-full text-center text-brown-600 hover:text-brown-700 text-sm font-medium disabled:opacity-50"
+                  className="w-full text-center text-violet-600 hover:text-violet-700 text-sm font-medium disabled:opacity-50"
                 >
                   Change Phone Number
                 </button>
@@ -365,7 +365,7 @@ const LoginContent = () => {
                 {step === 1 ? "Don't have an account? " : "New to Miraggio? "}
                 <Link
                   href="/frontend/signin"
-                  className="text-brown-600 hover:text-brown-700 font-medium"
+                  className="text-violet-600 hover:text-violet-700 font-medium"
                 >
                   Sign up
                 </Link>

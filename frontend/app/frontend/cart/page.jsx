@@ -69,7 +69,7 @@ const Cart = () => {
                   </p>
                   <Link
                     href="/frontend/view-all"
-                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-[#7e5cc2] to-[#6b40c2] hover:from-[#744ac9] hover:to-[#6b40c2] transition-all duration-200"
                   >
                     Start Shopping
                   </Link>

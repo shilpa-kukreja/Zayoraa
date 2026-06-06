@@ -180,7 +180,7 @@ export const products = [
     subcategory: ["1","4"],
     sku: 'product123',
     variant: [
-        { color:"Brown",colorcode:"#21565", price: '300', discountPrice: "150" , stock: '8',},
+        { color:"violet",colorcode:"#21565", price: '300', discountPrice: "150" , stock: '8',},
     ],
 
     status: 'active',

@@ -187,7 +187,7 @@ const SignUpContent = () => {
                   onChange={handleChange}
                  
                   placeholder="Full Name"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brown-400 outline-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-400 outline-none"
                 />
 
                 <input
@@ -197,7 +197,7 @@ const SignUpContent = () => {
                   onChange={handleChange}
                 
                   placeholder="Email"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brown-400 outline-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-400 outline-none"
                 />
 
                 <div className="relative">
@@ -211,7 +211,7 @@ const SignUpContent = () => {
                     onChange={handleChange}
                     required
                     placeholder="Mobile Number"
-                    className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brown-400 outline-none"
+                    className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-400 outline-none"
                   />
                 </div>
 
@@ -238,7 +238,7 @@ const SignUpContent = () => {
                   placeholder="Enter 6-digit OTP"
                   required
                   maxLength={6}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brown-400 outline-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-400 outline-none"
                 />
 
                 <button

@@ -362,7 +362,7 @@ const Navbar = () => {
                       className="h-9 w-9 rounded-full object-cover border-2 border-white shadow-md"
                     />
                   ) : (
-                    <div className="sm:h-7 sm:w-7 h-6 w-6 rounded-full bg-[#7a1113] text-white flex items-center justify-center text-sm font-medium shadow-md">
+                    <div className="sm:h-7 sm:w-7 h-6 w-6 rounded-full bg-[#6b40c2] text-white flex items-center justify-center text-sm font-medium shadow-md">
                       {user?.username?.charAt(0).toUpperCase() || "U"}
                     </div>
                   )}

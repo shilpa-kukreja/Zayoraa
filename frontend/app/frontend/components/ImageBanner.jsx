@@ -5,8 +5,8 @@ import Image from "next/image";
 export default function Banner() {
   return (
     <section className="w-full">
-      <div className="relative w-full h-[440px] overflow-hidden">
-        <Image
+      <div className="relative w-full overflow-hidden">
+        <img
           src="/hero/banner3.jpg" // Place your image in public/banner/banner.jpg
           alt="Banner"
           fill

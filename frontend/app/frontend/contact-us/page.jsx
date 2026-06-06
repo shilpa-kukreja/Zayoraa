@@ -165,7 +165,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#8D6AF8] hover:bg-[#815af5] text-white font-semibold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="w-full bg-[#6b40c2] hover:bg-[#5e2ebd] hover:cursor-pointer text-white font-semibold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 disabled:opacity-70"
                 >
                   {isSubmitting ? (
                     <>
@@ -183,7 +183,7 @@ export default function ContactPage() {
                 </button>
                 
                 {result && (
-                  <div className={`p-3 rounded-lg text-center font-medium ${result.includes('✅') ? 'bg-green-100 text-[#7a1113]' : 'bg-red-100 text-red-700'}`}>
+                  <div className={`p-3 rounded-lg text-center font-medium ${result.includes('✅') ? 'bg-green-100 text-violet-700' : 'bg-red-100 text-red-700'}`}>
                     {result}
                   </div>
                 )}
@@ -199,7 +199,7 @@ export default function ContactPage() {
               <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="bg-gray-50 p-3 rounded-full mr-4 flex-shrink-0">
-                    <FaMapMarkerAlt className="text-[#8D6AF8] text-xl" />
+                    <FaMapMarkerAlt className="text-[#6b40c2] text-xl" />
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 mb-1">Address</h4>
@@ -211,7 +211,7 @@ export default function ContactPage() {
                 
                 <div className="flex items-start">
                   <div className="bg-gray-50 p-3 rounded-full mr-4 flex-shrink-0">
-                    <FaPhoneAlt className="text-[#8D6AF8] text-xl" />
+                    <FaPhoneAlt className="text-[#6b40c2] text-xl" />
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 mb-1">Phone</h4>
@@ -227,7 +227,7 @@ export default function ContactPage() {
                 
                 <div className="flex items-start">
                   <div className="bg-gray-50 p-3 rounded-full mr-4 flex-shrink-0">
-                    <MdEmail className="text-[#8D6AF8] text-xl" />
+                    <MdEmail className="text-[#6b40c2] text-xl" />
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 mb-1">Email</h4>

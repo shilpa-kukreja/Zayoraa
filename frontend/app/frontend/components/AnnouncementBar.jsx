@@ -27,7 +27,7 @@ const marqueeItems = [...announcements, ...announcements, ...announcements];
 
 export default function AnnouncementBar() {
   return (
-    <div className="flex h-[46px] w-full items-center overflow-hidden bg-[#9372ff] md:h-[52px]">
+    <div className="flex h-[46px] w-full items-center overflow-hidden bg-[#6b40c2] md:h-[52px]">
       <div className="relative w-full overflow-hidden">
         <div className="animate-announcement-scroll">
           {marqueeItems.map((item, index) => (

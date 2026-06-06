@@ -8,7 +8,7 @@ export default function ReturnRefundPolicy() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       <main className="flex-grow border-t border-gray-400">
-        <div className="max-w-5xl mx-auto  px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Breadcrumb */}
           <nav className="flex mb-8" aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 md:space-x-2">
@@ -25,7 +25,7 @@ export default function ReturnRefundPolicy() {
                   <svg className="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
                   </svg>
-                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">Return & Refund Policy</span>
+                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">Cancellation & Refund Policy</span>
                 </div>
               </li>
             </ol>
@@ -35,45 +35,39 @@ export default function ReturnRefundPolicy() {
           <header className="mb-12 text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Cancellation & Refund Policy</h1>
             <p className="text-sm text-gray-600 max-w-3xl mx-auto">
-              Our priority is your satisfaction with every Syuta purchase. This Cancellation & Refund Policy explains how order cancellations, returns, and refunds are handled for purchases made through our website. By shopping with us, you agree to the terms outlined below.
+              At Zayoraa, customer satisfaction is important to us. This Cancellation & Refund Policy outlines the conditions under which cancellations, returns, replacements, and refunds are processed for purchases made through our website.
+              By placing an order with Zayoraa, you agree to the terms mentioned below.
             </p>
           </header>
 
           {/* Policy Sections */}
           <div className="bg-white shadow-sm rounded-lg divide-y divide-gray-200 overflow-hidden">
-            {/* <section className="p-6 md:p-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
-                <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                </svg>
-                Global Return and Refund Policy
-              </h2>
-              <div className="ml-9 pl-1 space-y-4 text-gray-700">
-                <p>This Return & Refund Policy describes Healthstory's policies regarding returns and refunds for purchases made through https://healthstory.in (the "Site").</p>
-                <p>Please read this policy carefully. By making a purchase, you agree to the terms outlined below. If you do not agree with this policy, please refrain from making purchases on our Site.</p>
-              </div>
-            </section> */}
-
+            {/* Policy Updates */}
             <section className="p-6 md:p-8">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
-                <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                {/* <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                </svg> */}
                 Policy Updates
               </h2>
               <div className="ml-9 pl-1">
-                <p className="text-gray-700">We may update this policy from time to time to reflect changes in our practices or for legal reasons. The latest version will always be available on our website with the revised “Last Updated” date.</p>
+                <p className="text-gray-700">
+                  Zayoraa reserves the right to modify, update, or revise this policy at any time without prior notice. Any changes will be reflected on this page with the updated effective date.
+                  We encourage customers to review this policy periodically.
+                </p>
               </div>
             </section>
 
+            {/* Cancellation & Refund Policy */}
             <section className="p-6 md:p-8">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
-                <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                {/* <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                </svg>
+                </svg> */}
                 Cancellation & Refund Policy
               </h2>
               <div className="ml-9 pl-1 space-y-6">
+                {/* Order Cancellation */}
                 <div>
                   <h3 className="text-lg font-medium text-gray-800 mb-2">Order Cancellation</h3>
                   <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
@@ -85,13 +79,17 @@ export default function ReturnRefundPolicy() {
                       </div>
                       <div className="ml-3">
                         <p className="text-sm text-yellow-700">
-                          Orders can only be cancelled within <span className="font-bold">2 hours</span> of placement. Please contact our customer support team immediately with your order details to request cancellation.
+                          Orders can be cancelled only before they are dispatched from our warehouse.
+                          To request a cancellation, customers must contact our support team immediately with their Order ID and registered contact details.
+                          Once an order has been shipped, cancellation requests cannot be accepted.
+                          If a prepaid order is successfully cancelled before dispatch, the refund will be processed to the original payment method.
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
+                {/* Refund Eligibility */}
                 <div>
                   <h3 className="text-lg font-medium text-gray-800 mb-2">Refund Eligibility</h3>
                   <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
@@ -103,7 +101,7 @@ export default function ReturnRefundPolicy() {
                       </div>
                       <div className="ml-3">
                         <p className="text-sm text-blue-700">
-                          Refunds are considered under the following conditions:
+                          Refunds or replacements may be approved under the following circumstances:
                         </p>
                       </div>
                     </div>
@@ -114,8 +112,8 @@ export default function ReturnRefundPolicy() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
                       <div>
-                        <div className="font-medium text-gray-800">Defective or Damaged Product </div>
-                        <div className="text-sm text-gray-600"> Item received is broken, damaged, or not in usable condition.</div>
+                        <div className="font-medium text-gray-800">Damaged Product Received</div>
+                        <div className="text-sm text-gray-600">Product received in damaged, broken, leaking, or unusable condition.</div>
                       </div>
                     </li>
                     <li className="bg-gray-50 p-4 rounded-lg flex items-start">
@@ -123,8 +121,8 @@ export default function ReturnRefundPolicy() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
                       <div>
-                        <div className="font-medium text-gray-800">Wrong Item Delivered</div>
-                        <div className="text-sm text-gray-600">Product received is different from the one ordered.</div>
+                        <div className="font-medium text-gray-800">Incorrect Product Delivered</div>
+                        <div className="text-sm text-gray-600">Customer receives a product different from the one ordered.</div>
                       </div>
                     </li>
                     <li className="bg-gray-50 p-4 rounded-lg flex items-start">
@@ -132,30 +130,77 @@ export default function ReturnRefundPolicy() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
                       <div>
-                        <div className="font-medium text-gray-800">Non-Delivery</div>
-                        <div className="text-sm text-gray-600"> Order not delivered within 10 business days of the promised timeframe.</div>
+                        <div className="font-medium text-gray-800">Missing Item in Order</div>
+                        <div className="text-sm text-gray-600">One or more items are missing from the delivered package.</div>
+                      </div>
+                    </li>
+                    <li className="bg-gray-50 p-4 rounded-lg flex items-start">
+                      <svg className="flex-shrink-0 h-5 w-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      <div>
+                        <div className="font-medium text-gray-800">Lost Shipment</div>
+                        <div className="text-sm text-gray-600">Order confirmed by the courier partner as lost during transit.</div>
+                      </div>
+                    </li>
+                    <li className="bg-gray-50 p-4 rounded-lg flex items-start">
+                      <svg className="flex-shrink-0 h-5 w-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      <div>
+                        <div className="font-medium text-gray-800">Undelivered Prepaid Orders</div>
+                        <div className="text-sm text-gray-600">Order is returned to origin due to logistical issues and not delivered to the customer.</div>
                       </div>
                     </li>
                   </ul>
                 </div>
 
+                {/* Refund Request Process */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">Refund Process</h3>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Refund Request Process</h3>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex items-start">
                       <svg className="flex-shrink-0 h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                       </svg>
                       <div>
-                        <p className="text-gray-700"><span className="font-semibold">Request Timeframe:</span>Refund requests must be submitted within 48 hours of delivery, along with valid proof (photos, order ID, etc.).</p>
-                        <p className="text-gray-700 mt-2"><span className="font-semibold">Processing:</span> Once verified, refunds will be issued to the original payment method within 7–10 business days.</p>
+                        <p className="text-gray-700">To initiate a refund or replacement request:</p>
+                        <ul className="list-disc pl-5 mt-2 space-y-1 text-gray-700">
+                          <li>Contact our customer support team within 48 hours of delivery.</li>
+                          <li>Share your Order ID.</li>
+                          <li>Provide clear photographs or videos of the product and packaging.</li>
+                          <li>Include a brief description of the issue.</li>
+                          <li>Our team will review the request and may ask for additional information if required.</li>
+                        </ul>
                       </div>
                     </div>
                   </div>
                 </div>
 
+                {/* Refund Processing Timeline */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">Non-Refundable Items</h3>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Refund Processing Timeline</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="flex items-start">
+                      <svg className="flex-shrink-0 h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <div>
+                        <p className="text-gray-700">Once the request is approved:</p>
+                        <ul className="list-disc pl-5 mt-2 space-y-1 text-gray-700">
+                          <li>Refunds will be initiated to the original payment method.</li>
+                          <li>Processing may take 5-7 business days depending on the payment provider or banking partner.</li>
+                          <li>Customers will receive confirmation once the refund has been initiated.</li>
+                          <li>For Cash on Delivery orders, refunds may be processed via bank transfer after verification.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Non-Refundable & Non-Returnable Items */}
+                <div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Non-Refundable & Non-Returnable Items</h3>
                   <div className="bg-red-50 border-l-4 border-red-400 p-4">
                     <div className="flex">
                       <div className="flex-shrink-0">
@@ -165,16 +210,54 @@ export default function ReturnRefundPolicy() {
                       </div>
                       <div className="ml-3">
                         <p className="text-sm text-red-700">
-                          Certain items cannot be returned or refunded:
+                          Due to hygiene and safety reasons, the following products are not eligible for return or refund:
                         </p>
                         <div className="mt-2 text-sm text-red-700">
                           <ul className="list-disc pl-5 space-y-1">
-                            <li>Products returned without original tags/packaging</li>
-                            <li>Used or worn items</li>
-                            <li>Customized or personalized products</li>
-                            <li>Clearance or sale items (if specified as final sale)</li>
+                            <li>❌ Opened or used oral care products</li>
+                            <li>❌ Products with tampered packaging</li>
+                            <li>❌ Products damaged due to misuse, improper storage, or negligence</li>
+                            <li>❌ Orders where the customer has provided an incorrect shipping address</li>
+                            <li>❌ Products purchased during special promotions, clearance sales, or marked as non-returnable</li>
+                            <li>❌ Requests raised after the specified reporting period</li>
                           </ul>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Replacement Policy */}
+                <div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Replacement Policy</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="flex items-start">
+                      <svg className="flex-shrink-0 h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                      </svg>
+                      <div>
+                        <p className="text-gray-700">Where applicable, Zayoraa may offer a replacement instead of a refund.</p>
+                        <p className="text-gray-700 mt-2">Replacement eligibility will be determined after reviewing the submitted evidence and verifying the issue.</p>
+                        <p className="text-gray-700 mt-2">Zayoraa reserves the right to approve or reject replacement requests based on internal quality checks and policy guidelines.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Failed Deliveries */}
+                <div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Failed Deliveries</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="flex items-start">
+                      <svg className="flex-shrink-0 h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <div>
+                        <p className="text-gray-700">If a delivery attempt fails due to customer unavailability, incorrect address, or refusal to accept the package:</p>
+                        <ul className="list-disc pl-5 mt-2 space-y-1 text-gray-700">
+                          <li>Additional shipping charges may apply for re-dispatch.</li>
+                          <li>Refunds, if approved, may be processed after deducting applicable shipping and handling charges.</li>
+                        </ul>
                       </div>
                     </div>
                   </div>
@@ -182,43 +265,42 @@ export default function ReturnRefundPolicy() {
               </div>
             </section>
 
-            <section className="p-6 md:p-8 bg-gray-50">
+            {/* Contact Us */}
+            <section className="p-6 md:p-8 ">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
-                <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                {/* <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
+                </svg> */}
                 Contact Us
               </h2>
               <div className="ml-9 pl-1">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-medium text-gray-800 mb-3">For cancellations, returns, or refund requests, please reach out to our support team:</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-medium text-gray-800 mb-3">For cancellations, refund requests, replacement requests, or order-related assistance, please contact:</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start">
                         <svg className="flex-shrink-0 h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
-                        <a href="mailto:pydlifesciences@gmail.com" className="text-blue-600 hover:underline">pydlifesciences@gmail.com</a>
+                        <a href="mailto:support@zayoraa.in" className="text-blue-600 hover:underline">support@zayoraa.in</a>
                       </li>
                       <li className="flex items-start">
                         <svg className="flex-shrink-0 h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
-                        <a href="tel:+919868866869" className="text-blue-600 hover:underline">+91 9868866869</a>
+                        <a href="tel:+91XXXXXXXXXX" className="text-blue-600 hover:underline">+91 XXXXXXXXXX</a>
                       </li>
                     </ul>
                   </div>
-                  <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-medium text-gray-800 mb-3">Registered Address</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-medium text-gray-800 mb-3">Customer Support Hours</h3>
                     <div className="flex items-start">
                       <svg className="flex-shrink-0 h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                       </svg>
                       <div>
-                        <p className="text-gray-700">B-2/104B, SAFDARJUNG ENCLAVE</p>
-                        <p className="text-gray-700">New Delhi-110029</p>
-                        <p className="text-gray-700">India</p>
+                        <p className="text-gray-700">Monday to Saturday</p>
+                        <p className="text-gray-700">10:00 AM - 6:00 PM IST</p>
                       </div>
                     </div>
                   </div>

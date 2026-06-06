@@ -276,7 +276,7 @@ export default function Footer() {
             </li>
             <li className="flex items-center">
               <FaEnvelope className="mr-3" />
-              <span>hello@suyta.com</span>
+              <span>support@zayoraa.in</span>
             </li>
             <li className="flex items-center">
               <FaClock className="mr-3" />
@@ -382,20 +382,21 @@ export default function Footer() {
                   Refund and Cancellation
               </Link>
             </li>
-            <li>
-              <Link
-                href="/frontend/track-order"
-                className="hover:text-white transition-colors"
-              >
-                Order Tracking
-              </Link>
-            </li>
+            
             <li>
               <Link
                 href="/frontend/privacy-policy"
                 className="hover:text-white transition-colors"
               >
                 Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/frontend/track-order"
+                className="hover:text-white transition-colors"
+              >
+                Order Tracking
               </Link>
             </li>
             <li>
@@ -435,7 +436,7 @@ export default function Footer() {
             />
             <button
               type="submit"
-              className="bg-[#8988C9] text-white px-6 py-3 rounded-r-lg font-medium transition-colors hover:bg-[#7f96c4]"
+              className="bg-[#6b40c2] text-white px-6 py-3 rounded-r-lg font-medium transition-colors hover:bg-[#5e31b8]"
             >
               Subscribe
             </button>
@@ -478,7 +479,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Copyright */}
           <div className="text-gray-400 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} Suyta. All rights reserved.
+            © {new Date().getFullYear()} Zayoraa. All rights reserved.
           </div>
 
           {/* Payment Methods */}

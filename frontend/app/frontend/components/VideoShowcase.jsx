@@ -51,7 +51,7 @@ const VideoCard = ({ video, product, variant, onAddToCart, calculateDiscount }) 
           <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
             <button
               type="button"
-              className="flex items-center justify-center space-x-2 bg-[#6b4fbe] text-white font-medium px-4 py-2 rounded-full shadow-md hover:bg-black transition-all transform translate-y-2 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 duration-300"
+              className="flex items-center justify-center space-x-2 bg-[#6b40c2] text-white font-medium px-4 py-2 rounded-full shadow-md hover:bg-black transition-all transform translate-y-2 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 duration-300"
               onClick={(e) => {
                 e.preventDefault();
                 onAddToCart(product);
