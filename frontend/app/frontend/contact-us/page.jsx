@@ -54,7 +54,7 @@ export default function ContactPage() {
       {/* Hero Banner */}
       <div className="">
         <img
-          src="/contact-us/banner.png"
+          src="/contact-us/banner.jpg"
           alt="Contact Us"
           className="w-full h-full object-cover"
         />

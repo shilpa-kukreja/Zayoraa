@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { resolveOrderTotals } from "../../frontend/utils/orderTotals";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -278,19 +279,27 @@ const AdminOrders = () => {
       y += 8;
     });
     
-    // Total
+    const { subtotal, tax, discount, total } = resolveOrderTotals(order);
+
+    // Totals
     y += 10;
     doc.setDrawColor(200, 200, 200);
     doc.line(120, y, 190, y);
     y += 8;
+    doc.setTextColor(0, 0, 0);
     doc.text("Subtotal:", 130, y);
-    doc.text(`₹${order.amount}`, 170, y);
+    doc.text(`₹${subtotal}`, 170, y);
+    y += 8;
+    doc.text("Tax (2%):", 130, y);
+    doc.text(`₹${tax}`, 170, y);
+    if (discount > 0) {
+      y += 8;
+      doc.text("Discount:", 130, y);
+      doc.text(`-₹${discount}`, 170, y);
+    }
     y += 8;
     doc.text("Shipping:", 130, y);
     doc.text("Free", 170, y);
-    y += 8;
-    doc.text("Tax:", 130, y);
-    doc.text("₹0", 170, y);
     y += 8;
     doc.setFontSize(12);
     doc.setDrawColor(40, 103, 240);
@@ -298,7 +307,7 @@ const AdminOrders = () => {
     y += 8;
     doc.text("Total:", 130, y);
     doc.setTextColor(40, 103, 240);
-    doc.text(`₹${order.amount}`, 170, y);
+    doc.text(`₹${total}`, 170, y);
     
     // Footer
     y += 20;
@@ -786,26 +795,35 @@ const AdminOrders = () => {
                         ))}
                       </tbody>
                       <tfoot>
-                        <tr>
-                          <td colSpan={3} className="text-right py-4 font-medium text-gray-700">Subtotal:</td>
-                          <td className="text-right py-4 text-gray-700">₹{selectedOrder.amount + selectedOrder.discount}</td>
-                        </tr>
-                        <tr>
-                          <td colSpan={3} className="text-right py-2 font-medium text-gray-700">Discount:</td>
-                          <td className="text-right py-2 text-gray-700">-₹{selectedOrder.discount}</td>
-                        </tr>
-                        <tr>
-                          <td colSpan={3} className="text-right py-2 font-medium text-gray-700">Shipping:</td>
-                          <td className="text-right py-2 text-gray-700">Free</td>
-                        </tr>
-                        <tr>
-                          <td colSpan={3} className="text-right py-2 font-medium text-gray-700">Tax:</td>
-                          <td className="text-right py-2 text-gray-700">₹0</td>
-                        </tr>
-                        <tr>
-                          <td colSpan={3} className="text-right py-4 font-medium text-gray-900 text-lg">Total:</td>
-                          <td className="text-right py-4 text-blue-600 font-bold text-lg">₹{selectedOrder.amount}</td>
-                        </tr>
+                        {(() => {
+                          const { subtotal, tax, discount, total } = resolveOrderTotals(selectedOrder);
+                          return (
+                            <>
+                              <tr>
+                                <td colSpan={3} className="text-right py-4 font-medium text-gray-700">Subtotal:</td>
+                                <td className="text-right py-4 text-gray-700">₹{subtotal}</td>
+                              </tr>
+                              <tr>
+                                <td colSpan={3} className="text-right py-2 font-medium text-gray-700">Tax (2%):</td>
+                                <td className="text-right py-2 text-gray-700">₹{tax}</td>
+                              </tr>
+                              {discount > 0 && (
+                                <tr>
+                                  <td colSpan={3} className="text-right py-2 font-medium text-gray-700">Discount:</td>
+                                  <td className="text-right py-2 text-gray-700">-₹{discount}</td>
+                                </tr>
+                              )}
+                              <tr>
+                                <td colSpan={3} className="text-right py-2 font-medium text-gray-700">Shipping:</td>
+                                <td className="text-right py-2 text-gray-700">Free</td>
+                              </tr>
+                              <tr>
+                                <td colSpan={3} className="text-right py-4 font-medium text-gray-900 text-lg">Total:</td>
+                                <td className="text-right py-4 text-blue-600 font-bold text-lg">₹{total}</td>
+                              </tr>
+                            </>
+                          );
+                        })()}
                       </tfoot>
                     </table>
                   </div>

@@ -13,6 +13,8 @@ const orderSchema = new mongoose.Schema({
       image: String,
     }
   ],
+  subtotal: { type: Number, default: 0 },
+  tax: { type: Number, default: 0 },
   amount: { type: Number, required: true },
   address: {
     fullName: { type: String, required: true },

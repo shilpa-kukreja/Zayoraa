@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { resolveOrderTotals } from "../utils/orderTotals";
 
 const UserOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -319,23 +320,35 @@ const UserOrders = () => {
                                     {order.payment ? 'Paid' : 'Pending'}
                                   </span>
                                 </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Subtotal:</span>
-                                  <span className="font-medium">₹{order.amount + order.discount}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Coupon Code:</span>
-                                  <span className="font-medium">{order.couponCode ? order.couponCode : 'N/A'}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Discount:</span>
-                                  <span className="font-medium">-₹{order.discount}</span>
-                                </div>
-                                
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Order Total:</span>
-                                  <span className="font-medium">₹{order.amount}</span>
-                                </div>
+                                {(() => {
+                                  const { subtotal, tax, discount, total } = resolveOrderTotals(order);
+                                  return (
+                                    <>
+                                      <div className="flex justify-between">
+                                        <span className="text-gray-600">Subtotal:</span>
+                                        <span className="font-medium">₹{subtotal}</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-gray-600">Tax (2%):</span>
+                                        <span className="font-medium">₹{tax}</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-gray-600">Coupon Code:</span>
+                                        <span className="font-medium">{order.couponCode ? order.couponCode : 'N/A'}</span>
+                                      </div>
+                                      {discount > 0 && (
+                                        <div className="flex justify-between">
+                                          <span className="text-gray-600">Discount:</span>
+                                          <span className="font-medium">-₹{discount}</span>
+                                        </div>
+                                      )}
+                                      <div className="flex justify-between">
+                                        <span className="text-gray-600">Order Total:</span>
+                                        <span className="font-medium">₹{total}</span>
+                                      </div>
+                                    </>
+                                  );
+                                })()}
                               </div>
                             </div>
                           </div>

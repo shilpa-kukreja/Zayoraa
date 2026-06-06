@@ -271,7 +271,7 @@ export default function AllProducts() {
 
             <div className="w-full">
                 <img
-                    src="/all-products/banner.png"
+                    src="/all-products/banner.jpg"
                     alt="All Products"
                     className="w-full object-cover"
                 />

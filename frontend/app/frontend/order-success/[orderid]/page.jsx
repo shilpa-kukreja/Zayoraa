@@ -8,6 +8,7 @@ import Footer from "../../components/Footer";
 
  import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { resolveOrderTotals } from "../../utils/orderTotals";
 
 export default function OrderSuccessPage() {
   const { orderid } = useParams();
@@ -113,23 +114,34 @@ const downloadInvoice = () => {
     });
 
     // ===== Totals Section =====
-    const subtotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const { subtotal, tax, discount, total } = resolveOrderTotals(order);
     const finalY = pdf.lastAutoTable.finalY + 10;
+    let totalsY = finalY;
 
     pdf.setFontSize(12);
-    pdf.text("Subtotal:", 140, finalY);
-    pdf.text(`Rs. ${subtotal.toFixed(2)}`, 190, finalY, { align: "right" });
+    pdf.setFont("helvetica", "normal");
+    pdf.text("Subtotal:", 140, totalsY);
+    pdf.text(`Rs. ${subtotal.toFixed(2)}`, 190, totalsY, { align: "right" });
 
-    pdf.text("Shipping:", 140, finalY + 7);
-    pdf.text("Free", 190, finalY + 7, { align: "right" });
+    totalsY += 7;
+    pdf.text("Shipping:", 140, totalsY);
+    pdf.text("Free", 190, totalsY, { align: "right" });
 
-    pdf.text("Tax:", 140, finalY + 14);
-    pdf.text("Rs. 0.00", 190, finalY + 14, { align: "right" });
+    totalsY += 7;
+    pdf.text("Tax (2%):", 140, totalsY);
+    pdf.text(`Rs. ${tax.toFixed(2)}`, 190, totalsY, { align: "right" });
 
+    if (discount > 0) {
+      totalsY += 7;
+      pdf.text("Discount:", 140, totalsY);
+      pdf.text(`-Rs. ${discount.toFixed(2)}`, 190, totalsY, { align: "right" });
+    }
+
+    totalsY += 11;
     pdf.setFontSize(13);
     pdf.setFont("helvetica", "bold");
-    pdf.text("Grand Total:", 140, finalY + 25);
-    pdf.text(`Rs. ${subtotal.toFixed(2)}`, 190, finalY + 25, { align: "right" });
+    pdf.text("Grand Total:", 140, totalsY);
+    pdf.text(`Rs. ${total.toFixed(2)}`, 190, totalsY, { align: "right" });
 
     // ===== Footer =====
     pdf.setFontSize(10);
@@ -184,6 +196,8 @@ const downloadInvoice = () => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
+  const { subtotal, tax, discount, total } = resolveOrderTotals(order);
 
   return (
     <div>
@@ -305,23 +319,25 @@ const downloadInvoice = () => {
               <div className="w-64">
                 <div className="flex justify-between py-2">
                   <span>Subtotal:</span>
-                  <span>₹{order.amount}</span>
+                  <span>₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span>Discount:</span>
-                  <span>₹{order.discount || 0}</span>
+                  <span>Tax (2%):</span>
+                  <span>₹{tax}</span>
                 </div>
+                {discount > 0 && (
+                  <div className="flex justify-between py-2">
+                    <span>Discount:</span>
+                    <span>-₹{discount}</span>
+                  </div>
+                )}
                 <div className="flex justify-between py-2">
                   <span>Shipping:</span>
                   <span>Free</span>
                 </div>
-                <div className="flex justify-between py-2">
-                  <span>Tax:</span>
-                  <span>₹0</span>
-                </div>
                 <div className="flex justify-between py-2 border-t border-gray-200 font-semibold text-lg">
                   <span>Total:</span>
-                  <span>₹{order.amount}</span>
+                  <span>₹{total}</span>
                 </div>
               </div>
             </div>
@@ -379,23 +395,25 @@ const downloadInvoice = () => {
               <div className="border-t pt-6">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-800">₹{order.amount + order.discount}</span>
+                  <span className="text-gray-800">₹{subtotal}</span>
                 </div>
-                <div className="flex justify-between py-2">
-                  <span>Discount:</span>
-                  <span>₹{order.discount || 0}</span>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-600">Tax (2%)</span>
+                  <span className="text-gray-800">₹{tax}</span>
                 </div>
+                {discount > 0 && (
+                  <div className="flex justify-between py-2">
+                    <span>Discount:</span>
+                    <span>-₹{discount}</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600">Shipping</span>
                   <span className="text-gray-800">Free</span>
                 </div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="text-gray-800">₹0</span>
-                </div>
                 <div className="flex justify-between items-center pt-4 border-t mt-4">
                   <span className="text-lg font-semibold text-gray-800">Total</span>
-                  <span className="text-lg font-bold text-blue-600">₹{order.amount}</span>
+                  <span className="text-lg font-bold text-blue-600">₹{total}</span>
                 </div>
               </div>
             </div>

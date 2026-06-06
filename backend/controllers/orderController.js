@@ -20,6 +20,32 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const computeOrderAmounts = (items, discount = 0) => {
+  const subtotal = (items || []).reduce(
+    (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+    0
+  );
+  const tax = Math.floor(subtotal * 0.02);
+  const amount = Math.max(0, subtotal + tax - (Number(discount) || 0));
+  return { subtotal, tax, amount };
+};
+
+const formatOrderSummaryHtml = (order) => {
+  const { subtotal, tax, amount } = computeOrderAmounts(order.items, order.discount);
+  const orderSubtotal = order.subtotal ?? subtotal;
+  const orderTax = order.tax ?? tax;
+  const orderAmount = order.amount ?? amount;
+  const discount = Number(order.discount) || 0;
+
+  return `
+    <p><strong>Subtotal:</strong> ₹${orderSubtotal}</p>
+    <p><strong>Tax (2%):</strong> ₹${orderTax}</p>
+    ${discount > 0 ? `<p><strong>Discount:</strong> -₹${discount}</p>` : ""}
+    ${order.couponCode ? `<p>Coupon Applied: ${order.couponCode}</p>` : ""}
+    <p><strong>Total Amount: ₹${orderAmount}</strong></p>
+  `;
+};
+
 // ---------------- COD Order ----------------
 // const placeOrderCOD = async (req, res) => {
 //   try {
@@ -186,9 +212,7 @@ const sendCODOrderConfirmationEmail = async (order) => {
                 `).join('')}
                 
                 <div class="summary">
-                    <p><strong>Total Amount: ₹${order.amount}</strong></p>
-                    ${order.couponCode ? `<p>Coupon Applied: ${order.couponCode}</p>` : ''}
-                    ${order.discount > 0 ? `<p>Discount: ₹${order.discount}</p>` : ''}
+                    ${formatOrderSummaryHtml(order)}
                 </div>
             </div>
             
@@ -230,24 +254,27 @@ const sendCODOrderConfirmationEmail = async (order) => {
 
 const placeOrderCOD = async (req, res) => {
   try {
-    const { userId, items, amount, address, couponCode, discount } = req.body;
+    const { userId, items, address, couponCode, discount } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ success: false, message: "No items provided in the order" });
     }
 
+    const { subtotal, tax, amount } = computeOrderAmounts(items, discount);
     const uniqueOrderId = `COD-${Date.now()}-${crypto.randomBytes(3).toString("hex")}`;
 
     const orderData = {
       orderid: uniqueOrderId,
       userId,
       items,
+      subtotal,
+      tax,
       amount,
       address,
       paymentMethod: "COD",
       payment: false,
       couponCode,
-      discount,
+      discount: Number(discount) || 0,
     };
 
     const newOrder = new orderModel(orderData);
@@ -269,7 +296,7 @@ const placeOrderCOD = async (req, res) => {
 // ---------------- Razorpay Order ----------------
 const placeOrderRazorpay = async (req, res) => {
   try {
-    const { userId, items, amount, address, couponCode, discount } = req.body;
+    const { userId, items, address, couponCode, discount } = req.body;
 
     if (!userId) {
       return res.status(400).json({ success: false, message: "User not logged in. Please sign in to pay online." });
@@ -281,7 +308,7 @@ const placeOrderRazorpay = async (req, res) => {
       return res.status(400).json({ success: false, message: "Complete delivery address is required" });
     }
 
-    const payable = Math.max(0, Number(amount) - (Number(discount) || 0));
+    const { subtotal, tax, amount: payable } = computeOrderAmounts(items, discount);
     const amountInPaise = Math.round(payable * 100);
 
     if (amountInPaise < 100) {
@@ -304,6 +331,8 @@ const placeOrderRazorpay = async (req, res) => {
       orderid: pendingOrderId,
       userId,
       items,
+      subtotal,
+      tax,
       amount: payable,
       address,
       paymentMethod: "Razorpay",
@@ -454,7 +483,7 @@ const sendPaymentConfirmationOnlineEmail = async (order) => {
                 `).join('')}
                 
                 <div class="summary">
-                    <p><strong>Total Amount: ₹${order.amount}</strong></p>
+                    ${formatOrderSummaryHtml(order)}
                     <p>Payment Method: ${order.paymentMethod}</p>
                     <p>Payment Status: Paid</p>
                 </div>
@@ -866,11 +895,7 @@ const sendStatusUpdateEmail = async (order) => {
                     </div>
                 `).join('')}
                 
-                ${order.discount > 0 ? `
-                <p><strong>Discount:</strong> -₹${order.discount}</p>
-                ` : ''}
-                
-                <p><strong>Total Amount: ₹${order.amount}</strong></p>
+                ${formatOrderSummaryHtml(order)}
             </div>
             
             <div>

@@ -28,18 +28,18 @@ export default function AboutPage() {
             <div className="absolute -inset-2 bg-gradient-to-r  rounded-2xl opacity-75 group-hover:opacity-100 transition-all duration-500 -rotate-1"></div>
             <div className="relative h-full rounded-xl overflow-hidden">
               <Image
-                src="/banner/about.png"
+                src="/about-us/image.jpg"
                 alt="About Us Image"
                 width={800}
                 height={800}
                 className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-700"
                 quality={100}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent flex items-end p-8">
+              {/* <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent flex items-end p-8">
                 <span className="text-white font-medium tracking-wider">
-                  {/* Our state-of-the-art facility in California */}
+               
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
 

@@ -2224,6 +2224,8 @@ const OrderSummary = ({ subtotal = 0 }) => {
         quantity: Number(item.quantity) || 1,
         image: item.image || "/default-product-image.jpg",
       })),
+      subtotal: Number(subtotal) || 0,
+      tax: Number(taxAmount) || 0,
       amount: Number(total) || 0,
       address: normalizedAddress,
       couponCode: couponCode.trim() || "",
