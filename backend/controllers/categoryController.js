@@ -1,6 +1,5 @@
-
 import categoryModel from "../models/categoryModel.js";
-import path from "path";
+import { deleteUploadFile } from "../utils/fileUtils.js";
 
 // Create Category with image upload
 export const createCategory = async (req, res) => {
@@ -67,6 +66,11 @@ export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body };
+    const oldCategory = await categoryModel.findById(id);
+
+    if (!oldCategory) {
+      return res.status(404).json({ success: false, message: "Category not found" });
+    }
 
     if (req.files?.img) {
       updateData.img = `/uploads/categories/${req.files.img[0].filename}`;
@@ -80,8 +84,11 @@ export const updateCategory = async (req, res) => {
       runValidators: true,
     });
 
-    if (!updatedCategory) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+    if (req.files?.img && oldCategory.img && oldCategory.img !== updatedCategory.img) {
+      await deleteUploadFile(oldCategory.img);
+    }
+    if (req.files?.banner && oldCategory.banner && oldCategory.banner !== updatedCategory.banner) {
+      await deleteUploadFile(oldCategory.banner);
     }
 
     res.status(200).json({ success: true, message: "Category updated successfully", category: updatedCategory });
@@ -102,6 +109,9 @@ export const deleteCategory = async (req, res) => {
     if (!deletedCategory) {
       return res.status(404).json({ success: false, message: "Category not found" });
     }
+
+    if (deletedCategory.img) await deleteUploadFile(deletedCategory.img);
+    if (deletedCategory.banner) await deleteUploadFile(deletedCategory.banner);
 
     res.status(200).json({ success: true, message: "Category deleted successfully" });
   } catch (error) {

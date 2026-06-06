@@ -391,14 +391,14 @@ export default function Footer() {
                 Privacy Policy
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/frontend/track-order"
                 className="hover:text-white transition-colors"
               >
                 Order Tracking
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 href="/frontend/login"

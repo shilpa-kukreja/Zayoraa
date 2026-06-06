@@ -322,14 +322,19 @@ const AddProductContent= ()=> {
     };
 
     const removeGalleryImg = (index) => {
+        const existingCount = galleryPreviews.length - galleryImgs.length;
         const newPreviews = [...galleryPreviews];
         newPreviews.splice(index, 1);
         setGalleryPreviews(newPreviews);
 
-        if (index >= galleryPreviews.length - galleryImgs.length) {
+        if (index >= existingCount) {
             const newGalleryImgs = [...galleryImgs];
-            newGalleryImgs.splice(index - (galleryPreviews.length - galleryImgs.length), 1);
+            newGalleryImgs.splice(index - existingCount, 1);
             setGalleryImgs(newGalleryImgs);
+        } else {
+            const newGallery = [...formData.galleryImg];
+            newGallery.splice(index, 1);
+            setFormData((prev) => ({ ...prev, galleryImg: newGallery }));
         }
     };
 

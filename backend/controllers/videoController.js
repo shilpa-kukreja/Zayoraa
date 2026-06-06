@@ -1,5 +1,6 @@
 import productModel from "../models/productModel.js";
 import videoModel from "../models/videoModel.js";
+import { deleteUploadFile } from "../utils/fileUtils.js";
 
 // Add Video
 export const addVideo = async (req, res) => {
@@ -55,7 +56,16 @@ export const getVideosByProduct = async (req, res) => {
 export const deleteVideo = async (req, res) => {
   try {
     const { id } = req.params;
-    await videoModel.findByIdAndDelete(id);
+    const deletedVideo = await videoModel.findByIdAndDelete(id);
+
+    if (!deletedVideo) {
+      return res.status(404).json({ success: false, message: "Video not found" });
+    }
+
+    if (deletedVideo.videourl) {
+      await deleteUploadFile(deletedVideo.videourl);
+    }
+
     res.status(200).json({ success: true, message: "Video deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error deleting video", error: error.message });

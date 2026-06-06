@@ -1,4 +1,5 @@
 import blogModel from "../models/blogModel.js";
+import { deleteUploadFile } from "../utils/fileUtils.js";
 
 
 // Get all blogs
@@ -55,6 +56,9 @@ export const createBlog = async (req, res) => {
 export const updateBlog = async (req, res) => {
   try {
     const blogData = req.body;
+    const oldBlog = await blogModel.findById(req.params.id);
+
+    if (!oldBlog) return res.status(404).json({ message: "Blog not found" });
 
     if (req.file) {
       blogData.blogImg = `/uploads/blogs/${req.file.filename}`;
@@ -66,7 +70,9 @@ export const updateBlog = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedBlog) return res.status(404).json({ message: "Blog not found" });
+    if (req.file && oldBlog.blogImg && oldBlog.blogImg !== updatedBlog.blogImg) {
+      await deleteUploadFile(oldBlog.blogImg);
+    }
 
     res.json(updatedBlog);
   } catch (error) {
@@ -79,6 +85,11 @@ export const deleteBlog = async (req, res) => {
   try {
     const deletedBlog = await blogModel.findByIdAndDelete(req.params.id);
     if (!deletedBlog) return res.status(404).json({ message: "Blog not found" });
+
+    if (deletedBlog.blogImg) {
+      await deleteUploadFile(deletedBlog.blogImg);
+    }
+
     res.json({ message: "Blog deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });

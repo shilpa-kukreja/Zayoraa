@@ -1,8 +1,12 @@
 import productModel from "../models/productModel.js";
-
+import mongoose from "mongoose";
+import {
+  collectProductImages,
+  deleteUploadFiles,
+  diffRemovedFiles,
+} from "../utils/fileUtils.js";
 
 // ✅ Create Product
-import mongoose from "mongoose";
 
 function groupFilesByField(files) {
   // multer: .fields() => object, .any() => array
@@ -152,22 +156,50 @@ export const updateProduct = async (req, res) => {
   try {
     const updates = { ...req.body };
     const filesByField = groupFilesByField(req.files);
-    const oldProduct = await productModel.findById(req.params.id).select("thumbImg galleryImg variant");
+    const oldProduct = await productModel.findById(req.params.id);
+
+    if (!oldProduct) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    const filesToDelete = [];
 
     // ✅ Handle Thumbnail Image
     if (filesByField?.thumbImg?.length > 0) {
       updates.thumbImg = `/uploads/products/${filesByField.thumbImg[0].filename}`;
-    } else if (oldProduct) {
+      if (oldProduct.thumbImg && oldProduct.thumbImg !== updates.thumbImg) {
+        filesToDelete.push(oldProduct.thumbImg);
+      }
+    } else {
       updates.thumbImg = oldProduct.thumbImg;
     }
 
-    // ✅ Handle Gallery Images
-    if (filesByField?.galleryImg?.length > 0) {
-      updates.galleryImg = filesByField.galleryImg.map(file => `/uploads/products/${file.filename}`);
-    } else if (oldProduct) {
-      updates.galleryImg = oldProduct.galleryImg;
+    // ✅ Handle Gallery Images (retain existing + append new uploads)
+    let retainedGallery = oldProduct.galleryImg || [];
+    if (updates.galleryImg !== undefined) {
+      if (typeof updates.galleryImg === "string") {
+        try {
+          retainedGallery = JSON.parse(updates.galleryImg);
+        } catch {
+          retainedGallery = oldProduct.galleryImg || [];
+        }
+      } else if (Array.isArray(updates.galleryImg)) {
+        retainedGallery = updates.galleryImg;
+      }
     }
 
+    if (filesByField?.galleryImg?.length > 0) {
+      const newGalleryPaths = filesByField.galleryImg.map(
+        (file) => `/uploads/products/${file.filename}`
+      );
+      updates.galleryImg = [...retainedGallery, ...newGalleryPaths];
+    } else {
+      updates.galleryImg = retainedGallery;
+    }
+
+    filesToDelete.push(
+      ...diffRemovedFiles(oldProduct.galleryImg || [], updates.galleryImg || [])
+    );
 
     // ✅ Handle variant
     if (updates.variant && typeof updates.variant === "string") {
@@ -195,10 +227,23 @@ export const updateProduct = async (req, res) => {
     for (let i = 0; i < updates.variant.length; i++) {
       const f = filesByField?.[`variantImg_${i}`]?.[0];
       if (f?.filename) {
-        updates.variant[i] = { ...updates.variant[i], image: `/uploads/products/${f.filename}` };
+        const newImage = `/uploads/products/${f.filename}`;
+        const oldImage = oldProduct.variant?.[i]?.image;
+        if (oldImage && oldImage !== newImage) {
+          filesToDelete.push(oldImage);
+        }
+        updates.variant[i] = { ...updates.variant[i], image: newImage };
       } else if (!updates.variant[i]?.image && oldProduct?.variant?.[i]?.image) {
-        // keep old image if UI didn't send it
         updates.variant[i] = { ...updates.variant[i], image: oldProduct.variant[i].image };
+      }
+    }
+
+    // Remove images from deleted variants
+    if ((oldProduct.variant || []).length > updates.variant.length) {
+      for (let i = updates.variant.length; i < oldProduct.variant.length; i++) {
+        if (oldProduct.variant[i]?.image) {
+          filesToDelete.push(oldProduct.variant[i].image);
+        }
       }
     }
 
@@ -208,7 +253,7 @@ export const updateProduct = async (req, res) => {
     }
 
     if (updates.category && typeof updates.category === "string") {
-      updates.category = JSON.parse(updates.category).map(id => new mongoose.Types.ObjectId(id));
+      updates.category = JSON.parse(updates.category).map((id) => new mongoose.Types.ObjectId(id));
     }
 
     // ✅ Handle subcategory
@@ -221,20 +266,17 @@ export const updateProduct = async (req, res) => {
     }
 
     // ✅ Force empty array if no valid subcategories
-    if (!updates.subcategory ||
-      (Array.isArray(updates.subcategory) && updates.subcategory.every(sc => !sc || sc.trim() === ""))) {
+    if (
+      !updates.subcategory ||
+      (Array.isArray(updates.subcategory) &&
+        updates.subcategory.every((sc) => !sc || sc.trim() === ""))
+    ) {
       updates.subcategory = [];
     }
 
+    const product = await productModel.findByIdAndUpdate(req.params.id, updates, { new: true });
 
-    // ✅ Update Product
-    const product = await productModel.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      { new: true }
-    );
-
-    if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+    await deleteUploadFiles(filesToDelete);
 
     res.json({ success: true, product });
   } catch (error) {
@@ -248,6 +290,9 @@ export const deleteProduct = async (req, res) => {
   try {
     const product = await productModel.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+
+    await deleteUploadFiles(collectProductImages(product));
+
     res.json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
