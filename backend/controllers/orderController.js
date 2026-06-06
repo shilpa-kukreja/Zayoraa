@@ -1,23 +1,11 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import orderModel from "../models/orderModel.js";
-import nodemailer from 'nodemailer';
-
-
-
+import { sendEmailInBackground } from "../utils/mailer.js";
 
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
 });
 
 const computeOrderAmounts = (items, discount = 0) => {
@@ -82,13 +70,11 @@ const formatOrderSummaryHtml = (order) => {
 // };
 
 
-const sendCODOrderConfirmationEmail = async (order) => {
-  try {
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: order.address.email,
-      subject: `Order Placed - Order #${order.orderid}`,
-      html: `
+const sendCODOrderConfirmationEmail = (order) => {
+  sendEmailInBackground({
+    to: order.address.email,
+    subject: `Order Placed - Order #${order.orderid}`,
+    html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -242,14 +228,8 @@ const sendCODOrderConfirmationEmail = async (order) => {
     </div>
 </body>
 </html>
-      `
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log("COD order confirmation email sent to:", order.address.email);
-  } catch (error) {
-    console.error("Error sending COD order confirmation email:", error);
-  }
+      `,
+  });
 };
 
 const placeOrderCOD = async (req, res) => {
@@ -280,8 +260,7 @@ const placeOrderCOD = async (req, res) => {
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
-    // Send COD order confirmation email
-    await sendCODOrderConfirmationEmail(newOrder);
+    sendCODOrderConfirmationEmail(newOrder);
 
     res.json({ success: true, message: "Order placed successfully (COD)", orderid: uniqueOrderId });
   } catch (error) {
@@ -366,13 +345,11 @@ const placeOrderRazorpay = async (req, res) => {
 
 
 
-const sendPaymentConfirmationOnlineEmail = async (order) => {
-  try {
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: order.address.email,
-      subject: `Payment Confirmed - Order #${order.orderid}`,
-      html: `
+const sendPaymentConfirmationOnlineEmail = (order) => {
+  sendEmailInBackground({
+    to: order.address.email,
+    subject: `Payment Confirmed - Order #${order.orderid}`,
+    html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -515,15 +492,8 @@ const sendPaymentConfirmationOnlineEmail = async (order) => {
     </div>
 </body>
 </html>
-      `
-    };
-
-    // Send email using your email service (nodemailer, sendgrid, etc.)
-    await transporter.sendMail(mailOptions);
-    console.log("Payment confirmation email sent to:", order.address.email);
-  } catch (error) {
-    console.error("Error sending payment confirmation email:", error);
-  }
+      `,
+  });
 };
 
 // ---------------- Verify Razorpay Payment ----------------
@@ -585,8 +555,8 @@ const verifyRazorpay = async (req, res) => {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Send payment confirmation email
-    await sendPaymentConfirmationOnlineEmail(updatedOrder);
+    // Send payment confirmation email (non-blocking)
+    sendPaymentConfirmationOnlineEmail(updatedOrder);
 
     res.json({ success: true, message: "Payment verified successfully", order: updatedOrder });
   } catch (error) {
@@ -673,9 +643,9 @@ const updateStatus = async (req, res) => {
     
     if (!updated) return res.status(404).json({ success: false, message: "Order not found" });
     
-    // Send status update email
-    await sendStatusUpdateEmail(updated);
-    
+    // Send status update email (non-blocking)
+    sendStatusUpdateEmail(updated);
+
     res.json({ success: true, message: "Order updated", order: updated });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -683,13 +653,12 @@ const updateStatus = async (req, res) => {
 };
 
 // Function to send status update email
-const sendStatusUpdateEmail = async (order) => {
-  try {
-    let subject = "";
-    let statusMessage = "";
-    let instructions = "";
-    let color = "";
-    let buttonText = "View Order Details";
+const sendStatusUpdateEmail = (order) => {
+  let subject = "";
+  let statusMessage = "";
+  let instructions = "";
+  let color = "";
+  let buttonText = "View Order Details";
     
     // Customize email based on status
     switch (order.status.toLowerCase()) {
@@ -751,8 +720,7 @@ const sendStatusUpdateEmail = async (order) => {
       buttonUrl = `${process.env.FRONTEND_URL}/tracking/${order.orderid}`;
     }
     
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
+    sendEmailInBackground({
       to: order.address.email,
       subject: subject,
       html: `
@@ -923,14 +891,8 @@ const sendStatusUpdateEmail = async (order) => {
     </div>
 </body>
 </html>
-      `
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log("Order status update email sent to:", order.address.email);
-  } catch (error) {
-    console.error("Error sending status update email:", error);
-  }
+      `,
+    });
 };
 
 
