@@ -301,15 +301,13 @@ const CategoryPage = () => {
       <Navbar />
 
       {/* Category Hero */}
-      <div className="relative  bg-gray-200">
-        <img
-          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${category.banner}`}
-
-          alt={category.name}
-          fill
-          className="object-cover"
-        />
-      </div>
+     <div className="w-full">
+  <img
+    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${category.banner}`}
+    alt={category.name}
+    className="w-full  object-cover"
+  />
+</div>
 
       {/* <div className='flex flex-col justify-center items-center max-w-4xl mx-auto text-justify'>
         <div className='py-2 text-gray-800 sm:text-4xl text-2xl font-semibold'>
