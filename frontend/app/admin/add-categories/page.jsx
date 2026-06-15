@@ -144,10 +144,28 @@ const AddCategoryPageContent= () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // const formDataToSend = new FormData();
+    // Object.entries(formData).forEach(([key, value]) => {
+    //   if (value) formDataToSend.append(key, value);
+    // });
+
+
     const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value) formDataToSend.append(key, value);
-    });
+
+formDataToSend.append("name", formData.name);
+formDataToSend.append("slug", formData.slug);
+formDataToSend.append("description", formData.description);
+formDataToSend.append("metaTitle", formData.metaTitle || "");
+formDataToSend.append("metaDescription", formData.metaDescription || "");
+
+// Only append if a new file was selected
+if (formData.img instanceof File) {
+  formDataToSend.append("img", formData.img);
+}
+
+if (formData.banner instanceof File) {
+  formDataToSend.append("banner", formData.banner);
+}
 
     try {
       if (editingCategory) {
