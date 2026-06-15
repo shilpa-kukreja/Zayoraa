@@ -572,15 +572,28 @@ const ProductDetailContent = ({ productIDs }) => {
    const router = useRouter();
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (product && videos) {
-      const filtered = videos.filter((v) => v.productid._id === product._id.toString());
-      console.log("filtered sdfsdf", videos);
-      setProductVideos(filtered);
-      console.log("filtered", filtered)
-    }
-  }, [product, videos]);
+  //   if (product && videos) {
+  //     const filtered = videos.filter((v) => v.productid._id === product._id.toString());
+  //     console.log("filtered sdfsdf", videos);
+  //     setProductVideos(filtered);
+  //     console.log("filtered", filtered)
+  //   }
+  // }, [product, videos]);
+
+
+  useEffect(() => {
+  if (product && videos) {
+    const filtered = videos.filter(
+      (v) => v?.productid?._id?.toString() === product?._id?.toString()
+    );
+
+    setProductVideos(filtered);
+  }
+}, [product, videos]);
+
+
 
   console.log("productVideos", productVideos)
 
@@ -625,7 +638,20 @@ const ProductDetailContent = ({ productIDs }) => {
   }
 
 
-  const selectedVariant = product.variant[selectedVariantIndex];
+  // const selectedVariant = product.variant[selectedVariantIndex];
+
+  const hasVariants =
+  Array.isArray(product?.variant) &&
+  product.variant.length > 0;
+
+const selectedVariant = hasVariants
+  ? product.variant[selectedVariantIndex]
+  : null;
+
+
+
+
+  
   const discount = Math.round(
     ((selectedVariant.price - selectedVariant.discountPrice) / selectedVariant.price) * 100
   );

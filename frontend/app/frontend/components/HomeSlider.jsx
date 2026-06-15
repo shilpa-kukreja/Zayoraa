@@ -20,16 +20,16 @@ const HomeSlider = () => {
   const slides = [
     {
       desktop: "/hero/banner1.png",
-      mobile: "/hero/mobilebanner1.png",
+      mobile: "/hero/mobilebanner1.jpg",
     },
     {
       desktop: "/hero/banner2.png",
-      mobile: "/hero/mobilebanner2.png",
+      mobile: "/hero/mobilebanner2.jpg",
     },
-    //  {
-    //   desktop: "/hero/banner3.jpg",
-    //   mobile: "/mobilebanner2.webp",
-    // },
+     {
+      desktop: "/hero/banner3.jpg",
+      mobile: "/hero/mobilebanner3.jpg",
+    },
     
   ];
 

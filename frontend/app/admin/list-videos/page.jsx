@@ -48,16 +48,24 @@ export default function ListVideos() {
         if (isExporting) return; // Prevent multiple clicks
         setIsExporting(true);
         try {
+            // const dataToExport = filteredVideos.map(video => ({
+            //     // Title: video.title || "Untitled Video",
+            //     Product: getProductName(
+            //         typeof video.productid === "object" ? video.productid._id : video.productid
+            //     ),
+            //     Order: video.order !== undefined ? video.order : "",
+            //     Size: formatFileSize(video.size),
+            //     Uploaded: formatDate(video.createdAt),
+            //     URL: video.videourl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${video.videourl}` : "N/A",
+            // }));
+
             const dataToExport = filteredVideos.map(video => ({
-                // Title: video.title || "Untitled Video",
-                Product: getProductName(
-                    typeof video.productid === "object" ? video.productid._id : video.productid
-                ),
-                Order: video.order !== undefined ? video.order : "",
-                Size: formatFileSize(video.size),
-                Uploaded: formatDate(video.createdAt),
-                URL: video.videourl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${video.videourl}` : "N/A",
-            }));
+    Product: getProductName(video.productid),
+    Order: video.order !== undefined ? video.order : "",
+    Size: formatFileSize(video.size),
+    Uploaded: formatDate(video.createdAt),
+    URL: video.videourl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${video.videourl}` : "N/A",
+}));
 
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
             const workbook = XLSX.utils.book_new();
@@ -108,12 +116,19 @@ export default function ListVideos() {
     };
 
     // Get product name by ID
+    // const getProductName = (productId) => {
+    //     if (!productId) return "No Product";
+    //     const id = typeof productId === "object" ? productId._id : productId;
+    //     const product = products.find((p) => p._id === id);
+    //     return product ? product.name : "Unknown Product";
+    // };
     const getProductName = (productId) => {
-        if (!productId) return "No Product";
-        const id = typeof productId === "object" ? productId._id : productId;
-        const product = products.find((p) => p._id === id);
-        return product ? product.name : "Unknown Product";
-    };
+    if (!productId) return "No Product";
+    // Safely extract ID if productId is an object with _id
+    const id = productId && typeof productId === "object" ? productId._id : productId;
+    const product = products.find((p) => p._id === id);
+    return product ? product.name : "Unknown Product";
+};
 
 
     // Handle sorting
@@ -145,28 +160,55 @@ export default function ListVideos() {
     }) : [];
 
     // Filter videos safely
+    // const filteredVideos = Array.isArray(sortedVideos)
+    //     ? sortedVideos.filter(video => {
+    //         if (!video) return false;
+
+    //         const videoTitle = video.title || "";
+    //         const productIdStr =
+    //             typeof video.productid === "object"
+    //                 ? video.productid._id
+    //                 : video.productid || "";
+
+    //         const productName = getProductName(productIdStr);
+
+    //         const matchesSearch =
+    //             videoTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //             productName.toLowerCase().includes(searchTerm.toLowerCase());
+
+    //         const matchesProduct =
+    //             !filterProduct || productIdStr === filterProduct;
+
+    //         return matchesSearch && matchesProduct;
+    //     })
+    //     : [];
+
     const filteredVideos = Array.isArray(sortedVideos)
-        ? sortedVideos.filter(video => {
-            if (!video) return false;
+    ? sortedVideos.filter(video => {
+        if (!video) return false;
 
-            const videoTitle = video.title || "";
-            const productIdStr =
-                typeof video.productid === "object"
-                    ? video.productid._id
-                    : video.productid || "";
+        const videoTitle = video.title || "";
+        
+        // ✅ Safe product ID extraction
+        let productIdStr = "";
+        if (video.productid && typeof video.productid === "object") {
+            productIdStr = video.productid._id || "";
+        } else if (video.productid) {
+            productIdStr = video.productid;
+        }
 
-            const productName = getProductName(productIdStr);
+        const productName = getProductName(productIdStr);
 
-            const matchesSearch =
-                videoTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                productName.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch =
+            videoTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            productName.toLowerCase().includes(searchTerm.toLowerCase());
 
-            const matchesProduct =
-                !filterProduct || productIdStr === filterProduct;
+        const matchesProduct =
+            !filterProduct || productIdStr === filterProduct;
 
-            return matchesSearch && matchesProduct;
-        })
-        : [];
+        return matchesSearch && matchesProduct;
+    })
+    : [];
 
 
 
@@ -450,7 +492,7 @@ export default function ListVideos() {
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="p-4">
+                                                        {/* <td className="p-4">
                                                             <div className="text-sm font-medium text-gray-900">
                                                                 {getProductName(
                                                                     typeof video.productid === "object" ? video.productid._id : video.productid
@@ -465,7 +507,21 @@ export default function ListVideos() {
                                                                 )?.substring(0, 8)}
                                                                 ...
                                                             </div>
-                                                        </td>
+                                                        </td> */}
+                                                        <td className="p-4">
+    <div className="text-sm font-medium text-gray-900">
+        {getProductName(video.productid)}
+    </div>
+    <div className="text-xs text-gray-500 mt-1">
+        Product ID:{" "}
+        {(() => {
+            const prodId = video.productid && typeof video.productid === "object"
+                ? video.productid._id
+                : video.productid;
+            return prodId ? prodId.substring(0, 8) + "..." : "N/A";
+        })()}
+    </div>
+</td>
 
                                                         {/* <td className="p-4">
                                                             <div className="text-sm font-medium text-gray-900">{formatFileSize(video.size)}</div>
