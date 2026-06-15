@@ -256,7 +256,7 @@ const Navbar = () => {
                     href="/frontend/view-all"
                     className="group flex flex-col items-center text-center"
                   >
-                    <span className="text-xs border bg-[#7a1113] border-[#7a1113] rounded-md px-2 py-1 font-medium text-white group-hover:text-white">
+                    <span className="text-xs border bg-[#6b40c2] border-[#2f1466] rounded-md px-2 py-1 font-medium text-white group-hover:text-white">
                       View All
                     </span>
                   </Link>
