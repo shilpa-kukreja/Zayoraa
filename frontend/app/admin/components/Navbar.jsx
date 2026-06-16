@@ -74,7 +74,7 @@ const Navbar = ({ setToken }) => {
           <div className="flex px-4 items-center gap-2">
             <Link href="/" className="flex items-center gap-2 group">
               <img
-                src="/logos/logo7.png"
+                src="/logo/logo.png"
                 alt="Miraggiolife Logo"
                 className="w-8  sm:w-20   transition-transform duration-300 group-hover:scale-110"
               />

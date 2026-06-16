@@ -534,7 +534,6 @@ import RecentlyViewed from '../../components/RecentlyViewed';
 import RelatedProducts from '../../components/RelatedProducts';
 import { AppContext } from '../../context/AppContext';
 import { useRouter } from "next/navigation";
-import OrderSummary from '../../components/OrderSummary';
 
 
 
@@ -544,12 +543,7 @@ const ProductDetailContent = ({ productIDs }) => {
   const initialVariantIndexParam = searchParams?.get("v");
   const {
     isCartOpen,
-    setIsCartOpen,
-    cartItems,
     addToCart,
-    removeFromCart,
-    updateCartItemQuantity,
-    calculateCartTotal,
     wishlist,
     toggleWishlist,
     products,
@@ -755,191 +749,6 @@ const selectedVariant = hasVariants
   return (
     <div>
       <Navbar />
-
-      {/* Shopping Cart Sidebar */}
-      <AnimatePresence>
-        {isCartOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'tween' }}
-            className="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-xl z-50 flex flex-col"
-          >
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-lg font-semibold">Your Cart ({cartItems.length})</h2>
-              <button
-                onClick={() => setIsCartOpen(false)}
-                className="p-2 rounded-full hover:bg-gray-100"
-              >
-                <FiX className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4">
-              {cartItems.length === 0 ? (
-                <div className="text-center py-10">
-                  <p className="text-gray-500 mb-4">Your cart is empty</p>
-                  <button
-                    onClick={() => setIsCartOpen(false)}
-                    className="px-4 py-2 bg-[#8D6AF8] text-white rounded-md hover:bg-[#8D6AF8]"
-                  >
-                    Continue Shopping
-                  </button>
-                </div>
-              ) : (
-                <ul className="space-y-4">
-                  {cartItems.map((item) => (
-                    <li key={`${item.id}-${item.color}`} className="flex gap-4 border-b pb-4">
-                      <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          width={80}
-                          height={80}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex justify-between">
-                          <h3 className="font-medium">{item.name}</h3>
-                          <button
-                            onClick={() => removeFromCart(item._id, item.color)}
-                            className="text-gray-500 hover:text-red-500"
-                          >
-                            <FiX />
-                          </button>
-                        </div>
-                        <p className="text-sm text-gray-600">Color: {item.color}</p>
-                        <p className="font-semibold">₹{item.price.toLocaleString()}</p>
-                        <div className="flex items-center mt-2">
-                          <button
-                            onClick={() => updateCartItemQuantity(
-                              item._id,
-                              item.color,
-                              item.quantity - 1
-                            )}
-                            className="px-2 py-1 border rounded-l-md"
-                            disabled={item.quantity <= 1}
-                          >
-                            -
-                          </button>
-                          <span className="px-4 py-1 border-t border-b text-center w-12">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateCartItemQuantity(
-                              item._id,
-                              item.color,
-                              item.quantity + 1
-                            )}
-                            className="px-2 py-1 border rounded-r-md"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {/* {cartItems.length > 0 && (
-              <div className="border-t border-gray-200 p-4">
-                <div className="flex justify-between mb-2">
-                  <span>Subtotal:</span>
-                  <span className="font-semibold">₹{calculateCartTotal().toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between mb-4">
-                  <span>Shipping:</span>
-                  <span className="font-semibold">FREE</span>
-                </div>
-                <div className="flex justify-between text-lg font-bold mb-4">
-                  <span>Total:</span>
-                  <span>₹{calculateCartTotal().toLocaleString()}</span>
-                </div>
-                <Link href='/frontend/cart'> <button className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium">
-                  Proceed to Checkout
-                </button>
-                </Link>
-                <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="w-full mt-2 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                  Continue Shopping
-                </button>
-              </div>
-            )} */}
-
-            {/* {cartItems.length > 0 && (
-              <div className="border-t border-gray-200 p-4">
-                <div className="flex justify-between mb-2">
-                  <span>Subtotal:</span>
-                  <span className="font-semibold">₹{calculateCartTotal().toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between mb-4">
-                  <span>Shipping:</span>
-                  <span className="font-semibold">FREE</span>
-                </div>
-                <div className="flex justify-between text-lg font-bold mb-4">
-                  <span>Total:</span>
-                  <span>₹{calculateCartTotal().toLocaleString()}</span>
-                </div>
-
-               
-                <button
-                  onClick={() => {
-                    const token =
-                      typeof window !== "undefined"
-                        ? localStorage.getItem("token")
-                        : null;
-
-                    if (token) {
-                     
-                      router.push("/frontend/checkout");
-                    } else {
-                      
-                      router.push("/frontend/signin?from=checkout");
-                    }
-                  }}
-                  className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
-                >
-                  Proceed to Checkout
-                </button>
-
-                <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="w-full mt-2 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                  Continue Shopping
-                </button>
-              </div>
-            )} */}
-
-            {cartItems.length > 0 && (
-              <div >
-                <OrderSummary
-                  subtotal={calculateCartTotal()} 
-                  // onCheckout={() => {
-                  //   setIsCartOpen(false);
-                  //   router.push('/checkout');
-                  // }} 
-                />
-              </div>
-            )}
-
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Overlay when cart is open */}
-      {isCartOpen && (
-        <div
-          className="fixed inset-0  bg-opacity-30 z-40"
-          onClick={() => setIsCartOpen(false)}
-        />
-      )}
 
       <div className={`max-w-7xl border-t border-gray-200 mx-auto px-4 sm:px-6 lg:px-8 py-8 ${isCartOpen ? 'blur-sm' : ''}`}>
         {/* Breadcrumb */}

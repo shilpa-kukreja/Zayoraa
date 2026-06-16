@@ -555,8 +555,11 @@ const verifyRazorpay = async (req, res) => {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Send payment confirmation email (non-blocking)
-    sendPaymentConfirmationOnlineEmail(updatedOrder);
+    if (!updatedOrder.address?.email) {
+      console.warn(`Payment verified for order ${updatedOrder.orderid} but no customer email on file`);
+    } else {
+      sendPaymentConfirmationOnlineEmail(updatedOrder);
+    }
 
     res.json({ success: true, message: "Payment verified successfully", order: updatedOrder });
   } catch (error) {

@@ -36,13 +36,14 @@ const ShowcaseVideo = ({ videourl }) => {
   );
 };
 
-const VideoCard = ({ video, product, variant, onAddToCart, calculateDiscount }) => (
+const VideoCard = ({ video, product, variant, onAddToCart, onProductClick, calculateDiscount }) => (
   <div className="flex-none w-64 sm:w-72 lg:w-80 transition-all duration-300 group/card">
     <Link
       href={
         product?.slug ? `/frontend/ProductDetail/${product.slug}` : '#'
       }
       className="group relative block"
+      onClick={onProductClick}
     >
       <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
         <ShowcaseVideo videourl={video.videourl} />
@@ -54,6 +55,7 @@ const VideoCard = ({ video, product, variant, onAddToCart, calculateDiscount }) 
               className="flex items-center justify-center space-x-2 bg-[#6b40c2] text-white font-medium px-4 py-2 rounded-full shadow-md hover:bg-black transition-all transform translate-y-2 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 duration-300"
               onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 onAddToCart(product);
               }}
             >
@@ -106,7 +108,7 @@ const VideoCard = ({ video, product, variant, onAddToCart, calculateDiscount }) 
 );
 
 const VideoShowcase = () => {
-  const { products, videos, addToCart } = useContext(AppContext);
+  const { products, videos, addToCart, setIsCartOpen } = useContext(AppContext);
 
   const sliderRef = useRef(null);
 
@@ -128,6 +130,10 @@ const VideoShowcase = () => {
     if (variant) {
       addToCart(product, variant, 1);
     }
+  };
+
+  const handleProductClick = () => {
+    setIsCartOpen(false);
   };
 
   const getProductDetails = (productId) => {
@@ -170,6 +176,7 @@ const VideoShowcase = () => {
         product={product}
         variant={variant}
         onAddToCart={handleAddToCart}
+        onProductClick={handleProductClick}
         calculateDiscount={calculateDiscount}
       />
     );

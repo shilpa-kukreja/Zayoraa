@@ -490,7 +490,7 @@ const Navbar = () => {
             >
               <HeartPlus className="h-6 w-6 hover:opacity-70 text-red-700" />
               {wishlist.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 text-[10px] bg-pink-500 text-white flex items-center justify-center rounded-full">
+                <span className="absolute -top-1 -right-1 w-5 h-5 text-[10px] bg-red-500 text-white flex items-center justify-center rounded-full">
                   {wishlist.length}
                 </span>
               )}

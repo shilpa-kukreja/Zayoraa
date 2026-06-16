@@ -22,6 +22,9 @@ const getTransporter = () => {
   return transporter;
 };
 
+const resolveMailFrom = (from) =>
+  from || process.env.EMAIL_FROM || process.env.EMAIL_USER || null;
+
 const sendViaResend = async ({ from, to, subject, html }) => {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -30,7 +33,7 @@ const sendViaResend = async ({ from, to, subject, html }) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: from || process.env.EMAIL_FROM,
+      from: resolveMailFrom(from),
       to: Array.isArray(to) ? to : [to],
       subject,
       html,
@@ -47,9 +50,13 @@ const sendViaResend = async ({ from, to, subject, html }) => {
  * Send email. Prefer RESEND_API_KEY on Render (SMTP ports are often blocked).
  */
 export const sendEmail = async ({ from, to, subject, html }) => {
-  const mailFrom = from || process.env.EMAIL_FROM;
+  const mailFrom = resolveMailFrom(from);
   if (!mailFrom) {
-    console.warn("EMAIL_FROM is not set; skipping email to", to);
+    console.warn("EMAIL_FROM / EMAIL_USER is not set; skipping email to", to);
+    return;
+  }
+  if (!to) {
+    console.warn("No recipient email; skipping order notification");
     return;
   }
 

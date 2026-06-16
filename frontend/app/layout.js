@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppContextProvider } from "./frontend/context/AppContext";
 import WishlistPopup from "./frontend/components/WishlistPopup";
+import CartDrawer from "./frontend/components/CartDrawer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Script from "next/script";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
         <AppContextProvider>
         {children}
         <WishlistPopup/>
+        <CartDrawer />
         </AppContextProvider>
         {/* <script src="https://checkout.razorpay.com/v1/checkout.js"></script> */}
         <Script
