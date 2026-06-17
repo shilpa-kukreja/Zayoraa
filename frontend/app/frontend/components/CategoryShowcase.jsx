@@ -376,7 +376,7 @@ const CategoryShowcase = () => {
 
                 <div className="p-4">
                   <Link href={`/frontend/ProductDetail/${product.slug}`}>
-                    <h4 className="sm:text-md text-sm font-semibold capitalize text-gray-900 line-clamp-2 mb-1 hover:text-gray-700 transition">
+                    <h4 className=" font-semibold capitalize text-gray-900 line-clamp-2 mb-1 hover:text-gray-700 transition">
                       {product.name}
                     </h4>
 
@@ -424,7 +424,7 @@ const CategoryShowcase = () => {
                             title={v?.color || `Variant ${idx + 1}`}
                             className={`w-6 h-6 rounded-full border-2 transition-all ${
                               isActive
-                                ? "border-[#7a1113] ring-2 ring-[#7a1113]/20"
+                                ? "border-violet-500 ring-2 ring-violet-800/20"
                                 : "border-gray-200 hover:border-gray-400"
                             } flex items-center justify-center`}
                           >

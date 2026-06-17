@@ -20,9 +20,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Zayoraa",
   description: "Crafting Confidence Through Better Oral Care",
-  icons: {
-    icon: "/logo/logo2.png",
-  },
+  
+  
+   
 };
 
 export default function RootLayout({ children }) {

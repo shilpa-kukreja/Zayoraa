@@ -173,7 +173,7 @@ const DealsOfTheDay = () => {
                   product.galleryImg?.[1] || mainCardImg
                 }`}
                 alt={product.name}
-                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
               />
             </div>
           </Link>
@@ -192,7 +192,7 @@ const DealsOfTheDay = () => {
 
         {/* CONTENT */}
         <div className="p-3 flex-grow flex flex-col">
-          <h3 className="text-sm sm:text-lg font-medium capitalize mb-2">
+          <h3 className="text-sm sm:text-lg font-medium capitalize mb-2 line-clamp-1">
             {product.name}
           </h3>
 

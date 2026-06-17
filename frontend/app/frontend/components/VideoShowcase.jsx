@@ -86,7 +86,7 @@ const VideoCard = ({ video, product, variant, onAddToCart, onProductClick, calcu
 
       {product && (
         <div className="mt-4 px-2">
-          <h4 className="text-lg text-center capitalize font-semibold text-gray-900 line-clamp-2 mb-1 group-hover/card:text-primary transition-colors">
+          <h4 className="text-lg text-center capitalize font-semibold text-violet-700 line-clamp-2 mb-1 group-hover/card:text-primary transition-colors">
             {product.name}
           </h4>
           {variant && (

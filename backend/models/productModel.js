@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema({
   stock: { type: Number, default: 0 },
   section: [{ type: String }],
   category: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
-  subcategory: [{ type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" }],
+  // subcategory: [{ type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" }],
   sku: { type: String },
   variant: [variantSchema],
   status: { type: String, enum: ["active", "inactive"], default: "active" },

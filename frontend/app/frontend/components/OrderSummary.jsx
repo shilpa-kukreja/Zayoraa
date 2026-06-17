@@ -2093,7 +2093,17 @@ const OrderSummary = ({ subtotal = 0 }) => {
   console.log("Available coupons:", coupons);
 
 
-
+useEffect(() => {
+  if (
+    userAddresses.length > 0 &&
+    (!selectedAddress ||
+      !userAddresses.some(
+        (addr) => addr._id === selectedAddress._id
+      ))
+  ) {
+    setSelectedAddress(userAddresses[0]);
+  }
+}, [userAddresses]);
 
 
 
@@ -2388,7 +2398,7 @@ const OrderSummary = ({ subtotal = 0 }) => {
                       <div className="space-y-3">
                         {userAddresses.length ? (
                           userAddresses.map((address) => (
-                            <motion.div key={address._id || `${address.postalCode}-${address.phone}`} whileHover={{ scale: 1.00 }} className={`p-4 bg-white border rounded-lg cursor-pointer transition-all ${selectedAddress?._id === address._id ? "border-[#7a1113] bg-blue-50" : "border-gray-200 hover:border-blue-300"}`} onClick={() => setSelectedAddress(address)}>
+                            <motion.div key={address._id || `${address.postalCode}-${address.phone}`} whileHover={{ scale: 1.00 }} className={`p-4 bg-white border rounded-lg cursor-pointer transition-all ${selectedAddress?._id === address._id ? "border-violet-700 bg-blue-50" : "border-gray-200 hover:border-blue-300"}`} onClick={() => setSelectedAddress(address)}>
                               <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-2 mb-2">
                                   <div className={`p-1.5 rounded-full ${selectedAddress?._id === address._id ? "bg-blue-100" : "bg-gray-100"}`}>{getAddressIcon(address.addresstype)}</div>

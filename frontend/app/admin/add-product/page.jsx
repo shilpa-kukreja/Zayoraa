@@ -34,7 +34,7 @@ const AddProductContent= ()=> {
         products: [],
         stock: 0,
         category: [],
-        subcategory: [],
+        // subcategory: [],
         sku: "",
         variant: [{ color: "", colorcode: "#000000", image: "", price: 0, discountPrice: 0, stock: 0 }],
         status: "active",
@@ -142,7 +142,7 @@ const AddProductContent= ()=> {
                     section: product.section || [],
                     metatitle: product.metatitle || "",
                     metadescription: product.metadescription || "",
-                    subcategory: product.subcategory || "subcategory",
+                    // subcategory: product.subcategory || "subcategory",
                 });
 
                 if (product.thumbImg) {
@@ -221,7 +221,7 @@ const AddProductContent= ()=> {
             setFormData((prev) => ({
                 ...prev,
                 category: selectedValues,
-                subcategory: "", // reset subcategory when category changes
+                // subcategory: "", // reset subcategory when category changes
             }));
         } else {
             setFormData((prev) => ({

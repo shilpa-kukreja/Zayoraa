@@ -24,7 +24,7 @@ export const createProduct = async (req, res) => {
   try {
     const {
       name, slug, shortDescription, description,
-      stock, category, subcategory,
+      stock, category,
       sku, status, width, height, weight, length,
       metatitle, metadescription, products
     } = req.body;
@@ -54,7 +54,7 @@ export const createProduct = async (req, res) => {
       galleryImg: galleryImg.map(img => `/uploads/products/${img}`),
       stock,
       category: category ? JSON.parse(category).map(id => new mongoose.Types.ObjectId(id)) : [],
-      subcategory: subcategory ? subcategory.split(",") : [],
+      // subcategory: subcategory ? subcategory.split(",") : [],
       sku,
       status,
       width,
@@ -257,22 +257,22 @@ export const updateProduct = async (req, res) => {
     }
 
     // ✅ Handle subcategory
-    if (updates.subcategory && typeof updates.subcategory === "string") {
-      try {
-        updates.subcategory = JSON.parse(updates.subcategory);
-      } catch {
-        updates.subcategory = updates.subcategory.split(",");
-      }
-    }
+    // if (updates.subcategory && typeof updates.subcategory === "string") {
+    //   try {
+    //     updates.subcategory = JSON.parse(updates.subcategory);
+    //   } catch {
+    //     updates.subcategory = updates.subcategory.split(",");
+    //   }
+    // }
 
     // ✅ Force empty array if no valid subcategories
-    if (
-      !updates.subcategory ||
-      (Array.isArray(updates.subcategory) &&
-        updates.subcategory.every((sc) => !sc || sc.trim() === ""))
-    ) {
-      updates.subcategory = [];
-    }
+    // if (
+    //   !updates.subcategory ||
+    //   (Array.isArray(updates.subcategory) &&
+    //     updates.subcategory.every((sc) => !sc || sc.trim() === ""))
+    // ) {
+    //   updates.subcategory = [];
+    // }
 
     const product = await productModel.findByIdAndUpdate(req.params.id, updates, { new: true });
 
