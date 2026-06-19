@@ -389,7 +389,7 @@ const LoginContent = () => {
                   <button
                     type="submit"
                     disabled={isLoading || formData.otp.length !== 6}
-                    className={`w-full bg-[#7a1113] text-white py-3 rounded-lg transition-colors flex items-center justify-center ${
+                    className={`w-full bg-violet-600 text-white py-3 rounded-lg transition-colors flex items-center justify-center ${
                       isLoading || formData.otp.length !== 6
                         ? "opacity-70 cursor-not-allowed"
                         : "hover:bg-violet-700 cursor-pointer"

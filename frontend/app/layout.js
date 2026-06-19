@@ -20,11 +20,10 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Zayoraa",
   description: "Crafting Confidence Through Better Oral Care",
-  
+
   icons: {
     icon: "/logo/zayoraalogo.jpeg",
   },
-   
 };
 
 export default function RootLayout({ children }) {
@@ -33,17 +32,17 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-         <ToastContainer />
+        <ToastContainer />
         <AppContextProvider>
-        {children}
-        <WishlistPopup/>
-        <CartDrawer />
+          {children}
+          <WishlistPopup />
+          <CartDrawer />
         </AppContextProvider>
         {/* <script src="https://checkout.razorpay.com/v1/checkout.js"></script> */}
         <Script
-  src="https://checkout.razorpay.com/v1/checkout.js"
-  strategy="afterInteractive"
-/>
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

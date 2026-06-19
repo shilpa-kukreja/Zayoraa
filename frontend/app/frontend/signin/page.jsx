@@ -263,7 +263,7 @@ const SignUpContent = () => {
               Already a member?{' '}
               <Link
                 href="/frontend/login"
-                className="text-[#4f3d32] hover:underline font-medium"
+                className="text-violet-500 hover:underline font-medium"
               >
                 Login
               </Link>
