@@ -33,7 +33,7 @@ const BlogSection = () => {
   </div>
           {/* <div className="w-20 h-1 bg-[#7a1113] mx-auto mb-6"></div> */}
           {/* <p className="text-gray-600 max-w-2xl mx-auto sm:text-lg text-sm">
-            Uncover fashion trends, styling advice, and inspiration curated by Syuta experts
+            Uncover fashion trends, styling advice, and inspiration curated by Zayoraa experts
           </p> */}
         </div>
         

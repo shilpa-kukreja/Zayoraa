@@ -21,7 +21,9 @@ export const metadata = {
   title: "Zayoraa",
   description: "Crafting Confidence Through Better Oral Care",
   
-  
+  icons: {
+    icon: "/logo/zayoraalogo.jpeg",
+  },
    
 };
 

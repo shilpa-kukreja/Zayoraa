@@ -196,7 +196,7 @@ const VideoShowcase = () => {
      <span className="text-[#6b40c2] text-xl">✦</span>
   </div>
         {/* <p className="sm:text-lg text-sm text-gray-600 max-w-2xl mx-auto">
-          Discover the artistry of Syuta bags through dynamic, detailed views
+          Discover the artistry of Zayoraa bags through dynamic, detailed views
         </p> */}
       </div>
 
