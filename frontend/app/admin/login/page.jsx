@@ -64,10 +64,10 @@ export default function AdminLogin() {
           <div className="relative z-10">
             <div className="flex justify-center mb-10">
               <img
-                src="/logos/logo7.png"
+                src="/logo/logo.png"
                 alt="Miraggiolife Logo"
-                width={180}
-                height={55}
+                width={280}
+                height={95}
                 className="h-14 w-auto"
               />
             </div>

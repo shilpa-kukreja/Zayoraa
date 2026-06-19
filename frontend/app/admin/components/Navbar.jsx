@@ -144,7 +144,7 @@ const Navbar = ({ setToken }) => {
                   <FiUser className="h-4 w-4 text-white" />
                 </div>
                 <span className="ml-2 hidden sm:inline-block text-sm font-medium text-[var(--text-color)]">
-                  Syuta
+                  Zayoraa
                 </span>
                 <svg
                   className={`ml-1 h-4 w-4 text-[var(--text-color)] transition-transform duration-200 ${showDropdown ? "rotate-180" : ""
