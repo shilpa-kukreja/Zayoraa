@@ -268,19 +268,20 @@ export default function Footer() {
           >
             <li className="flex items-start">
               <FaMapMarkerAlt className="mt-1 mr-3 flex-shrink-0" />
-              <span>123 Fashion Street, Mumbai, Maharashtra 400001, India</span>
+              <span>SF-221,2-floor, IT Complex, JMD Megapolis, Village Tikri, Sohna Road, Gurgaon, Haryana-122018
+</span>
             </li>
             <li className="flex items-center">
               <FaPhoneAlt className="mr-3" />
-              <span>+91 98765 43210</span>
+              <span>+91 8288985469</span>
             </li>
             <li className="flex items-center">
               <FaEnvelope className="mr-3" />
-              <span>support@zayoraa.in</span>
+              <span>enquiry@zayoraa.in</span>
             </li>
             <li className="flex items-center">
               <FaClock className="mr-3" />
-              <span>Mon-Sat: 10AM - 7PM</span>
+              <span>Mon-Sat: 9AM - 6PM</span>
             </li>
           </ul>
         </div>

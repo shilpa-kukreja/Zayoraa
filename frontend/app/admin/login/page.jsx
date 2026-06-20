@@ -40,19 +40,18 @@ export default function AdminLogin() {
       <div className="w-full max-w-6xl flex flex-col md:flex-row bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 transform transition-all duration-300 hover:shadow-2xl">
         {/* Left Image Section */}
         <div className="hidden md:block md:w-1/2 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/70 to-blue-800/40 z-10"></div>
-          <div className="absolute inset-0 bg-blue-900/10 z-0"></div>
+          {/* <div className="absolute inset-0 bg-gradient-to-t from-blue-900/70 to-blue-800/40 z-10"></div>
+          <div className="absolute inset-0 bg-blue-900/10 z-0"></div> */}
           <img
-            src="/product/admin.jpg"
+            src="/product/admin.png"
             alt="Admin Illustration"
-            className="h-[650px] w-full object-cover transform hover:scale-105 transition-transform duration-700"
-            width={600}
-            height={400}
+            className="h-full w-full object-cover transform hover:scale-105 transition-transform duration-700"
+            
           />
-          <div className="absolute bottom-8 left-8 right-8 z-20 text-white">
+          {/* <div className="absolute bottom-8 left-8 right-8 z-20 text-white">
             <h2 className="text-2xl font-bold mb-2">Miraggiolife Admin Portal</h2>
             <p className="text-blue-100 opacity-90">Manage your products, inventory, and customer data with our powerful admin tools</p>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Form Section */}

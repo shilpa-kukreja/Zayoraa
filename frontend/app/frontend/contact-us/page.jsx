@@ -204,7 +204,8 @@ export default function ContactPage() {
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 mb-1">Address</h4>
                     <p className="text-gray-600">
-                      B-2/104B, SAFDARJUNG ENCLAVE, New Delhi-110029
+                      SF-221,2-floor, IT	Complex, JMD Megapolis, Village Tikri, Sohna Road, Gurgaon, Haryana-122018
+
                     </p>
                   </div>
                 </div>
@@ -218,7 +219,7 @@ export default function ContactPage() {
                     <ul className="text-gray-600 space-y-1">
                       <li>
                         <a href="tel:+919868866869" className="hover:text-[#8D6AF8] transition">
-                          +91 9868866869
+                          +91 8288985469
                         </a>
                       </li>
                     </ul>
@@ -234,7 +235,7 @@ export default function ContactPage() {
                     <ul className="text-gray-600 space-y-1">
                       <li>
                         <a href="mailto:pydlifesciences@gmail.com" className="hover:text-[#8D6AF8] transition">
-                          pydlifesciences@gmail.com
+                          enquiry@zayoraa.in
                         </a>
                       </li>
                     </ul>
@@ -244,8 +245,7 @@ export default function ContactPage() {
               
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <h4 className="text-lg font-semibold text-gray-800 mb-3">Business Hours</h4>
-                <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
+                <p className="text-gray-600">Monday - Saturday: 9:00 AM - 6:00 PM</p>
                 <p className="text-gray-600">Sunday: Closed</p>
               </div>
             </div>

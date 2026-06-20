@@ -521,7 +521,7 @@ export default function ShippingPolicy() {
                           href="mailto:support@zayoraa.in"
                           className="text-blue-600 hover:underline"
                         >
-                          support@zayoraa.in
+                          enquiry@zayoraa.in
                         </a>
                       </li>
                       <li className="flex items-start">
@@ -540,10 +540,10 @@ export default function ShippingPolicy() {
                           ></path>
                         </svg>
                         <a
-                          href="tel:+91XXXXXXXXXX"
+                          href="tel:+918288985469"
                           className="text-blue-600 hover:underline"
                         >
-                          +91 XXXXXXXXXX
+                          +91 8288985469
                         </a>
                       </li>
                     </ul>
@@ -575,9 +575,10 @@ export default function ShippingPolicy() {
                       </svg>
                       <div>
                         <p className="text-gray-700">
-                          B-2/104B, SAFDARJUNG ENCLAVE
+                          SF-221,2-floor, IT Complex, JMD Megapolis, Village Tikri, Sohna Road,  
+
                         </p>
-                        <p className="text-gray-700">New Delhi-110029</p>
+                        <p className="text-gray-700">Gurgaon, Haryana-122018</p>
                         <p className="text-gray-700">India</p>
                       </div>
                     </div>
@@ -590,7 +591,7 @@ export default function ShippingPolicy() {
                     <p className="text-gray-700">Monday to Saturday</p>
 
                     <p className="text-green-600 font-medium mt-1">
-                      10:00 AM - 6:00 PM IST
+                      09:00 AM - 6:00 PM IST
                     </p>
                   </div>
                 </div>
