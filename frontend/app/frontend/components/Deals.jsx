@@ -362,14 +362,14 @@ const DealsOfTheDay = () => {
               ))}
             </div>
 
-            {/* <div className="text-center mt-8">
+            <div className="text-center mt-8">
               <Link
-                href="/frontend/view-all"
+                href="/frontend/category/deals-of-the-day"
                 className="inline-flex items-center justify-center bg-black text-white px-8 py-3 rounded-xl hover:bg-gray-800 transition"
               >
-                View Collection
+                View More
               </Link>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
