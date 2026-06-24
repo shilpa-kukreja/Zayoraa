@@ -3,6 +3,7 @@ import otpModel from '../models/otpModel.js';
 import userModel from '../models/authModel.js';
 import axios from 'axios';
 import nodemailer from 'nodemailer';
+import { createWelcomeCouponForUser } from '../utils/welcomeDiscount.js';
 
 
 
@@ -132,7 +133,7 @@ export const loginotp = async (req, res) => {
 
 export const verifyotp = async (req, res) => {
   try {
-    const { number, username = '', email = '', otp } = req.body;
+    const { number, username = '', email = '', otp, fromWelcome = false } = req.body;
 
     // Check OTP from otpModel
     const otpRecord = await otpModel.findOne({ number, otp });
@@ -161,6 +162,15 @@ export const verifyotp = async (req, res) => {
     // Delete OTP after verification
     await otpModel.deleteMany({ number });
 
+    let welcomeCouponCode = user.welcomeCouponCode || null;
+
+    if (isNewUser && fromWelcome) {
+      const welcomeResult = await createWelcomeCouponForUser(user);
+      if (welcomeResult.success) {
+        welcomeCouponCode = welcomeResult.couponCode;
+      }
+    }
+
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id, number: user.number },
@@ -178,6 +188,9 @@ export const verifyotp = async (req, res) => {
       message: "Number verified successfully",
       token,
       user,
+      isNewUser,
+      welcomeUnlocked: !!(isNewUser && fromWelcome && welcomeCouponCode),
+      welcomeCouponCode,
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

@@ -195,11 +195,11 @@ const CategoryPage = () => {
         </div>
 
         <div className="p-3 flex-grow flex flex-col">
-          <h3 className="text-sm sm:text-lg font-medium capitalize mb-2">
+          <h3 className="text-sm sm:text-lg font-medium capitalize mb-2 line-clamp-1">
             {product.name}
           </h3>
 
-          <h3 className="text-sm sm:text-md font-medium capitalize mb-2 line-clamp-2">
+          <h3 className="text-sm sm:text-md font-medium capitalize mb-2 line-clamp-1">
             {product.shortDescription?.replace(/<[^>]*>/g, '')}
           </h3>
 

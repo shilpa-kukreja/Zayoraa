@@ -68,7 +68,10 @@ const menuItems = [
   },
    { name: "Contacts", href: "/admin/admin-contact", icon: FiUsers },
    { name: "Subscribers", href: "/admin/admin-subscriber", icon: FiUsers },
+
    {name: "Orders", href: "/admin/all-orders", icon: FiBox},
+  { name: "Orders Support", href: "/admin/list-support", icon: FiUsers },
+
   // { name: "Analytics", href: "/admin/analytics", icon: FiBarChart2 },
   // { name: "Settings", href: "/admin/settings", icon: FiSettings },
    

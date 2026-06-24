@@ -47,6 +47,8 @@ import blogRouter from './routes/blogRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/dashboardRoutes.js';
+import supportRoutes from './routes/supportRoutes.js';
+
 import dns from "dns";
 
 const app = express();
@@ -71,6 +73,8 @@ app.use("/api/subscription", subscribeRoutes);
 app.use("/api/blog",blogRouter);
 app.use("/api/order", orderRoutes);
 app.use('/api/dashboard', adminRoutes);
+app.use('/api/support', supportRoutes);
+
 
 app.get('/', (req, res) => {
   res.send('API is running...');

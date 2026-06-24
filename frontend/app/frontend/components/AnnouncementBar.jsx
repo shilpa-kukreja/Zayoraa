@@ -6,11 +6,11 @@ const announcements = [
     image: "/announcementbar/free.jpeg",
     text: "Free Shipping ",
   },
-  {
-    id: 2,
-    image: "/announcementbar/no.jpeg",
-    text: "No Return & Exchange",
-  },
+  // {
+  //   id: 2,
+  //   image: "/announcementbar/no.jpeg",
+  //   text: "No Return & Exchange",
+  // },
   {
     id: 3,
     image: "/announcementbar/payment.jpeg",

@@ -63,6 +63,7 @@ const ListCategory = () => {
       const dataToExport = filteredCategories.map(cat => ({
         Name: cat.name,
         Slug: cat.slug,
+         Order: cat.order ?? 0,
         Image: cat.img ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.img}` : 'Not available',
         Banner: cat.banner ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.banner}` : 'Not available',
         Created: cat.createdAt ? new Date(cat.createdAt).toLocaleDateString() : 'Unknown'
@@ -181,7 +182,7 @@ const ListCategory = () => {
               {isExporting ? 'Exporting...' : 'Export to Excel'}
             </button>
             <button
-              onClick={() => router.push("/add")}
+              onClick={() => router.push("/admin/add-categories")}
               className="bg-indigo-600 text-white px-4 py-2.5 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-sm"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -236,6 +237,8 @@ const ListCategory = () => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Banner
                 </th>
+
+                
                 <th 
                   scope="col" 
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -250,6 +253,20 @@ const ListCategory = () => {
                     )}
                   </div>
                 </th>
+                <th 
+  scope="col" 
+  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+  onClick={() => handleSort('order')}
+>
+  <div className="flex items-center">
+    Order
+    {sortConfig.key === 'order' && (
+      <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 ml-1 ${sortConfig.direction === 'ascending' ? '' : 'transform rotate-180'}`} viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+      </svg>
+    )}
+  </div>
+</th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -294,6 +311,10 @@ const ListCategory = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-md inline-block">{cat.slug}</div>
                     </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap">
+  <div className="text-sm text-gray-900 text-center">{cat.order ?? 0}</div>
+</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
                         <button

@@ -110,15 +110,22 @@ const SignUpContent = () => {
           email: formData.email,
           number: formData.mobile,
           otp: formData.otp,
+          fromWelcome: from === "welcome",
         }),
       });
 
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        alert('Signup successful!');
+        window.dispatchEvent(new Event("auth-change"));
 
-        // ✅ Redirect logic
+        if (data.welcomeUnlocked && data.welcomeCouponCode) {
+          localStorage.setItem('autoApplyWelcomeCoupon', data.welcomeCouponCode);
+          alert(`Welcome! Your 10% discount coupon ${data.welcomeCouponCode} is unlocked!`);
+        } else {
+          alert('Signup successful!');
+        }
+
         if (from === "checkout") {
           router.push("/frontend/cart");
         } else {

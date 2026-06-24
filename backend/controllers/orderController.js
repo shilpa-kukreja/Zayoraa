@@ -2,6 +2,12 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import orderModel from "../models/orderModel.js";
 import { sendEmailInBackground } from "../utils/mailer.js";
+import Coupon from "../models/couponModel.js";
+import {
+  computeCouponDiscount,
+  consumeWelcomeDiscount,
+  validateWelcomeCoupon,
+} from "../utils/welcomeDiscount.js";
 
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -16,6 +22,44 @@ const computeOrderAmounts = (items, discount = 0) => {
   const tax = Math.floor(subtotal * 0.02);
   const amount = Math.max(0, subtotal + tax - (Number(discount) || 0));
   return { subtotal, tax, amount };
+};
+
+const resolveOrderDiscount = async ({ couponCode, items, userId, addressPhone }) => {
+  if (!couponCode) {
+    return { discount: 0, couponCode: "" };
+  }
+
+  const coupon = await Coupon.findOne({ couponCode, isActive: true });
+  if (!coupon) {
+    throw new Error("Invalid coupon code");
+  }
+
+  if (new Date(coupon.expiryDate) < new Date()) {
+    throw new Error("Coupon has expired");
+  }
+
+  const subtotal = (items || []).reduce(
+    (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+    0
+  );
+
+  if (subtotal < coupon.minPurchaseAmount) {
+    throw new Error(`Minimum purchase amount is ₹${coupon.minPurchaseAmount}`);
+  }
+
+  if (coupon.isWelcomeCoupon) {
+    const welcomeCheck = await validateWelcomeCoupon({
+      coupon,
+      userId,
+      addressPhone,
+    });
+    if (!welcomeCheck.valid) {
+      throw new Error(welcomeCheck.message);
+    }
+  }
+
+  const discount = computeCouponDiscount(coupon, subtotal);
+  return { discount, couponCode, coupon };
 };
 
 const formatOrderSummaryHtml = (order) => {
@@ -216,7 +260,7 @@ const sendCODOrderConfirmationEmail = (order) => {
             </div>
             
             <p>We'll send you a shipping confirmation email when your order is on its way.</p>
-            <p>If you have any questions, contact our customer service team at <a href="mailto:support@yourcompany.com">support@yourcompany.com</a>.</p>
+            <p>If you have any questions, contact our customer service team at <a href="mailto:enquiry@zayoraa.in">enquiry@zayoraa.in</a>.</p>
             
             <a href="${process.env.FRONTEND_URL}/orders/${order.orderid}" class="button">Track Your Order</a>
         </div>
@@ -234,13 +278,31 @@ const sendCODOrderConfirmationEmail = (order) => {
 
 const placeOrderCOD = async (req, res) => {
   try {
-    const { userId, items, address, couponCode, discount } = req.body;
+    const { userId, items, address, couponCode } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ success: false, message: "No items provided in the order" });
     }
 
-    const { subtotal, tax, amount } = computeOrderAmounts(items, discount);
+    let resolvedDiscount = 0;
+    let resolvedCouponCode = "";
+
+    if (couponCode) {
+      try {
+        const discountResult = await resolveOrderDiscount({
+          couponCode,
+          items,
+          userId,
+          addressPhone: address?.phone,
+        });
+        resolvedDiscount = discountResult.discount;
+        resolvedCouponCode = discountResult.couponCode;
+      } catch (couponError) {
+        return res.status(400).json({ success: false, message: couponError.message });
+      }
+    }
+
+    const { subtotal, tax, amount } = computeOrderAmounts(items, resolvedDiscount);
     const uniqueOrderId = `COD-${Date.now()}-${crypto.randomBytes(3).toString("hex")}`;
 
     const orderData = {
@@ -253,12 +315,19 @@ const placeOrderCOD = async (req, res) => {
       address,
       paymentMethod: "COD",
       payment: false,
-      couponCode,
-      discount: Number(discount) || 0,
+      couponCode: resolvedCouponCode,
+      discount: resolvedDiscount,
     };
 
     const newOrder = new orderModel(orderData);
     await newOrder.save();
+
+    if (resolvedCouponCode && userId) {
+      const coupon = await Coupon.findOne({ couponCode: resolvedCouponCode });
+      if (coupon?.isWelcomeCoupon) {
+        await consumeWelcomeDiscount(userId, resolvedCouponCode);
+      }
+    }
 
     sendCODOrderConfirmationEmail(newOrder);
 
@@ -275,7 +344,7 @@ const placeOrderCOD = async (req, res) => {
 // ---------------- Razorpay Order ----------------
 const placeOrderRazorpay = async (req, res) => {
   try {
-    const { userId, items, address, couponCode, discount } = req.body;
+    const { userId, items, address, couponCode } = req.body;
 
     if (!userId) {
       return res.status(400).json({ success: false, message: "User not logged in. Please sign in to pay online." });
@@ -287,7 +356,25 @@ const placeOrderRazorpay = async (req, res) => {
       return res.status(400).json({ success: false, message: "Complete delivery address is required" });
     }
 
-    const { subtotal, tax, amount: payable } = computeOrderAmounts(items, discount);
+    let resolvedDiscount = 0;
+    let resolvedCouponCode = "";
+
+    if (couponCode) {
+      try {
+        const discountResult = await resolveOrderDiscount({
+          couponCode,
+          items,
+          userId,
+          addressPhone: address?.phone,
+        });
+        resolvedDiscount = discountResult.discount;
+        resolvedCouponCode = discountResult.couponCode;
+      } catch (couponError) {
+        return res.status(400).json({ success: false, message: couponError.message });
+      }
+    }
+
+    const { subtotal, tax, amount: payable } = computeOrderAmounts(items, resolvedDiscount);
     const amountInPaise = Math.round(payable * 100);
 
     if (amountInPaise < 100) {
@@ -316,8 +403,8 @@ const placeOrderRazorpay = async (req, res) => {
       address,
       paymentMethod: "Razorpay",
       payment: false,
-      couponCode,
-      discount: Number(discount) || 0,
+      couponCode: resolvedCouponCode,
+      discount: resolvedDiscount,
     });
     await newOrder.save();
 
@@ -480,7 +567,7 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
             </div>
             
             <p>We'll send you a shipping confirmation email when your order is on its way.</p>
-            <p>If you have any questions, contact our customer service team at <a href="mailto:support@yourcompany.com">support@yourcompany.com</a>.</p>
+            <p>If you have any questions, contact our customer service team at <a href="mailto:enquiry@zayoraa.in">enquiry@zayoraa.in</a>.</p>
             
             <a href="${process.env.FRONTEND_URL}/orders/${order.orderid}" class="button">View Order Status</a>
         </div>
@@ -555,6 +642,13 @@ const verifyRazorpay = async (req, res) => {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
+    if (updatedOrder.couponCode && updatedOrder.userId) {
+      const coupon = await Coupon.findOne({ couponCode: updatedOrder.couponCode });
+      if (coupon?.isWelcomeCoupon) {
+        await consumeWelcomeDiscount(updatedOrder.userId, updatedOrder.couponCode);
+      }
+    }
+
     if (!updatedOrder.address?.email) {
       console.warn(`Payment verified for order ${updatedOrder.orderid} but no customer email on file`);
     } else {
@@ -608,7 +702,7 @@ const userSingleOrder = async (req, res) => {
 const userOrders = async (req, res) => {
   try {
     const { userId } = req.body;
-    const orders = await orderModel.find({ userId });
+    const orders = await orderModel.find({ userId }).sort({ createdAt: -1 });
     res.json({ success: true, orders });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

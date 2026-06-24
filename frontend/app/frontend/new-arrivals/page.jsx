@@ -283,7 +283,7 @@ export default function NewArrivals() {
 
             <div className="w-full">
                 <img
-                    src="/new-arrival/banner.png"
+                    src="/new-arrival/banner.jpg"
                     alt="New Arrivals"
                     className="w-full object-cover"
                 />

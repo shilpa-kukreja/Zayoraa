@@ -52,19 +52,27 @@ const Navbar = () => {
 
   // Detect login + fetch user
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    const fetchUser = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
 
-    if (token) {
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/getuser`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) setUser(data.user);
+      if (token) {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/getuser`, {
+          headers: { Authorization: `Bearer ${token}` },
         })
-        .catch((err) => console.error("User fetch failed:", err));
-    }
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) setUser(data.user);
+          })
+          .catch((err) => console.error("User fetch failed:", err));
+      } else {
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+    window.addEventListener("auth-change", fetchUser);
+    return () => window.removeEventListener("auth-change", fetchUser);
   }, []);
 
   // Handle click outside for dropdowns

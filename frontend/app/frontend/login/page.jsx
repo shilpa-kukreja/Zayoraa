@@ -453,7 +453,7 @@ const LoginContent = () => {
           </div>
           <div className="hidden md:block w-1/2">
             <img
-              src="/product/login.jpg"
+              src="/login/login.jpeg"
               alt="Sign up banner"
               className="object-cover w-full h-full"
             />

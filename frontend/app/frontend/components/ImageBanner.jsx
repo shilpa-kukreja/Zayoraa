@@ -7,7 +7,7 @@ export default function Banner() {
     <section className="w-full">
       <div className="relative w-full overflow-hidden">
         <img
-          src="/hero/banner3.jpg" // Place your image in public/banner/banner.jpg
+          src="/imagebanner/1.jpg" // Place your image in public/banner/banner.jpg
           alt="Banner"
           fill
           priority

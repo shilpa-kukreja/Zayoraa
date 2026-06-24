@@ -1781,6 +1781,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { jwtDecode } from "jwt-decode";
+import { AUTO_APPLY_KEY } from "./WelcomeDiscountPopup";
 import { FiChevronUp, FiTag } from "react-icons/fi"; // Add these icons
 import PaymentLoader from "./PaymentLoader";
 
@@ -1893,10 +1894,42 @@ const OrderSummary = ({ subtotal = 0 }) => {
   // Add this function to handle coupon selection
   const handleCouponSelect = (coupon) => {
     setCouponCode(coupon.couponCode);
-    setDiscount(coupon.discountValue);
     setIsCouponDrawerOpen(false);
     handleApplyCoupon(coupon.couponCode);
-    toast.success(`Coupon applied: ₹${coupon.discountValue} off`);
+  };
+
+  const handleApplyCoupon = async (codeOverride) => {
+    setCouponError("");
+    const code = (codeOverride || couponCode).trim();
+    if (!code) {
+      setCouponError("Please enter a coupon code");
+      return;
+    }
+    try {
+      const res = await axios.post(`${API_BASE}/api/coupons/apply`, {
+        couponCode: code,
+        totalAmount: subtotal,
+        userId: userId || user?._id || null,
+        addressPhone: selectedAddress?.phone || selectedAddress?.phoneNumber || null,
+      });
+      if (res?.data?.success) {
+        const amt = Number(res.data.discount) || 0;
+        setCouponCode(code);
+        setDiscount(amt);
+        setCouponError("");
+        toast.success(`Coupon applied: ₹${amt} off`);
+        if (code === localStorage.getItem(AUTO_APPLY_KEY)) {
+          localStorage.removeItem(AUTO_APPLY_KEY);
+        }
+      } else {
+        setDiscount(0);
+        setCouponError(res?.data?.message || "Invalid coupon");
+      }
+    } catch (err) {
+      console.error("Coupon error details:", err?.response?.data || err?.message);
+      setDiscount(0);
+      setCouponError(err?.response?.data?.message || "Error validating coupon");
+    }
   };
 
   // useEffect - fetch addresses when component mounts
@@ -2025,33 +2058,6 @@ const OrderSummary = ({ subtotal = 0 }) => {
     else setCheckoutStep("address");
   };
 
-  const handleApplyCoupon = async (coupon) => {
-    setCouponError("");
-    if (!couponCode.trim()) {
-      setCouponError("Please enter a coupon code");
-      return;
-    }
-    try {
-      const res = await axios.post(`${API_BASE}/api/coupons/apply`, {
-        couponCode: couponCode.trim(),
-        totalAmount: subtotal,
-      });
-      if (res?.data?.success) {
-        const amt = Number(res.data.discount) || 0;
-        setDiscount(amt);
-        setCouponError("");
-        toast.success(`Coupon applied: ₹${amt} off`);
-      } else {
-        setDiscount(0);
-        setCouponError(res?.data?.message || "Invalid coupon");
-      }
-    } catch (err) {
-      console.error("Coupon error details:", err?.response?.data || err?.message);
-      setDiscount(0);
-      setCouponError(err?.response?.data?.message || "Error validating coupon");
-    }
-  };
-
   const fetchCoupons = async () => {
     setLoading(true);
     try {
@@ -2081,14 +2087,18 @@ const OrderSummary = ({ subtotal = 0 }) => {
     }
   };
 
-
-
-
   useEffect(() => {
     if (token) {
       fetchCoupons();
     }
   }, [token]);
+
+  useEffect(() => {
+    const autoCode = typeof window !== "undefined" ? localStorage.getItem(AUTO_APPLY_KEY) : null;
+    if (autoCode && token && subtotal > 0 && !couponCode) {
+      handleApplyCoupon(autoCode);
+    }
+  }, [token, subtotal]);
 
   console.log("Available coupons:", coupons);
 
@@ -2842,17 +2852,9 @@ useEffect(() => {
                           <motion.div
                             key={coupon._id}
                             whileHover={{ scale: 1.01 }}
-                            className={`p-4 border rounded-lg bg-white cursor-pointer transition-all ${couponCode === coupon.code ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-blue-300"
+                            className={`p-4 border rounded-lg bg-white cursor-pointer transition-all ${couponCode === coupon.couponCode ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-blue-300"
                               }`}
-                            onClick={() => {
-
-                              setCouponCode(`${coupon.couponCode}`);
-                              setDiscount(coupon.discountValue);
-                              setIsCouponDrawerOpen(false);
-
-
-                              toast.success(`Coupon applied: ₹${coupon.discountValue} off`);
-                            }}
+                            onClick={() => handleCouponSelect(coupon)}
                           >
                             <div className="flex justify-between items-start">
                               <div className="flex items-center gap-3">
@@ -2876,9 +2878,11 @@ useEffect(() => {
                               </div>
                               <div className="text-right">
                                 <div className="text-sm font-bold text-[#7a1113]">
-                                  ₹{coupon.discount} OFF
+                                  {coupon.discounttype === "percentage"
+                                    ? `${coupon.discount}% OFF`
+                                    : `₹${coupon.discount} OFF`}
                                 </div>
-                                {couponCode === coupon.code && (
+                                {couponCode === coupon.couponCode && (
                                   <div className="text-xs text-green-600 font-medium mt-1 flex items-center">
                                     <FiCheck className="mr-1" /> Applied
                                   </div>

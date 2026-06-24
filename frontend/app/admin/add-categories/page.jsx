@@ -27,6 +27,7 @@ const AddCategoryPageContent= () => {
     description: "",
     metaTitle: "",
     metaDescription: "",
+    order: 0,
   });
   const [loading, setLoading] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
@@ -77,6 +78,7 @@ const AddCategoryPageContent= () => {
               description: cat.description || "",
               metaTitle: cat.metaTitle || "",
               metaDescription: cat.metaDescription || "",
+               order: cat.order ?? 0, 
               // DB ke liye sirf path save hoga
               img: cat?.img ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.img}` : "",
               banner: cat?.banner ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${cat.banner}` : ""
@@ -106,21 +108,24 @@ const AddCategoryPageContent= () => {
 
   // Handle change for text inputs
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setTouched({ ...touched, [name]: true });
+  const { name, value } = e.target;
+  setTouched({ ...touched, [name]: true });
 
-    if (name === "name") {
-      const generatedSlug = value
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-");
-
-      setFormData((prev) => ({ ...prev, name: value, slug: generatedSlug }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
+  if (name === "name") {
+    const generatedSlug = value
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-");
+    setFormData((prev) => ({ ...prev, name: value, slug: generatedSlug }));
+  } else if (name === "order") {
+    // Convert to number, allow empty string to clear
+    const numValue = value === "" ? "" : Number(value);
+    setFormData((prev) => ({ ...prev, [name]: numValue }));
+  } else {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+};
 
   // Handle image upload with preview
   const handleImageUpload = (e, field) => {
@@ -157,6 +162,8 @@ formDataToSend.append("slug", formData.slug);
 formDataToSend.append("description", formData.description);
 formDataToSend.append("metaTitle", formData.metaTitle || "");
 formDataToSend.append("metaDescription", formData.metaDescription || "");
+  formDataToSend.append("order", formData.order ?? 0);   // ✅ add this
+
 
 // Only append if a new file was selected
 if (formData.img instanceof File) {
@@ -293,6 +300,23 @@ if (formData.banner instanceof File) {
                   )}
                 </div>
               </div>
+
+
+              <div>
+  <label htmlFor="order" className="block text-sm font-medium text-gray-700 mb-2">
+    Display Order <span className="text-gray-400 text-xs">(lower = first)</span>
+  </label>
+  <input
+    type="number"
+    name="order"
+    id="order"
+    value={formData.order}
+    onChange={handleChange}
+    min="0"
+    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+    disabled={loading}
+  />
+</div>
 
               {/* Image Uploads */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

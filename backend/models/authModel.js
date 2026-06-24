@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema(
     img: { type: String, default: null },
     verifiedAt: { type: Date, default: Date.now },
     address: { type: [addressSchema], default: [] }, // array of subdocuments
+    firstOrderDiscountUnlocked: { type: Boolean, default: false },
+    firstOrderDiscountUsed: { type: Boolean, default: false },
+    welcomeCouponCode: { type: String, default: null },
   },
   { timestamps: true }
 );

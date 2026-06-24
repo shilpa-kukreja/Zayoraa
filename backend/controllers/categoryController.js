@@ -4,9 +4,7 @@ import { deleteUploadFile } from "../utils/fileUtils.js";
 // Create Category with image upload
 export const createCategory = async (req, res) => {
   try {
-   
-    const { name, slug, description, metaTitle, metaDescription } = req.body;
-    
+    const { name, slug, description, metaTitle, metaDescription, order } = req.body; // added order
 
     if (!name || !slug || !description) {
       return res.status(400).json({ success: false, message: "Required fields missing" });
@@ -27,6 +25,7 @@ export const createCategory = async (req, res) => {
       banner: `/uploads/categories/${banner}`,
       metaTitle,
       metaDescription,
+      order: order || 0,   // use provided order or default 0
     });
 
     res.status(201).json({ success: true, message: "Category created successfully", category });
@@ -38,7 +37,8 @@ export const createCategory = async (req, res) => {
 // Get All Categories
 export const getCategories = async (req, res) => {
   try {
-    const categories = await categoryModel.find().sort({ createdAt: -1 });
+    // Sort by order ascending (lower number first)
+    const categories = await categoryModel.find().sort({ order: 1, createdAt: -1 });
     res.status(200).json({ success: true, categories });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching categories", error: error.message });
@@ -65,7 +65,7 @@ export const getCategoryByid = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = { ...req.body };
+    const updateData = { ...req.body };  // includes order if sent
     const oldCategory = await categoryModel.findById(id);
 
     if (!oldCategory) {
@@ -84,6 +84,7 @@ export const updateCategory = async (req, res) => {
       runValidators: true,
     });
 
+    // Remove old images if replaced
     if (req.files?.img && oldCategory.img && oldCategory.img !== updatedCategory.img) {
       await deleteUploadFile(oldCategory.img);
     }

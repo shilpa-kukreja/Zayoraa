@@ -23,10 +23,17 @@ const categorySchema = new mongoose.Schema({
     required: true,
   },
   metaTitle: { 
-    type: String },
+    type: String 
+  },
   metaDescription: { 
-    type: String },
-
+    type: String 
+  },
+  order: {                     // <-- new field
+    type: Number,
+    default: 0,
+    // optional: index for faster sorting
+    // index: true
+  }
 }, { timestamps: true });
 
 const categoryModel = mongoose.models.Category || mongoose.model("Category", categorySchema);

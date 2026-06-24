@@ -1,11 +1,12 @@
 import Coupon from "../models/couponModel.js";
+import {
+  computeCouponDiscount,
+  validateWelcomeCoupon,
+} from "../utils/welcomeDiscount.js";
 
 export const applyCoupon = async (req, res) => {
   try {
-    const { couponCode, totalAmount } = req.body;
-
-    console.log("Received coupon code:", couponCode);
-    console.log("Received totalAmount:", totalAmount);
+    const { couponCode, totalAmount, userId, addressPhone } = req.body;
 
     if (!totalAmount || isNaN(totalAmount)) {
       return res.status(400).json({
@@ -14,7 +15,6 @@ export const applyCoupon = async (req, res) => {
       });
     }
 
-    // Find the coupon
     const coupon = await Coupon.findOne({ couponCode, isActive: true });
 
     if (!coupon) {
@@ -36,32 +36,36 @@ export const applyCoupon = async (req, res) => {
       });
     }
 
-    let discount = coupon.discount; // Fixed amount discount
-    if (coupon.maxDiscountAmount && discount > coupon.maxDiscountAmount) {
-      discount = coupon.maxDiscountAmount;
+    if (coupon.isWelcomeCoupon) {
+      const welcomeCheck = await validateWelcomeCoupon({
+        coupon,
+        userId,
+        addressPhone,
+      });
+      if (!welcomeCheck.valid) {
+        return res.status(400).json({
+          success: false,
+          message: welcomeCheck.message,
+        });
+      }
     }
 
-    // Calculate new total after discount
+    const discount = computeCouponDiscount(coupon, totalAmount);
     const newTotalAmount = Math.max(totalAmount - discount, 0);
 
-    console.log("Calculated discount:", discount);
-    console.log("New total amount:", newTotalAmount);
-
-   return res.status(200).json({
-  success: true,
-  discount: discount,
-  newTotalAmount,
-  discounttype: coupon.discounttype,
-  coupon, 
-});
-
+    return res.status(200).json({
+      success: true,
+      discount,
+      newTotalAmount,
+      discounttype: coupon.discounttype,
+      coupon,
+      isWelcomeCoupon: !!coupon.isWelcomeCoupon,
+    });
   } catch (error) {
     console.error("Error in applyCoupon:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
-
 
 export const addCoupan = async (req, res) => {
   try {
@@ -101,9 +105,6 @@ export const addCoupan = async (req, res) => {
   }
 };
 
-
-
-// Get all coupons
 export const getAllCoupons = async (req, res) => {
   try {
     const coupons = await Coupon.find().sort({ createdAt: -1 });
@@ -114,31 +115,22 @@ export const getAllCoupons = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
 export const getActiveCoupons = async (req, res) => {
   try {
     const today = new Date();
 
-    // Find all active coupons whose expiryDate is >= today, newest first
     const coupons = await Coupon.find({
       isActive: true,
-      expiryDate: { $gte: today }
+      expiryDate: { $gte: today },
+      isWelcomeCoupon: { $ne: true },
     }).sort({ createdAt: -1 });
 
-    // Return a consistent response shape (always an array)
     return res.status(200).json({ coupons });
   } catch (err) {
     console.error("Error fetching active coupons:", err);
     return res.status(500).json({ message: "Server error" });
   }
 };
-
-
 
 export const removeCoupons=async(req,res)=>{
   try {
@@ -149,7 +141,6 @@ export const removeCoupons=async(req,res)=>{
      res.json({ success: false, message: 'Error deleting Coupon' });
    }
 }
-
 
 export const updateCoupons = async (req, res) => {
   try {
@@ -178,7 +169,6 @@ export const updateCoupons = async (req, res) => {
   }
 };
 
-// Toggle coupon status
 export const toggleCouponStatus = async (req, res) => {
   try {
     const coupon = await Coupon.findById(req.params.id);

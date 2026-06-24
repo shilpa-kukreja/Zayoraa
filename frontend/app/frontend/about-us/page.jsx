@@ -28,7 +28,7 @@ export default function AboutPage() {
             <div className="absolute -inset-2 bg-gradient-to-r  rounded-2xl opacity-75 group-hover:opacity-100 transition-all duration-500 -rotate-1"></div>
             <div className="relative h-full rounded-xl overflow-hidden">
               <Image
-                src="/about-us/image.jpg"
+                src="/about-us/image2.png"
                 alt="About Us Image"
                 width={800}
                 height={800}

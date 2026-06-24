@@ -5,10 +5,33 @@ import axios from "axios";
 import { CheckCircle, ShoppingBag, Home, Clock, MapPin, CreditCard, Download, FileText, Mail } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import Link from "next/link";
 
  import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { resolveOrderTotals } from "../../utils/orderTotals";
+
+const formatDateDDMMYYYY = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+const addInvoiceWatermark = (pdf) => {
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  pdf.saveGraphicsState();
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(170);
+  pdf.setTextColor(220, 220, 220);
+  pdf.text("Zayoraa", pageWidth / 1.5, pageHeight / 1.5, {
+    align: "center",
+    angle: 40,
+  });
+  pdf.restoreGraphicsState();
+};
 
 export default function OrderSuccessPage() {
   const { orderid } = useParams();
@@ -44,15 +67,31 @@ const downloadInvoice = () => {
   try {
     const pdf = new jsPDF();
 
+    addInvoiceWatermark(pdf);
+
     // ===== Header =====
     pdf.setFontSize(18);
     pdf.setTextColor(40, 116, 240);
-    pdf.text("My Shop", 14, 20);
+    pdf.text("Zayoraa", 14, 20);
 
     pdf.setFontSize(10);
     pdf.setTextColor(100);
-    pdf.text("123 Business Street, Ghaziabad, India", 14, 28);
-    pdf.text("support@myshop.com | +91 9876543210", 14, 34);
+    let headerY = 28;
+    const companyAddressLines = [
+      "SF-221,2-floor, IT Complex, JMD Megapolis,",
+      "Village Tikri, Sohna Road,",
+      "Gurgaon, Haryana-122018",
+    ];
+    companyAddressLines.forEach((line) => {
+      pdf.text(line, 14, headerY);
+      headerY += 5;
+    });
+    headerY += 1;
+    pdf.text("GST Number :- 06AANCR5051J1Z4", 14, headerY);
+    headerY += 6;
+    pdf.text("enquiry@zayoraa.in | +91 8288985469", 14, headerY);
+
+    const billToStartY = Math.max(50, headerY + 10);
 
     // Invoice Title & Info
     pdf.setFontSize(16);
@@ -62,7 +101,7 @@ const downloadInvoice = () => {
     pdf.setFontSize(11);
     pdf.text(`Order ID: ${order.orderid}`, 170, 30, { align: "right" });
     pdf.text(
-      `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
+      `Date: ${formatDateDDMMYYYY(order.createdAt)}`,
       170,
       36,
       { align: "right" }
@@ -71,19 +110,27 @@ const downloadInvoice = () => {
     // ===== Customer Info =====
     pdf.setFontSize(12);
     pdf.setTextColor(0);
-    pdf.text("Bill To:", 14, 50);
+    pdf.text("Bill To:", 14, billToStartY);
 
     pdf.setFontSize(11);
     pdf.setTextColor(60);
     const { fullName, address1, address2, city, country, postalCode, phone, email } =
       order.address;
 
-    pdf.text(`${fullName} `, 14, 58);
-    pdf.text(address1, 14, 64);
-    if (address2) pdf.text(address2, 14, 70);
-    pdf.text(`${city}, ${country} - ${postalCode}`, 14, 76);
-    pdf.text(`Phone: ${phone}`, 14, 82);
-    pdf.text(`Email: ${email}`, 14, 88);
+    let customerY = billToStartY + 8;
+    pdf.text(`${fullName} `, 14, customerY);
+    customerY += 6;
+    pdf.text(address1, 14, customerY);
+    customerY += 6;
+    if (address2) {
+      pdf.text(address2, 14, customerY);
+      customerY += 6;
+    }
+    pdf.text(`${city}, ${country} - ${postalCode}`, 14, customerY);
+    customerY += 6;
+    pdf.text(`Phone: ${phone}`, 14, customerY);
+    customerY += 6;
+    pdf.text(`Email: ${email}`, 14, customerY);
 
     // ===== Items Table with Images =====
     const tableData = [];
@@ -100,7 +147,7 @@ const downloadInvoice = () => {
     autoTable(pdf, {
       head: [["Item", "Price", "Qty", "Total"]],
       body: tableData,
-      startY: 100,
+      startY: customerY + 12,
       styles: { fontSize: 11, lineColor: [220, 220, 220], lineWidth: 0.2 },
       headStyles: {
         fillColor: [40, 116, 240],
@@ -148,7 +195,7 @@ const downloadInvoice = () => {
     pdf.setFont("helvetica", "normal");
     pdf.setTextColor(120);
     pdf.text(
-      "Thank you for your purchase! For support, contact support@myshop.com",
+      "Thank you for your purchase! For support, contact enquiry@zayoraa.in",
       14,
       290
     );
@@ -191,11 +238,7 @@ const downloadInvoice = () => {
     );
   }
 
-  // Format date for display
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
+  const formatDate = (dateString) => formatDateDDMMYYYY(dateString);
 
   const { subtotal, tax, discount, total } = resolveOrderTotals(order);
 
@@ -491,11 +534,14 @@ const downloadInvoice = () => {
                 <p className="text-gray-600 mb-4">If you have any questions about your order, our customer service team is here to help.</p>
                 <div className="flex items-center gap-2 text-blue-600 mb-2">
                   <Mail size={16} />
-                  <span>support@yourcompany.com</span>
+                  <span>enquiry@zayoraa.in</span>
                 </div>
-                <button className="w-full mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+                
+                <Link href="/frontend/contact-us">
+                 <button className="w-full mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
                   Contact Support
-                </button>
+                </button></Link>
+               
               </div>
             </div>
           </div>
