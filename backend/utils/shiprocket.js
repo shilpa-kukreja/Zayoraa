@@ -121,3 +121,43 @@ export async function createShiprocketOrder(order) {
     return null;
   }
 }
+
+
+
+
+// for getting the esitmated time of the order throught the shiprocket 
+export async function getEstimatedDeliveryDate({ pickupPincode, deliveryPincode, weight, isCod = true }) {
+  try {
+    const token = await getShiprocketToken();
+
+    const response = await axios.get(
+      'https://apiv2.shiprocket.in/v1/external/courier/serviceability/',
+      {
+        params: {
+          pickup_postcode: pickupPincode,
+          delivery_postcode: deliveryPincode,
+          cod: isCod ? 1 : 0,
+          weight: weight.toString(),
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    let couriers = [];
+    let recommendedCourierId = null;
+    if (response.data && response.data.data) {
+      const data = response.data.data;
+      if (data.available_courier_companies && Array.isArray(data.available_courier_companies)) {
+        couriers = data.available_courier_companies;
+      }
+      recommendedCourierId = data.recommended_courier_company_id || null;
+    }
+
+    return { couriers, recommendedCourierId };
+  } catch (error) {
+    console.error('Failed to fetch EDD from Shiprocket:', error.response?.data || error.message);
+    return { couriers: [], recommendedCourierId: null };
+  }
+}

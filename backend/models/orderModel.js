@@ -38,6 +38,13 @@ const orderSchema = new mongoose.Schema({
   payment: { type: Boolean, default: false },
   couponCode: { type: String },
   discount: { type: Number, default: 0 },
+
+   estimatedDelivery: {
+    minDays: { type: Number },
+    maxDays: { type: Number },
+    estimatedDate: { type: Date },
+    courier: { type: String },
+  },
 }, { timestamps: true });
 
 const orderModel = mongoose.models.order || mongoose.model("order", orderSchema);

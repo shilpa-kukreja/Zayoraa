@@ -3,15 +3,20 @@ import crypto from "crypto";
 import orderModel from "../models/orderModel.js";
 import { sendEmailInBackground } from "../utils/mailer.js";
 import Coupon from "../models/couponModel.js";
-import { createShiprocketOrder } from '../utils/shiprocket.js';
-
+import {
+  createShiprocketOrder,
+  getEstimatedDeliveryDate,
+} from "../utils/shiprocket.js";
+import {
+  calculateTotalWeight,
+  calculateEstimatedDate,
+} from "../utils/orderHelpers.js";
 
 import {
   computeCouponDiscount,
   consumeWelcomeDiscount,
   validateWelcomeCoupon,
 } from "../utils/welcomeDiscount.js";
-
 
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -20,15 +25,21 @@ const razorpayInstance = new Razorpay({
 
 const computeOrderAmounts = (items, discount = 0) => {
   const subtotal = (items || []).reduce(
-    (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
-    0
+    (sum, item) =>
+      sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+    0,
   );
   const tax = Math.floor(subtotal * 0.02);
   const amount = Math.max(0, subtotal + tax - (Number(discount) || 0));
   return { subtotal, tax, amount };
 };
 
-const resolveOrderDiscount = async ({ couponCode, items, userId, addressPhone }) => {
+const resolveOrderDiscount = async ({
+  couponCode,
+  items,
+  userId,
+  addressPhone,
+}) => {
   if (!couponCode) {
     return { discount: 0, couponCode: "" };
   }
@@ -43,8 +54,9 @@ const resolveOrderDiscount = async ({ couponCode, items, userId, addressPhone })
   }
 
   const subtotal = (items || []).reduce(
-    (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
-    0
+    (sum, item) =>
+      sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+    0,
   );
 
   if (subtotal < coupon.minPurchaseAmount) {
@@ -67,7 +79,10 @@ const resolveOrderDiscount = async ({ couponCode, items, userId, addressPhone })
 };
 
 const formatOrderSummaryHtml = (order) => {
-  const { subtotal, tax, amount } = computeOrderAmounts(order.items, order.discount);
+  const { subtotal, tax, amount } = computeOrderAmounts(
+    order.items,
+    order.discount,
+  );
   const orderSubtotal = order.subtotal ?? subtotal;
   const orderTax = order.tax ?? tax;
   const orderAmount = order.amount ?? amount;
@@ -108,8 +123,6 @@ const formatOrderSummaryHtml = (order) => {
 //     const newOrder = new orderModel(orderData);
 //     await newOrder.save();
 
-    
-
 //     res.json({ success: true, message: "Order placed successfully (COD)", orderid: uniqueOrderId });
 //   } catch (error) {
 //     console.error("Error in placeOrderCOD:", error);
@@ -117,8 +130,40 @@ const formatOrderSummaryHtml = (order) => {
 //   }
 // };
 
-
 const sendCODOrderConfirmationEmail = (order) => {
+  // Format date helper (dd/mm/yyyy)
+  const formatDateDDMMYYYY = (date) => {
+    if (!date) return '';
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Build delivery message
+  let deliveryMessage = 'Your order has been successfully placed and is now being processed.';
+  if (order.estimatedDelivery && order.estimatedDelivery.maxDays) {
+    const days = order.estimatedDelivery.maxDays;
+    const dayLabel = days > 1 ? 'days' : 'day';
+    const dateStr = order.estimatedDelivery.estimatedDate
+      ? ` (by ${formatDateDDMMYYYY(order.estimatedDelivery.estimatedDate)})`
+      : '';
+    deliveryMessage = `Your order has been confirmed and is expected to be delivered within ${days} ${dayLabel}${dateStr}.`;
+  }
+
+  // Build delivery info block for the email (optional but helpful)
+  const deliveryInfoHtml = (order.estimatedDelivery && order.estimatedDelivery.maxDays) ? `
+    <div class="delivery-info" style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">
+        <h3 style="margin-top:0;">Estimated Delivery</h3>
+        <p>
+            Expected within ${order.estimatedDelivery.maxDays} day${order.estimatedDelivery.maxDays > 1 ? 's' : ''}
+            ${order.estimatedDelivery.estimatedDate ? `(by ${formatDateDDMMYYYY(order.estimatedDelivery.estimatedDate)})` : ''}
+        </p>
+        ${order.estimatedDelivery.courier ? `<p>Courier: ${order.estimatedDelivery.courier}</p>` : ''}
+    </div>
+  ` : '';
+
   sendEmailInBackground({
     to: order.address.email,
     subject: `Order Placed - Order #${order.orderid}`,
@@ -208,6 +253,12 @@ const sendCODOrderConfirmationEmail = (order) => {
             padding: 15px;
             margin: 20px 0;
         }
+        .delivery-info {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 15px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +270,9 @@ const sendCODOrderConfirmationEmail = (order) => {
         <div class="content">
             <h2>Thank you for your order!</h2>
             <p>Hi ${order.address.fullName},</p>
-            <p>Your order has been successfully placed and is now being processed.</p>
+            <p>${deliveryMessage}</p>
+            
+            ${deliveryInfoHtml}
             
             <div class="cod-notice">
                 <h3>Cash on Delivery</h3>
@@ -234,7 +287,9 @@ const sendCODOrderConfirmationEmail = (order) => {
                 <p><strong>Payment Method:</strong> Cash on Delivery</p>
                 
                 <h4>Items Ordered</h4>
-                ${order.items.map(item => `
+                ${order.items
+                  .map(
+                    (item) => `
                     <div class="product">
                         <img src="${item.image}" alt="${item.name}" class="product-image">
                         <div class="product-info">
@@ -243,7 +298,9 @@ const sendCODOrderConfirmationEmail = (order) => {
                             <p>Price: ₹${item.price}</p>
                         </div>
                     </div>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
                 
                 <div class="summary">
                     ${formatOrderSummaryHtml(order)}
@@ -254,16 +311,14 @@ const sendCODOrderConfirmationEmail = (order) => {
                 <h3>Shipping Address</h3>
                 <p>
                     ${order.address.fullName} <br>
-                    ${order.address.company ? order.address.company + '<br>' : ''}
+                    ${order.address.company ? order.address.company + "<br>" : ""}
                     ${order.address.address1}<br>
-                    ${order.address.address2 ? order.address.address2 + '<br>' : ''}
+                    ${order.address.address2 ? order.address.address2 + "<br>" : ""}
                     ${order.address.city}, ${order.address.postalCode}<br>
-                    ${order.address.country}<br>
                     Phone: ${order.address.phone}
                 </p>
             </div>
             
-            <p>We'll send you a shipping confirmation email when your order is on its way.</p>
             <p>If you have any questions, contact our customer service team at <a href="mailto:enquiry@zayoraa.in">enquiry@zayoraa.in</a>.</p>
             
             <a href="${process.env.FRONTEND_URL}/orders/${order.orderid}" class="button">Track Your Order</a>
@@ -285,7 +340,9 @@ const placeOrderCOD = async (req, res) => {
     const { userId, items, address, couponCode } = req.body;
 
     if (!items || items.length === 0) {
-      return res.status(400).json({ success: false, message: "No items provided in the order" });
+      return res
+        .status(400)
+        .json({ success: false, message: "No items provided in the order" });
     }
 
     let resolvedDiscount = 0;
@@ -302,11 +359,16 @@ const placeOrderCOD = async (req, res) => {
         resolvedDiscount = discountResult.discount;
         resolvedCouponCode = discountResult.couponCode;
       } catch (couponError) {
-        return res.status(400).json({ success: false, message: couponError.message });
+        return res
+          .status(400)
+          .json({ success: false, message: couponError.message });
       }
     }
 
-    const { subtotal, tax, amount } = computeOrderAmounts(items, resolvedDiscount);
+    const { subtotal, tax, amount } = computeOrderAmounts(
+      items,
+      resolvedDiscount,
+    );
     const uniqueOrderId = `COD-${Date.now()}-${crypto.randomBytes(3).toString("hex")}`;
 
     const orderData = {
@@ -326,6 +388,43 @@ const placeOrderCOD = async (req, res) => {
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
+    // --- NEW: Fetch EDD ---
+    // --- Fetch EDD for COD order ---
+    const eddResult = await getEstimatedDeliveryDate({
+      pickupPincode: process.env.SHIPROCKET_PICKUP_PINCODE,
+      deliveryPincode: newOrder.address.postalCode,
+      weight: calculateTotalWeight(newOrder.items),
+      isCod: true,
+    });
+
+    console.log("EDD result:", JSON.stringify(eddResult, null, 2));
+
+    if (eddResult && eddResult.couriers && eddResult.couriers.length > 0) {
+      let courier = eddResult.couriers[0];
+      if (eddResult.recommendedCourierId) {
+        const recommended = eddResult.couriers.find(
+          (c) => c.courier_company_id === eddResult.recommendedCourierId,
+        );
+        if (recommended) courier = recommended;
+      }
+
+      const days = parseInt(courier.estimated_delivery_days, 10) || 0;
+      let estimatedDate = null;
+      if (courier.etd) {
+        estimatedDate = new Date(courier.etd);
+        if (isNaN(estimatedDate.getTime())) estimatedDate = null;
+      }
+
+      newOrder.estimatedDelivery = {
+        minDays: days,
+        maxDays: days,
+        courier: courier.courier_name,
+        estimatedDate: estimatedDate,
+      };
+      await newOrder.save();
+    }
+
+    // rest the coupon code
     if (resolvedCouponCode && userId) {
       const coupon = await Coupon.findOne({ couponCode: resolvedCouponCode });
       if (coupon?.isWelcomeCoupon) {
@@ -335,15 +434,17 @@ const placeOrderCOD = async (req, res) => {
 
     sendCODOrderConfirmationEmail(newOrder);
 
-
     // Create Shiprocket order (non-blocking)
     // Fire and forget – don't await if you don't want to delay response
-    createShiprocketOrder(newOrder).catch(err =>
-      console.error('Async Shiprocket error:', err)
+    createShiprocketOrder(newOrder).catch((err) =>
+      console.error("Async Shiprocket error:", err),
     );
 
-
-    res.json({ success: true, message: "Order placed successfully (COD)", orderid: uniqueOrderId });
+    res.json({
+      success: true,
+      message: "Order placed successfully (COD)",
+      orderid: uniqueOrderId,
+    });
   } catch (error) {
     console.error("Error in placeOrderCOD:", error);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -352,20 +453,35 @@ const placeOrderCOD = async (req, res) => {
 
 // Function to send COD order confirmation email
 
-
 // ---------------- Razorpay Order ----------------
 const placeOrderRazorpay = async (req, res) => {
   try {
     const { userId, items, address, couponCode } = req.body;
 
     if (!userId) {
-      return res.status(400).json({ success: false, message: "User not logged in. Please sign in to pay online." });
+      return res.status(400).json({
+        success: false,
+        message: "User not logged in. Please sign in to pay online.",
+      });
     }
     if (!items?.length) {
-      return res.status(400).json({ success: false, message: "No items in cart" });
+      return res
+        .status(400)
+        .json({ success: false, message: "No items in cart" });
     }
-    if (!address?.fullName || !address?.email || !address?.phone || !address?.address1 || !address?.city || !address?.state || !address?.postalCode) {
-      return res.status(400).json({ success: false, message: "Complete delivery address is required" });
+    if (
+      !address?.fullName ||
+      !address?.email ||
+      !address?.phone ||
+      !address?.address1 ||
+      !address?.city ||
+      !address?.state ||
+      !address?.postalCode
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Complete delivery address is required",
+      });
     }
 
     let resolvedDiscount = 0;
@@ -382,11 +498,17 @@ const placeOrderRazorpay = async (req, res) => {
         resolvedDiscount = discountResult.discount;
         resolvedCouponCode = discountResult.couponCode;
       } catch (couponError) {
-        return res.status(400).json({ success: false, message: couponError.message });
+        return res
+          .status(400)
+          .json({ success: false, message: couponError.message });
       }
     }
 
-    const { subtotal, tax, amount: payable } = computeOrderAmounts(items, resolvedDiscount);
+    const {
+      subtotal,
+      tax,
+      amount: payable,
+    } = computeOrderAmounts(items, resolvedDiscount);
     const amountInPaise = Math.round(payable * 100);
 
     if (amountInPaise < 100) {
@@ -440,11 +562,40 @@ const placeOrderRazorpay = async (req, res) => {
   }
 };
 
-
-
-
-
 const sendPaymentConfirmationOnlineEmail = (order) => {
+  // Format date helper (dd/mm/yyyy)
+  const formatDateDDMMYYYY = (date) => {
+    if (!date) return '';
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Build delivery message
+  let deliveryMessage = 'Your payment has been successfully processed. Your order is now being processed and will be shipped soon.';
+  if (order.estimatedDelivery && order.estimatedDelivery.maxDays) {
+    const days = order.estimatedDelivery.maxDays;
+    const dayLabel = days > 1 ? 'days' : 'day';
+    const dateStr = order.estimatedDelivery.estimatedDate
+      ? ` (by ${formatDateDDMMYYYY(order.estimatedDelivery.estimatedDate)})`
+      : '';
+    deliveryMessage = `Your payment has been confirmed and your order is expected to be delivered within ${days} ${dayLabel}${dateStr}.`;
+  }
+
+  // Build delivery info block (optional but consistent with COD email)
+  const deliveryInfoHtml = (order.estimatedDelivery && order.estimatedDelivery.maxDays) ? `
+    <div class="delivery-info" style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">
+        <h3 style="margin-top:0;">Estimated Delivery</h3>
+        <p>
+            Expected within ${order.estimatedDelivery.maxDays} day${order.estimatedDelivery.maxDays > 1 ? 's' : ''}
+            ${order.estimatedDelivery.estimatedDate ? `(by ${formatDateDDMMYYYY(order.estimatedDelivery.estimatedDate)})` : ''}
+        </p>
+        ${order.estimatedDelivery.courier ? `<p>Courier: ${order.estimatedDelivery.courier}</p>` : ''}
+    </div>
+  ` : '';
+
   sendEmailInBackground({
     to: order.address.email,
     subject: `Payment Confirmed - Order #${order.orderid}`,
@@ -469,7 +620,7 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
             margin: 0 auto;
             background-color: #ffffff;
         }
-         .header {
+        .header {
             background-color: #10b981;
             padding: 20px;
             text-align: center;
@@ -528,6 +679,12 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
             border-radius: 5px;
             margin-top: 15px;
         }
+        .delivery-info {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 15px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -539,7 +696,9 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
         <div class="content">
             <h2>Thank you for your order!</h2>
             <p>Hi ${order.address.fullName},</p>
-            <p>Your payment has been successfully processed. Your order is now being processed and will be shipped soon.</p>
+            <p>${deliveryMessage}</p>
+            
+            ${deliveryInfoHtml}
             
             <div class="order-details">
                 <h3>Order Details</h3>
@@ -547,7 +706,9 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
                 <p><strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}</p>
                 
                 <h4>Items Ordered</h4>
-                ${order.items.map(item => `
+                ${order.items
+                  .map(
+                    (item) => `
                     <div class="product">
                         <img src="${item.image}" alt="${item.name}" class="product-image">
                         <div class="product-info">
@@ -556,7 +717,9 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
                             <p>Price: ₹${item.price}</p>
                         </div>
                     </div>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
                 
                 <div class="summary">
                     ${formatOrderSummaryHtml(order)}
@@ -569,16 +732,15 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
                 <h3>Shipping Address</h3>
                 <p>
                     ${order.address.fullName} <br>
-                    ${order.address.company ? order.address.company + '<br>' : ''}
+                    ${order.address.company ? order.address.company + "<br>" : ""}
                     ${order.address.address1}<br>
-                    ${order.address.address2 ? order.address.address2 + '<br>' : ''}
+                    ${order.address.address2 ? order.address.address2 + "<br>" : ""}
                     ${order.address.city}, ${order.address.postalCode}<br>
-                    ${order.address.country}<br>
+                  
                     Phone: ${order.address.phone}
                 </p>
             </div>
             
-            <p>We'll send you a shipping confirmation email when your order is on its way.</p>
             <p>If you have any questions, contact our customer service team at <a href="mailto:enquiry@zayoraa.in">enquiry@zayoraa.in</a>.</p>
             
             <a href="${process.env.FRONTEND_URL}/orders/${order.orderid}" class="button">View Order Status</a>
@@ -594,7 +756,6 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
       `,
   });
 };
-
 // ---------------- Verify Razorpay Payment ----------------
 // const verifyRazorpay = async (req, res) => {
 //   try {
@@ -626,10 +787,10 @@ const sendPaymentConfirmationOnlineEmail = (order) => {
 //   }
 // };
 
-
 const verifyRazorpay = async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
     const generated_signature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -637,43 +798,95 @@ const verifyRazorpay = async (req, res) => {
       .digest("hex");
 
     if (generated_signature !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Invalid payment signature" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid payment signature" });
     }
 
     const updatedOrder = await orderModel.findOneAndUpdate(
       { orderid: razorpay_order_id },
-      { 
+      {
         payment: true,
         paymentId: razorpay_payment_id, // Store payment ID for reference
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedOrder) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
 
+    // --- Fetch EDD for verified order ---
+    // --- Fetch EDD for verified order ---
+    const eddResult = await getEstimatedDeliveryDate({
+      pickupPincode: process.env.SHIPROCKET_PICKUP_PINCODE,
+      deliveryPincode: updatedOrder.address.postalCode,
+      weight: calculateTotalWeight(updatedOrder.items),
+      isCod: false, // Razorpay orders are prepaid
+    });
+
+    console.log("EDD result:", JSON.stringify(eddResult, null, 2));
+
+    if (eddResult && eddResult.couriers && eddResult.couriers.length > 0) {
+      let courier = eddResult.couriers[0];
+      if (eddResult.recommendedCourierId) {
+        const recommended = eddResult.couriers.find(
+          (c) => c.courier_company_id === eddResult.recommendedCourierId,
+        );
+        if (recommended) courier = recommended;
+      }
+
+      const days = parseInt(courier.estimated_delivery_days, 10) || 0;
+      let estimatedDate = null;
+      if (courier.etd) {
+        estimatedDate = new Date(courier.etd);
+        if (isNaN(estimatedDate.getTime())) estimatedDate = null;
+      }
+
+      updatedOrder.estimatedDelivery = {
+        minDays: days,
+        maxDays: days,
+        courier: courier.courier_name,
+        estimatedDate: estimatedDate,
+      };
+      await updatedOrder.save();
+    }
+
+    // ... handle coupon, send email, create Shiprocket order, etc. ...
+
     if (updatedOrder.couponCode && updatedOrder.userId) {
-      const coupon = await Coupon.findOne({ couponCode: updatedOrder.couponCode });
+      const coupon = await Coupon.findOne({
+        couponCode: updatedOrder.couponCode,
+      });
       if (coupon?.isWelcomeCoupon) {
-        await consumeWelcomeDiscount(updatedOrder.userId, updatedOrder.couponCode);
+        await consumeWelcomeDiscount(
+          updatedOrder.userId,
+          updatedOrder.couponCode,
+        );
       }
     }
 
     if (!updatedOrder.address?.email) {
-      console.warn(`Payment verified for order ${updatedOrder.orderid} but no customer email on file`);
+      console.warn(
+        `Payment verified for order ${updatedOrder.orderid} but no customer email on file`,
+      );
     } else {
       sendPaymentConfirmationOnlineEmail(updatedOrder);
     }
 
-
-      // Create Shiprocket order (non-blocking)
-    createShiprocketOrder(updatedOrder).catch(err =>
-      console.error('Async Shiprocket error:', err)
+    // Create Shiprocket order (non-blocking)
+    createShiprocketOrder(updatedOrder).catch((err) =>
+      console.error("Async Shiprocket error:", err),
     );
 
-    res.json({ success: true, message: "Payment verified successfully", order: updatedOrder });
+    res.json({
+      success: true,
+      message: "Payment verified successfully",
+      order: updatedOrder,
+    });
   } catch (error) {
     console.error("Error verifying Razorpay payment:", error);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -697,24 +910,19 @@ const userSingleOrder = async (req, res) => {
     const order = await orderModel.findOne({ orderid: id }).lean();
 
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
 
     res.json({ success: true, order });
   } catch (error) {
     console.error("❌ Internal Error:", error);
-    res.status(500).json({ success: false, message: "Server Error. Please try again." });
+    res
+      .status(500)
+      .json({ success: false, message: "Server Error. Please try again." });
   }
 };
-
-
-
-
-
-
-
-
-
 
 // ---------------- User Orders ----------------
 const userOrders = async (req, res) => {
@@ -744,20 +952,20 @@ const userOrders = async (req, res) => {
 //   }
 // };
 
-
-
-
 const updateStatus = async (req, res) => {
   try {
     const { orderid, status } = req.body;
     const updated = await orderModel.findOneAndUpdate(
       { orderid },
       { status },
-      { new: true }
+      { new: true },
     );
-    
-    if (!updated) return res.status(404).json({ success: false, message: "Order not found" });
-    
+
+    if (!updated)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+
     // Send status update email (non-blocking)
     sendStatusUpdateEmail(updated);
 
@@ -774,71 +982,79 @@ const sendStatusUpdateEmail = (order) => {
   let instructions = "";
   let color = "";
   let buttonText = "View Order Details";
-    
-    // Customize email based on status
-    switch (order.status.toLowerCase()) {
-      case "cancelled":
-        subject = `Your Order #${order.orderid} Has Been Cancelled`;
-        statusMessage = "Your order has been cancelled as requested.";
-        instructions = "If this was a mistake or if you have any questions, please contact our customer support team immediately.";
-        color = "#ef4444"; // Red
-        buttonText = "Contact Support";
-        break;
-      case "returned":
-        subject = `Your Return Request for Order #${order.orderid}`;
-        statusMessage = "Your return request has been processed successfully.";
-        instructions = "Please allow 5-7 business days for the refund to be processed to your original payment method. You will receive an email confirmation once the refund is initiated.";
-        color = "#f59e0b"; // Amber
-        buttonText = "Track Return";
-        break;
-      case "delivered":
-        subject = `Your Order #${order.orderid} Has Been Delivered`;
-        statusMessage = "Your order has been successfully delivered!";
-        instructions = "We hope you're enjoying your products. Thank you for shopping with us!";
-        color = "#10b981"; // Green
-        buttonText = "Rate Your Purchase";
-        break;
-      case "shipped":
-        subject = `Your Order #${order.orderid} Has Been Shipped`;
-        statusMessage = "Your order is on the way!";
-        instructions = "You can track your package using the tracking information below. Expected delivery date is within 3-5 business days.";
-        color = "#3b82f6"; // Blue
-        buttonText = "Track Package";
-        break;
-      case "processing":
-        subject = `Your Order #${order.orderid} is Being Processed`;
-        statusMessage = "We've received your order and are preparing it for shipment.";
-        instructions = "You'll receive another notification when your order ships. Typically, orders are processed within 24-48 hours.";
-        color = "#8b5cf6"; // Purple
-        break;
-      default:
-        subject = `Update on Your Order #${order.orderid}`;
-        statusMessage = `Your order status has been updated to: ${order.status}`;
-        instructions = "";
-        color = "#6b7280"; // Gray
-    }
-    
-    // Generate tracking info if shipped
-    const trackingInfo = order.status.toLowerCase() === "shipped" ? 
-      `<p><strong>Tracking Number:</strong> TRK-${order.orderid.slice(-8).toUpperCase()}</p>
-       <p><strong>Carrier:</strong> Standard Shipping</p>` : "";
-    
-    // Generate different button URLs based on status
-    let buttonUrl = `${process.env.FRONTEND_URL}/orders/${order.orderid}`;
-    if (order.status.toLowerCase() === "cancelled") {
-      buttonUrl = `${process.env.FRONTEND_URL}/contact`;
-    } else if (order.status.toLowerCase() === "returned") {
-      buttonUrl = `${process.env.FRONTEND_URL}/returns/${order.orderid}`;
-    } else if (order.status.toLowerCase() === "delivered") {
-      buttonUrl = `${process.env.FRONTEND_URL}/review/${order.orderid}`;
-    } else if (order.status.toLowerCase() === "shipped") {
-      buttonUrl = `${process.env.FRONTEND_URL}/tracking/${order.orderid}`;
-    }
-    
-    sendEmailInBackground({
-      to: order.address.email,
-      subject: subject,
-      html: `
+
+  // Customize email based on status
+  switch (order.status.toLowerCase()) {
+    case "cancelled":
+      subject = `Your Order #${order.orderid} Has Been Cancelled`;
+      statusMessage = "Your order has been cancelled as requested.";
+      instructions =
+        "If this was a mistake or if you have any questions, please contact our customer support team immediately.";
+      color = "#ef4444"; // Red
+      buttonText = "Contact Support";
+      break;
+    case "returned":
+      subject = `Your Return Request for Order #${order.orderid}`;
+      statusMessage = "Your return request has been processed successfully.";
+      instructions =
+        "Please allow 5-7 business days for the refund to be processed to your original payment method. You will receive an email confirmation once the refund is initiated.";
+      color = "#f59e0b"; // Amber
+      buttonText = "Track Return";
+      break;
+    case "delivered":
+      subject = `Your Order #${order.orderid} Has Been Delivered`;
+      statusMessage = "Your order has been successfully delivered!";
+      instructions =
+        "We hope you're enjoying your products. Thank you for shopping with us!";
+      color = "#10b981"; // Green
+      buttonText = "Rate Your Purchase";
+      break;
+    case "shipped":
+      subject = `Your Order #${order.orderid} Has Been Shipped`;
+      statusMessage = "Your order is on the way!";
+      instructions =
+        "You can track your package using the tracking information below. Expected delivery date is within 3-5 business days.";
+      color = "#3b82f6"; // Blue
+      buttonText = "Track Package";
+      break;
+    case "processing":
+      subject = `Your Order #${order.orderid} is Being Processed`;
+      statusMessage =
+        "We've received your order and are preparing it for shipment.";
+      instructions =
+        "You'll receive another notification when your order ships. Typically, orders are processed within 24-48 hours.";
+      color = "#8b5cf6"; // Purple
+      break;
+    default:
+      subject = `Update on Your Order #${order.orderid}`;
+      statusMessage = `Your order status has been updated to: ${order.status}`;
+      instructions = "";
+      color = "#6b7280"; // Gray
+  }
+
+  // Generate tracking info if shipped
+  const trackingInfo =
+    order.status.toLowerCase() === "shipped"
+      ? `<p><strong>Tracking Number:</strong> TRK-${order.orderid.slice(-8).toUpperCase()}</p>
+       <p><strong>Carrier:</strong> Standard Shipping</p>`
+      : "";
+
+  // Generate different button URLs based on status
+  let buttonUrl = `${process.env.FRONTEND_URL}/orders/${order.orderid}`;
+  if (order.status.toLowerCase() === "cancelled") {
+    buttonUrl = `${process.env.FRONTEND_URL}/contact`;
+  } else if (order.status.toLowerCase() === "returned") {
+    buttonUrl = `${process.env.FRONTEND_URL}/returns/${order.orderid}`;
+  } else if (order.status.toLowerCase() === "delivered") {
+    buttonUrl = `${process.env.FRONTEND_URL}/review/${order.orderid}`;
+  } else if (order.status.toLowerCase() === "shipped") {
+    buttonUrl = `${process.env.FRONTEND_URL}/tracking/${order.orderid}`;
+  }
+
+  sendEmailInBackground({
+    to: order.address.email,
+    subject: subject,
+    html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -941,23 +1157,31 @@ const sendStatusUpdateEmail = (order) => {
             <div class="status-update">
                 <h3>Status: ${order.status}</h3>
                 <p>${statusMessage}</p>
-                ${instructions ? `<p>${instructions}</p>` : ''}
+                ${instructions ? `<p>${instructions}</p>` : ""}
                 
-                ${order.status.toLowerCase() === "shipped" ? `
+                ${
+                  order.status.toLowerCase() === "shipped"
+                    ? `
                 <div class="tracking-info">
                     <h4>Tracking Information</h4>
                     ${trackingInfo}
                 </div>
-                ` : ''}
+                `
+                    : ""
+                }
                 
-                ${order.status.toLowerCase() === "returned" ? `
+                ${
+                  order.status.toLowerCase() === "returned"
+                    ? `
                 <div class="tracking-info">
                     <h4>Return Details</h4>
                     <p><strong>Return ID:</strong> RTN-${order.orderid.slice(-8).toUpperCase()}</p>
                     <p><strong>Refund Method:</strong> Original payment method</p>
                     <p><strong>Processing Time:</strong> 5-7 business days</p>
                 </div>
-                ` : ''}
+                `
+                    : ""
+                }
             </div>
             
             <div class="order-details">
@@ -967,7 +1191,9 @@ const sendStatusUpdateEmail = (order) => {
                 <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
                 
                 <h4>Items</h4>
-                ${order.items.map(item => `
+                ${order.items
+                  .map(
+                    (item) => `
                     <div class="product">
                         <img src="${item.image}" alt="${item.name}" class="product-image">
                         <div class="product-info">
@@ -976,7 +1202,9 @@ const sendStatusUpdateEmail = (order) => {
                             <p>Price: ₹${item.price}</p>
                         </div>
                     </div>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
                 
                 ${formatOrderSummaryHtml(order)}
             </div>
@@ -985,31 +1213,30 @@ const sendStatusUpdateEmail = (order) => {
                 <h3>Shipping Address</h3>
                 <p>
                     ${order.address.fullName} <br>
-                    ${order.address.company ? order.address.company + '<br>' : ''}
+                    ${order.address.company ? order.address.company + "<br>" : ""}
                     ${order.address.address1}<br>
-                    ${order.address.address2 ? order.address.address2 + '<br>' : ''}
+                    ${order.address.address2 ? order.address.address2 + "<br>" : ""}
                     ${order.address.city}, ${order.address.postalCode}<br>
                     ${order.address.country}<br>
                     Phone: ${order.address.phone}
                 </p>
             </div>
             
-            <p>If you have any questions about your order, contact our customer service team at <a href="mailto:support@yourcompany.com">support@yourcompany.com</a> or call us at ${process.env.SUPPORT_PHONE || '1-800-123-4567'}.</p>
+            <p>If you have any questions about your order, contact our customer service team at <a href="mailto:support@yourcompany.com">support@yourcompany.com</a> or call us at ${process.env.SUPPORT_PHONE || "1-800-123-4567"}.</p>
             
             <a href="${buttonUrl}" class="button">${buttonText}</a>
         </div>
         
         <div class="footer">
-            <p>© ${new Date().getFullYear()} ${process.env.COMPANY_NAME || 'Your Company Name'}. All rights reserved.</p>
-            <p>${process.env.COMPANY_ADDRESS || '123 Business Street, City, Country'}</p>
+            <p>© ${new Date().getFullYear()} ${process.env.COMPANY_NAME || "Your Company Name"}. All rights reserved.</p>
+            <p>${process.env.COMPANY_ADDRESS || "123 Business Street, City, Country"}</p>
         </div>
     </div>
 </body>
 </html>
       `,
-    });
+  });
 };
-
 
 export {
   placeOrderCOD,
