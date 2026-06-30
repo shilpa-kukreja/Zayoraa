@@ -3,11 +3,15 @@ import crypto from "crypto";
 import orderModel from "../models/orderModel.js";
 import { sendEmailInBackground } from "../utils/mailer.js";
 import Coupon from "../models/couponModel.js";
+import { createShiprocketOrder } from '../utils/shiprocket.js';
+
+
 import {
   computeCouponDiscount,
   consumeWelcomeDiscount,
   validateWelcomeCoupon,
 } from "../utils/welcomeDiscount.js";
+
 
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -330,6 +334,14 @@ const placeOrderCOD = async (req, res) => {
     }
 
     sendCODOrderConfirmationEmail(newOrder);
+
+
+    // Create Shiprocket order (non-blocking)
+    // Fire and forget – don't await if you don't want to delay response
+    createShiprocketOrder(newOrder).catch(err =>
+      console.error('Async Shiprocket error:', err)
+    );
+
 
     res.json({ success: true, message: "Order placed successfully (COD)", orderid: uniqueOrderId });
   } catch (error) {
@@ -654,6 +666,12 @@ const verifyRazorpay = async (req, res) => {
     } else {
       sendPaymentConfirmationOnlineEmail(updatedOrder);
     }
+
+
+      // Create Shiprocket order (non-blocking)
+    createShiprocketOrder(updatedOrder).catch(err =>
+      console.error('Async Shiprocket error:', err)
+    );
 
     res.json({ success: true, message: "Payment verified successfully", order: updatedOrder });
   } catch (error) {
@@ -1000,6 +1018,5 @@ export {
   allOrders,
   userOrders,
   updateStatus,
- 
   userSingleOrder,
 };
