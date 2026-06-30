@@ -381,9 +381,10 @@ export const AppContextProvider = ({ children }) => {
         setCartItems(updatedCart);
     };
 
-    const clearCart = () => {
-        setCartItems([]);
-    };
+   const clearCart = () => {
+    setCartItems([]);
+    setIsCartOpen(false);
+};
 
     const getCartCount = () => {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
