@@ -517,10 +517,7 @@
 "use client";
 
 import { useState, useRef, useEffect, Suspense, useContext } from "react";
-
-// import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useSearchParams } from "next/navigation";
-
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -528,7 +525,6 @@ import {
   FiHeart,
   FiShare2,
   FiChevronRight,
-  FiZoomIn,
   FiX,
   FiPlay,
 } from "react-icons/fi";
@@ -557,39 +553,23 @@ const ProductDetailContent = ({ productIDs }) => {
   } = useContext(AppContext);
   const product = products.find((p) => p.slug === slug);
 
-  console.log("videoshowdetail", videos);
-
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [mainImage, setMainImage] = useState(product?.thumbImg || "");
   const [quantity, setQuantity] = useState(1);
-  const [zoomImage, setZoomImage] = useState(false);
-  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [activeTab, setActiveTab] = useState("description");
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [productVideos, setProductVideos] = useState([]);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // new state
   const router = useRouter();
-
-  // useEffect(() => {
-
-  //   if (product && videos) {
-  //     const filtered = videos.filter((v) => v.productid._id === product._id.toString());
-  //     console.log("filtered sdfsdf", videos);
-  //     setProductVideos(filtered);
-  //     console.log("filtered", filtered)
-  //   }
-  // }, [product, videos]);
 
   useEffect(() => {
     if (product && videos) {
       const filtered = videos.filter(
         (v) => v?.productid?._id?.toString() === product?._id?.toString(),
       );
-
       setProductVideos(filtered);
     }
   }, [product, videos]);
-
-  console.log("productVideos", productVideos);
 
   const isWishlisted = isInWishlist(product?._id);
 
@@ -608,7 +588,6 @@ const ProductDetailContent = ({ productIDs }) => {
       const initialVariant = product.variant?.[safeIdx];
       setMainImage(initialVariant?.image || product.thumbImg);
 
-      // Track recently viewed (one entry per product; most recent first)
       const productId = String(product._id ?? product.id ?? "");
       const recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
       const updated = [
@@ -624,19 +603,12 @@ const ProductDetailContent = ({ productIDs }) => {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <div className="w-12 h-12 border-4 border-[#7a1113] border-t-transparent rounded-full animate-spin"></div>
-        {/* <p className="mt-4 text-gray-600 text-lg font-medium">Loading product...</p> */}
       </div>
     );
   }
 
-  // const selectedVariant = product.variant[selectedVariantIndex];
-
-  const hasVariants =
-    Array.isArray(product?.variant) && product.variant.length > 0;
-
-  const selectedVariant = hasVariants
-    ? product.variant[selectedVariantIndex]
-    : null;
+  const hasVariants = Array.isArray(product?.variant) && product.variant.length > 0;
+  const selectedVariant = hasVariants ? product.variant[selectedVariantIndex] : null;
 
   const discount = Math.round(
     ((selectedVariant.price - selectedVariant.discountPrice) /
@@ -655,40 +627,26 @@ const ProductDetailContent = ({ productIDs }) => {
   };
 
   const handleBuyNow = async () => {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (!token) {
       router.push("/frontend/signin?from=checkout");
       return;
     }
-
     try {
-      // Step 1: Add product to cart
       await axios.post(
         `${API_BASE}/api/cart`,
         { productId: product._id, quantity: 1 },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-
-      // Step 2: Redirect to checkout page
       router.push("/frontend/checkout");
     } catch (err) {
       console.error("Error in Buy Now:", err);
     }
   };
 
-  // const handleQuantityChange = (value) => {
-  //   const newQuantity = quantity + value;
-  //   if (newQuantity > 0 && newQuantity <= selectedVariant.stock) {
-  //     setQuantity(newQuantity);
-  //   }
-  // };
-
   const handleQuantityChange = (value) => {
     const maxQuantity = Math.min(selectedVariant.stock, 30);
     const newQuantity = quantity + value;
-
     if (newQuantity > 0 && newQuantity <= maxQuantity) {
       setQuantity(newQuantity);
     }
@@ -701,7 +659,6 @@ const ProductDetailContent = ({ productIDs }) => {
       text: `Check out this product: ${product.name}`,
       url: shareUrl,
     };
-
     if (navigator.share) {
       try {
         await navigator.share(shareData);
@@ -709,7 +666,6 @@ const ProductDetailContent = ({ productIDs }) => {
         console.error("Error sharing:", err);
       }
     } else {
-      // Fallback: copy to clipboard
       try {
         await navigator.clipboard.writeText(shareUrl);
         toast.success("Product link copied to clipboard!");
@@ -718,16 +674,6 @@ const ProductDetailContent = ({ productIDs }) => {
         console.error("Clipboard error:", err);
       }
     }
-  };
-
-  const handleMouseMove = (e) => {
-    if (!zoomImage) return;
-
-    const { left, top, width, height } =
-      e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-    setZoomPosition({ x, y });
   };
 
   const handleAddToCart = () => {
@@ -797,7 +743,6 @@ const ProductDetailContent = ({ productIDs }) => {
                     (product.galleryImg || []).forEach((img) => {
                       if (img) base.push(img);
                     });
-                    // remove duplicates while preserving order
                     const seen = new Set();
                     const allImages = base.filter((img) => {
                       if (!img || seen.has(img)) return false;
@@ -811,7 +756,11 @@ const ProductDetailContent = ({ productIDs }) => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleImageChange(img)}
-                        className={`w-16 h-16 border rounded-md overflow-hidden transition-all ${mainImage === img ? "ring-2 ring-blue-500" : "border-gray-200 hover:border-gray-400"}`}
+                        className={`w-16 h-16 border rounded-md overflow-hidden transition-all ${
+                          mainImage === img
+                            ? "ring-2 ring-blue-500"
+                            : "border-gray-200 hover:border-gray-400"
+                        }`}
                       >
                         <Image
                           src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${img}`}
@@ -825,12 +774,10 @@ const ProductDetailContent = ({ productIDs }) => {
                   })()}
                 </div>
 
-                {/* Main Image */}
+                {/* Main Image - click to open modal */}
                 <div
-                  className={`flex-1 bg-white border border-gray-200 rounded-lg shadow-sm order-1 md:order-2 relative ${zoomImage ? "cursor-zoom-out" : "cursor-zoom-in"}`}
-                  onClick={() => setZoomImage(!zoomImage)}
-                  onMouseMove={handleMouseMove}
-                  onMouseLeave={() => setZoomImage(false)}
+                  className="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm order-1 md:order-2 relative cursor-pointer"
+                  onClick={() => setIsImageModalOpen(true)}
                 >
                   <div className="relative aspect-square w-full overflow-hidden">
                     <Image
@@ -841,27 +788,10 @@ const ProductDetailContent = ({ productIDs }) => {
                       }
                       alt={product?.name || "product image"}
                       fill
-                      className={`w-full transition-transform duration-300 ${zoomImage ? "scale-150" : "scale-100"}`}
-                      style={
-                        zoomImage
-                          ? {
-                              transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                              transform: "scale(2)",
-                            }
-                          : {}
-                      }
+                      className="w-full object-contain"
                       priority
                     />
                   </div>
-                  <button
-                    className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setZoomImage(!zoomImage);
-                    }}
-                  >
-                    <FiZoomIn className="w-5 h-5 text-gray-700" />
-                  </button>
                 </div>
               </div>
             </div>
@@ -875,7 +805,11 @@ const ProductDetailContent = ({ productIDs }) => {
               </h1>
               <button
                 onClick={handleToggleWishlist}
-                className={`p-2 rounded-full ${isWishlisted ? "text-red-500 bg-red-50" : "text-red-600 hover:text-red-700 hover:bg-gray-50"} transition-colors`}
+                className={`p-2 rounded-full ${
+                  isWishlisted
+                    ? "text-red-500 bg-red-50"
+                    : "text-red-600 hover:text-red-700 hover:bg-gray-50"
+                } transition-colors`}
               >
                 <FiHeart
                   className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
@@ -962,7 +896,7 @@ const ProductDetailContent = ({ productIDs }) => {
                   href={`/frontend/ProductDetail/${p.slug}`}
                   className="group bg-white border border-[#8D6AF8] rounded-lg shadow-sm p-1 hover:shadow-md hover:border-[#7a1113] transition duration-300 cursor-pointer"
                 >
-                  <div className="sm:h-20 sm:w-20 w-20 h-20  mx-auto overflow-hidden rounded-md">
+                  <div className="sm:h-20 sm:w-20 w-20 h-20 mx-auto overflow-hidden rounded-md">
                     <img
                       src={
                         p.thumbImg?.startsWith("http")
@@ -1009,7 +943,7 @@ const ProductDetailContent = ({ productIDs }) => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex  flex-row gap-3 sm:mb-8 mb-4">
+            <div className="flex flex-row gap-3 sm:mb-8 mb-4">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -1033,7 +967,11 @@ const ProductDetailContent = ({ productIDs }) => {
               <div className="flex border-b border-gray-200 sm:mb-6 mb-3">
                 <button
                   onClick={() => setActiveTab("description")}
-                  className={`px-4 py-2 font-medium text-sm ${activeTab === "description" ? "text-[#8D6AF8] border-b-2 border-[#684db9]" : "text-gray-600 hover:text-gray-900"}`}
+                  className={`px-4 py-2 font-medium text-sm ${
+                    activeTab === "description"
+                      ? "text-[#8D6AF8] border-b-2 border-[#684db9]"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
                 >
                   Description
                 </button>
@@ -1048,7 +986,7 @@ const ProductDetailContent = ({ productIDs }) => {
             </div>
 
             {/* Share */}
-            <div className="flex justify-between items-center sm:mt-8 mt-4 pt-6  border-t border-gray-200">
+            <div className="flex justify-between items-center sm:mt-8 mt-4 pt-6 border-t border-gray-200">
               <button
                 onClick={handleShare}
                 className="text-gray-600 hover:text-gray-900 flex items-center gap-1 transition-colors"
@@ -1060,6 +998,7 @@ const ProductDetailContent = ({ productIDs }) => {
           </div>
         </div>
 
+        {/* Floating video thumbnails (unchanged) */}
         <div className="fixed top-1/2 right-4 -translate-y-1/2 flex flex-col gap-4 z-50">
           {productVideos.map((vid) => (
             <motion.div
@@ -1067,19 +1006,16 @@ const ProductDetailContent = ({ productIDs }) => {
               className="relative"
               whileHover={{ scale: 1.05 }}
             >
-              {/* Close / Cut Button */}
               <button
                 onClick={() =>
                   setProductVideos((prev) =>
                     prev.filter((v) => v._id !== vid._id),
                   )
                 }
-                className="absolute top-2 right-2 z-10  text-[#7a1113] p-1 rounded-full hover:bg-red-600 transition"
+                className="absolute top-2 right-2 z-10 text-[#7a1113] p-1 rounded-full hover:bg-red-600 transition"
               >
                 <FiX className="w-4 h-4" />
               </button>
-
-              {/* Video Thumbnail */}
               <button
                 onClick={() => setSelectedVideo(vid.videourl)}
                 className={`w-28 h-48 border rounded-md overflow-hidden relative group ${
@@ -1087,13 +1023,13 @@ const ProductDetailContent = ({ productIDs }) => {
                 }`}
               >
                 <video
-                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${vid.videourl} `}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${vid.videourl}`}
                   className="w-full h-full object-cover"
                   muted
                   loop
                   autoPlay
                 />
-                <div className="absolute inset-0 flex items-center justify-center  opacity-0 group-hover:opacity-100 transition">
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
                   <FiPlay className="text-white w-6 h-6" />
                 </div>
               </button>
@@ -1111,23 +1047,20 @@ const ProductDetailContent = ({ productIDs }) => {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="relative rounded-2xl max-w-xs w-full  overflow-hidden"
+                className="relative rounded-2xl max-w-xs w-full overflow-hidden"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 120, damping: 20 }}
               >
-                {/* Close Button */}
                 <button
                   onClick={() => setSelectedVideo(null)}
                   className="absolute top-2 z-40 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg transition"
                 >
                   <FiX className="w-4 h-4" />
                 </button>
-
-                {/* Video Player */}
                 <video
-                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${selectedVideo} `}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${selectedVideo}`}
                   controls
                   autoPlay
                   className="w-full max-h-[80vh] rounded-2xl"
@@ -1136,6 +1069,46 @@ const ProductDetailContent = ({ productIDs }) => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Image Modal - Full Size Popup with Close Button */}
+        <AnimatePresence>
+          {isImageModalOpen && (
+            <motion.div
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsImageModalOpen(false)} // click outside to close
+            >
+              <motion.div
+                className="relative max-w-4xl w-full max-h-[90vh] bg-white rounded-lg overflow-hidden"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setIsImageModalOpen(false)}
+                  className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition"
+                >
+                  <FiX className="w-6 h-6" />
+                </button>
+                <div className="relative w-full h-full flex items-center justify-center p-4">
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${mainImage}`}
+                    alt={product.name}
+                    width={800}
+                    height={800}
+                    className="object-contain max-h-[80vh] w-auto h-auto"
+                    priority
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <RecentlyViewed />
         <RelatedProducts currentProduct={product} />
       </div>

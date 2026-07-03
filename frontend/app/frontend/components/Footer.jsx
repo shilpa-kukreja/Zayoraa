@@ -420,27 +420,27 @@ export default function Footer() {
             Subscribe to receive updates, access to exclusive deals, and more.
           </p>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubscribe();
-            }}
-            className="flex mb-8"
-          >
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your email address"
-              required
-              className="flex-grow px-4 py-3 bg-white text-gray-800 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button
-              type="submit"
-              className="bg-[#6b40c2] text-white px-6 py-3 rounded-r-lg font-medium transition-colors hover:bg-[#5e31b8]"
-            >
-              Subscribe
-            </button>
+         <form
+  onSubmit={(e) => {
+    e.preventDefault();
+    handleSubscribe();
+  }}
+  className="flex flex-col sm:flex-row gap-3 sm:gap-0 mb-8"
+>
+          <input
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  placeholder="Your email address"
+  required
+  className="w-full sm:flex-grow px-4 py-3 bg-white text-gray-800 rounded-lg sm:rounded-l-lg sm:rounded-r-none focus:outline-none focus:ring-2 focus:ring-primary"
+/>
+           <button
+  type="submit"
+  className="w-full sm:w-auto bg-[#6b40c2] text-white px-6 py-3 rounded-lg sm:rounded-r-lg sm:rounded-l-none font-medium transition-colors hover:bg-[#5e31b8]"
+>
+  Subscribe
+</button>
           </form>
 
           <div className="flex space-x-5">
