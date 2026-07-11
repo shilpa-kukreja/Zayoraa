@@ -65,8 +65,8 @@ export const loginotp = async (req, res) => {
       "https://www.fast2sms.com/dev/bulkV2",
       {
         route: "dlt",
-        sender_id: "HELSTR",
-        message: "195392", // Your DLT template ID
+        sender_id: "ZAYORA",
+        message: "1007435166304622844", // Your DLT template ID
         variables_values: otp,
         numbers: number,
       },
