@@ -1,17 +1,12 @@
-import jwt from 'jsonwebtoken';
-import otpModel from '../models/otpModel.js';
-import userModel from '../models/authModel.js';
-import axios from 'axios';
-import nodemailer from 'nodemailer';
-import { createWelcomeCouponForUser } from '../utils/welcomeDiscount.js';
-
-
-
-
-
+import jwt from "jsonwebtoken";
+import otpModel from "../models/otpModel.js";
+import userModel from "../models/authModel.js";
+import axios from "axios";
+import nodemailer from "nodemailer";
+import { createWelcomeCouponForUser } from "../utils/welcomeDiscount.js";
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -23,24 +18,24 @@ const transporter = nodemailer.createTransport({
 export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      const token = jwt.sign(email + password, process.env.JWT_SECRET)
-      return res.status(200).json({ success: true, token })
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      return res.status(200).json({ success: true, token });
     } else {
-      return res.status(401).json({ success: false, message: "Invalid email or password" })
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid email or password" });
     }
   } catch (error) {
     console.error("Admin Login Error:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
-}
-
-
-
-
-
-
-
+};
 
 // Generate random 6-digit OTP
 function generateOTP() {
@@ -57,30 +52,38 @@ export const loginotp = async (req, res) => {
     await otpModel.findOneAndUpdate(
       { number },
       { number, otp, createdAt: Date.now() },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     // 👉 Fast2SMS API
-    await axios.post(
+    const response = await axios.post(
       "https://www.fast2sms.com/dev/bulkV2",
       {
         route: "dlt",
         sender_id: "ZAYORA",
-        message: "1007435166304622844", // Your DLT template ID
-        variables_values: otp,
-        numbers: number,
+        message: "220034",
+        variables_values: otp.toString(),
+        numbers: number.toString(),
       },
       {
         headers: {
           authorization: process.env.FAST2SMS_API_KEY,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
+
+    console.log(response.data);
 
     res.json({ success: true, message: "OTP sent successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.log("Fast2SMS Error:", error.response?.data);
+    console.log("Error Message:", error.message);
+
+    res.status(500).json({
+      success: false,
+      error: error.response?.data || error.message,
+    });
   }
 };
 
@@ -130,10 +133,15 @@ export const loginotp = async (req, res) => {
 //   }
 // };
 
-
 export const verifyotp = async (req, res) => {
   try {
-    const { number, username = '', email = '', otp, fromWelcome = false } = req.body;
+    const {
+      number,
+      username = "",
+      email = "",
+      otp,
+      fromWelcome = false,
+    } = req.body;
 
     // Check OTP from otpModel
     const otpRecord = await otpModel.findOne({ number, otp });
@@ -175,7 +183,7 @@ export const verifyotp = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, number: user.number },
       process.env.JWT_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "30d" },
     );
 
     // Send welcome email only for new users
@@ -203,7 +211,7 @@ const sendWelcomeEmail = async (username, email) => {
     const mailOptions = {
       from: process.env.EMAIL_FROM,
       to: email,
-      subject: `Welcome to ${process.env.COMPANY_NAME || 'Our Store'}!`,
+      subject: `Welcome to ${process.env.COMPANY_NAME || "Our Store"}!`,
       html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -291,7 +299,7 @@ const sendWelcomeEmail = async (username, email) => {
             <h2>Hello ${username},</h2>
             
             <div class="welcome-section">
-                <h3>Thank you for joining ${process.env.COMPANY_NAME || 'our store'}!</h3>
+                <h3>Thank you for joining ${process.env.COMPANY_NAME || "our store"}!</h3>
                 <p>We're excited to have you as part of our community. Your account has been successfully created and verified.</p>
             </div>
             
@@ -328,17 +336,17 @@ const sendWelcomeEmail = async (username, email) => {
             
             <a href="${process.env.FRONTEND_URL}" class="button">Start Shopping</a>
             
-            <p>If you have any questions, feel free to contact our customer support team at <a href="mailto:${process.env.SUPPORT_EMAIL || 'support@yourcompany.com'}">${process.env.SUPPORT_EMAIL || 'support@yourcompany.com'}</a>.</p>
+            <p>If you have any questions, feel free to contact our customer support team at <a href="mailto:${process.env.SUPPORT_EMAIL || "support@yourcompany.com"}">${process.env.SUPPORT_EMAIL || "support@yourcompany.com"}</a>.</p>
         </div>
         
         <div class="footer">
-            <p>© ${new Date().getFullYear()} ${process.env.COMPANY_NAME || 'Your Company Name'}. All rights reserved.</p>
-            <p>${process.env.COMPANY_ADDRESS || '123 Business Street, City, Country'}</p>
+            <p>© ${new Date().getFullYear()} ${process.env.COMPANY_NAME || "Your Company Name"}. All rights reserved.</p>
+            <p>${process.env.COMPANY_ADDRESS || "123 Business Street, City, Country"}</p>
         </div>
     </div>
 </body>
 </html>
-      `
+      `,
     };
 
     await transporter.sendMail(mailOptions);
@@ -348,11 +356,8 @@ const sendWelcomeEmail = async (username, email) => {
   }
 };
 
-
-
 export const getUser = async (req, res) => {
   try {
-
     const user = await userModel.findById(req.user.id);
     res.json({ success: true, user });
   } catch (error) {
@@ -373,7 +378,9 @@ export const deleteUser = async (req, res) => {
   try {
     const user = await userModel.findByIdAndDelete(req.params.id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
     res.json({ success: true, message: "User deleted successfully" });
   } catch (error) {
@@ -397,7 +404,6 @@ export const deleteUser = async (req, res) => {
 // };
 
 // controller/addressController.js
-
 
 // export const addUserAddress = async (req, res) => {
 //   try {
@@ -448,7 +454,6 @@ export const deleteUser = async (req, res) => {
 //   }
 // };
 
-
 export const addUserAddress = async (req, res) => {
   try {
     const {
@@ -467,7 +472,9 @@ export const addUserAddress = async (req, res) => {
 
     const user = await userModel.findById(req.user.id); // 👈 authMiddleware must set this
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     const newAddress = {
@@ -485,7 +492,7 @@ export const addUserAddress = async (req, res) => {
     };
 
     // push into user's address array
-    user.address.push(newAddress);  // 👈 if user.address is undefined → error
+    user.address.push(newAddress); // 👈 if user.address is undefined → error
     await userModel.findByIdAndUpdate(user._id, { address: user.address }); // 👈 safer save
 
     res.json({ success: true, message: "Address added successfully", user });
@@ -494,8 +501,6 @@ export const addUserAddress = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
-
 
 // export const getuseraddress = async (req, res) => {
 //   try {
@@ -513,7 +518,9 @@ export const getUserAddress = async (req, res) => {
   try {
     const user = await userModel.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     res.json({ success: true, address: user.address });
@@ -522,10 +529,6 @@ export const getUserAddress = async (req, res) => {
   }
 };
 
-
-
-
-
 // export const deleteuseraddress = async (req, res) => {
 //   try {
 //     const { addressId } = req.params;
@@ -533,7 +536,7 @@ export const getUserAddress = async (req, res) => {
 //     if (!user) {
 //       return res.status(404).json({ success: false, message: "User not found" });
 //     }
-//     user.address = user.address.filter((address) => address._id.toString() !== addressId);  
+//     user.address = user.address.filter((address) => address._id.toString() !== addressId);
 //     await user.save();
 //     res.json({ success: true, message: "Address deleted successfully", user });
 //   }
@@ -542,18 +545,19 @@ export const getUserAddress = async (req, res) => {
 //   }
 // };
 
-
 export const deleteUserAddress = async (req, res) => {
   try {
     const { addressId } = req.params;
     const user = await userModel.findById(req.user.id);
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     user.address = user.address.filter(
-      (address) => address._id.toString() !== addressId
+      (address) => address._id.toString() !== addressId,
     );
 
     await user.save({ validateBeforeSave: false }); // ✅ skip validation
@@ -571,23 +575,34 @@ export const deleteUserAddress = async (req, res) => {
   }
 };
 
-
-
-
-
 export const updateUserAddress = async (req, res) => {
   try {
     const { addressId } = req.params;
-    const { fullName, email, phone, address1, address2, addresstype, city, state, postalCode, landmark } = req.body;
+    const {
+      fullName,
+      email,
+      phone,
+      address1,
+      address2,
+      addresstype,
+      city,
+      state,
+      postalCode,
+      landmark,
+    } = req.body;
 
     const user = await userModel.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     const address = user.address.id(addressId); // find subdocument by _id
     if (!address) {
-      return res.status(404).json({ success: false, message: "Address not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Address not found" });
     }
 
     // update only the provided fields
@@ -607,14 +622,12 @@ export const updateUserAddress = async (req, res) => {
     res.json({
       success: true,
       message: "Address updated successfully",
-      address: user.address,  // ✅ return updated addresses
+      address: user.address, // ✅ return updated addresses
     });
-
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 
 export const edituser = async (req, res) => {
   try {
@@ -623,7 +636,9 @@ export const edituser = async (req, res) => {
     // Find logged in user
     const user = await userModel.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     // Update fields if provided
@@ -646,4 +661,3 @@ export const edituser = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-

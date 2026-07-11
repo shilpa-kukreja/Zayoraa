@@ -154,7 +154,7 @@ const SignUpContent = () => {
               <Link href="/" className='hidden md:block'>
                 <img
                   src="/logo/logo.png"
-                  alt="Miraggiolife Logo"
+                  alt="Zayoraa Logo"
                   className="mx-auto mb-4"
                   width={150}
                   height={50}
@@ -163,8 +163,8 @@ const SignUpContent = () => {
 
               <Link href="/" className='md:hidden block  mt-10'>
                 <img
-                  src="/logos/logo7.png"
-                  alt="Miraggiolife Logo"
+                  src="/logo/logo.png"
+                  alt="Zayoraa Logo"
                   className="mx-auto mb-4"
                   width={80}
                   height={50}
@@ -281,7 +281,7 @@ const SignUpContent = () => {
         {/* Right Panel */}
         <div className="hidden md:block w-1/2 relative">
           <img
-            src="/product/login.jpg"
+            src="/login/signup.jpeg"
             alt="Sign up banner"
             className="object-cover w-full h-full"
           />
