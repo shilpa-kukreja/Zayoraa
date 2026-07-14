@@ -141,7 +141,7 @@ const Navbar = () => {
   };
 
   return (
-    <>
+   <>
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="sm:max-w-[1650px] mx-auto h-[72px] px-6 lg:px-12 flex items-center justify-between">
           {/* Logo */}
@@ -153,7 +153,8 @@ const Navbar = () => {
           />
         </Link> */}
 
-          <div className="flex items-center gap-4">
+          {/* Left container – now flexible on mobile */}
+          <div className="flex items-center gap-4 flex-1 min-w-0 md:flex-initial">
             <button
               className="md:hidden text-2xl text-gray-700"
               onClick={() => setIsSidebarOpen(true)}
@@ -165,20 +166,21 @@ const Navbar = () => {
               className="hidden sm:block flex-shrink-0 sm:mr-2 mr-0"
             >
               <img
-                src="/logo/logo.png"
+                src="/logo/zayoraalogo.png"
                 alt="Logo"
-                className="sm:h-12 h-10 w-auto"
+                className="sm:h-10 h-10 w-auto"
               />
             </Link>
+            {/* Mobile logo – now flexible and with max-width */}
             <Link
               href="/"
-              className="block sm:hidden flex-shrink-0 sm:mr-2 mr-0"
+              className="block sm:hidden flex-1 min-w-0"
             >
-              <div className="px-5 ">
+              <div className="px-2 sm:px-5">
                 <img
-                  src="/logo/logo.png"
+                  src="/logo/zayoraalogo.png"
                   alt="Logo"
-                  className="sm:h-12 h-8  w-auto"
+                  className="h-5"
                 />
               </div>
             </Link>
@@ -192,7 +194,7 @@ const Navbar = () => {
             >
               Holiday Collection
             </Link> */}
-              <Link
+            <Link
               href="/"
               className="hover:text-black text-md transition"
             >
@@ -219,7 +221,9 @@ const Navbar = () => {
               >
                 <span>Shop By Category</span>
                 <svg
-                  className={`h-4 w-4 transition-transform ${isCategoryOpen ? "rotate-180" : ""}`}
+                  className={`h-4 w-4 transition-transform ${
+                    isCategoryOpen ? "rotate-180" : ""
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -279,14 +283,14 @@ const Navbar = () => {
               Featured Collection
             </Link> */}
 
-             <Link
+            <Link
               href="/frontend/blogs"
               className="hover:text-black text-md transition"
             >
               Blogs
             </Link>
 
-              <Link
+            <Link
               href="/frontend/contact-us"
               className="hover:text-black text-md transition"
             >
@@ -300,8 +304,8 @@ const Navbar = () => {
             </Link> */}
           </div>
 
-          {/* Right Section */}
-          <div className="flex items-center sm:space-x-0 -2   space-x-1 gap-4">
+          {/* Right Section – now with flex-shrink-0 */}
+          <div className="flex items-center sm:space-x-2 space-x-1 gap-4 flex-shrink-0">
             {/* Search */}
             <div className="relative " ref={searchRef}>
               <button
@@ -602,7 +606,7 @@ const Navbar = () => {
             >
               Blogs
             </Link>
-               <Link
+            <Link
               href="/frontend/contact-us"
               className="hover:text-black text-sm text-gray-700 transition"
               onClick={() => setIsSidebarOpen(false)}

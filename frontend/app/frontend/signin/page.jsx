@@ -153,7 +153,7 @@ const SignUpContent = () => {
             <div className="text-center">
               <Link href="/" className='hidden md:block'>
                 <img
-                  src="/logo/logo.png"
+                  src="/logo/zayoraalogo.png"
                   alt="Zayoraa Logo"
                   className="mx-auto mb-4"
                   width={150}
@@ -163,10 +163,10 @@ const SignUpContent = () => {
 
               <Link href="/" className='md:hidden block  mt-10'>
                 <img
-                  src="/logo/logo.png"
+                  src="/logo/zayoraalogo.png"
                   alt="Zayoraa Logo"
                   className="mx-auto mb-4"
-                  width={80}
+                  width={100}
                   height={50}
                 />
               </Link>
