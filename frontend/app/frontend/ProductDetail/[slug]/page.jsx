@@ -607,8 +607,11 @@ const ProductDetailContent = ({ productIDs }) => {
     );
   }
 
-  const hasVariants = Array.isArray(product?.variant) && product.variant.length > 0;
-  const selectedVariant = hasVariants ? product.variant[selectedVariantIndex] : null;
+  const hasVariants =
+    Array.isArray(product?.variant) && product.variant.length > 0;
+  const selectedVariant = hasVariants
+    ? product.variant[selectedVariantIndex]
+    : null;
 
   const discount = Math.round(
     ((selectedVariant.price - selectedVariant.discountPrice) /
@@ -627,7 +630,8 @@ const ProductDetailContent = ({ productIDs }) => {
   };
 
   const handleBuyNow = async () => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (!token) {
       router.push("/frontend/signin?from=checkout");
       return;
@@ -779,6 +783,40 @@ const ProductDetailContent = ({ productIDs }) => {
                   className="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm order-1 md:order-2 relative cursor-pointer"
                   onClick={() => setIsImageModalOpen(true)}
                 >
+                  {/* Floating action group: Wishlist + Share */}
+                  <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+                    {/* Wishlist button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleWishlist();
+                      }}
+                      className={`p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-colors ${
+                        isWishlisted
+                          ? "text-red-500 bg-red-50"
+                          : "text-red-600 hover:text-red-700"
+                      }`}
+                      aria-label="Add to wishlist"
+                    >
+                      <FiHeart
+                        className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
+                      />
+                    </button>
+
+                    {/* Share button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShare();
+                      }}
+                      className="p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-colors text-gray-700 hover:text-gray-900"
+                      aria-label="Share product"
+                    >
+                      <FiShare2 className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Main image */}
                   <div className="relative aspect-square w-full overflow-hidden">
                     <Image
                       src={
@@ -803,7 +841,7 @@ const ProductDetailContent = ({ productIDs }) => {
               <h1 className="text-2xl font-bold text-gray-600 mb-1">
                 {product.name}
               </h1>
-              <button
+              {/* <button
                 onClick={handleToggleWishlist}
                 className={`p-2 rounded-full ${
                   isWishlisted
@@ -814,7 +852,7 @@ const ProductDetailContent = ({ productIDs }) => {
                 <FiHeart
                   className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
                 />
-              </button>
+              </button> */}
             </div>
 
             <div
@@ -986,7 +1024,7 @@ const ProductDetailContent = ({ productIDs }) => {
             </div>
 
             {/* Share */}
-            <div className="flex justify-between items-center sm:mt-8 mt-4 pt-6 border-t border-gray-200">
+            {/* <div className="flex justify-between items-center sm:mt-8 mt-4 pt-6 border-t border-gray-200">
               <button
                 onClick={handleShare}
                 className="text-gray-600 hover:text-gray-900 flex items-center gap-1 transition-colors"
@@ -994,7 +1032,7 @@ const ProductDetailContent = ({ productIDs }) => {
                 <FiShare2 className="w-5 h-5" />
                 <span className="text-sm">Share Product</span>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
