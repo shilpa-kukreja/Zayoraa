@@ -23,7 +23,7 @@ export const metadata = {
   description: "Crafting Confidence Through Better Oral Care",
 
   icons: {
-    icon: "/logo/zayoraalogo.jpeg",
+    icon: "/logo/white.png",
   },
 };
 
