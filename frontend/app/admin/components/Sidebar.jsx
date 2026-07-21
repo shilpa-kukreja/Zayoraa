@@ -66,6 +66,10 @@ const menuItems = [
       { name: "Add Blog", href: "/admin/add-blogs", icon: FiPlus }
     ]
   },
+     { name: "Abandoned Carts", href: "/admin/abandoned-carts", icon: FiUsers },
+    { name: "Recommended Products", href: "/admin/recommended-products", icon: FiUsers },
+
+
    { name: "Contacts", href: "/admin/admin-contact", icon: FiUsers },
    { name: "Subscribers", href: "/admin/admin-subscriber", icon: FiUsers },
 

@@ -819,7 +819,7 @@ const CheckoutPage = () => {
           key,
           amount: order.amount, // in paise
           currency: "INR",
-          name: "My Shop",
+          
           description: "Order Payment",
           order_id: order.id,
           handler: async (response) => {
@@ -845,7 +845,7 @@ const CheckoutPage = () => {
             email: form.email,
             contact: form.phone,
           },
-          theme: { color: "#ec4899" },
+          // theme: { color: "#ec4899" },
           modal: {
             ondismiss: function () {
               alert("Payment cancelled. You can try again.");

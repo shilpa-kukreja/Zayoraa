@@ -306,7 +306,7 @@ export default function AllProducts() {
           <div className="lg:hidden flex justify-between items-center mb-6">
             <button
               onClick={() => setMobileFiltersOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#7a1113] text-white rounded-lg"
+              className="flex items-center gap-2 px-4 py-2 bg-[#8D6AF8] text-white rounded-lg"
             >
               <FiFilter /> Filters
             </button>
@@ -328,7 +328,7 @@ export default function AllProducts() {
 
           {/* Mobile Filters Overlay */}
           {mobileFiltersOpen && (
-            <div className="fixed inset-0 z-50 bg-black bg-opacity-50 lg:hidden">
+            <div className="fixed inset-0 z-50 bg-black/30 bg-opacity-50 lg:hidden">
               <div className="absolute right-0 top-0 h-full w-4/5 bg-white overflow-y-auto p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold">Filters</h2>

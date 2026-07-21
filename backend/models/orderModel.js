@@ -3,6 +3,13 @@ import mongoose from "mongoose";
 const orderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   orderid: { type: String, unique: true },
+  // Inside the orderSchema definition
+shiprocketOrderId: { type: String },    // numeric ID from Shiprocket
+shiprocketShipmentId: { type: String }, // optional
+// In models/orderModel.js
+deliveredAt: { type: Date },
+reviewEmailSent: { type: Boolean, default: false },
+repeatEmailSent: { type: Boolean, default: false }, // if you want separate emails
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },

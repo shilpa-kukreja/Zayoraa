@@ -18,6 +18,10 @@ import {
   validateWelcomeCoupon,
 } from "../utils/welcomeDiscount.js";
 
+import { getShiprocketToken } from '../utils/shiprocket.js';
+import axios from "axios";
+
+
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -436,9 +440,24 @@ const placeOrderCOD = async (req, res) => {
 
     // Create Shiprocket order (non-blocking)
     // Fire and forget – don't await if you don't want to delay response
-    createShiprocketOrder(newOrder).catch((err) =>
-      console.error("Async Shiprocket error:", err),
-    );
+    // createShiprocketOrder(newOrder).catch((err) =>
+    //   console.error("Async Shiprocket error:", err),
+    // );
+
+
+
+    // Create Shiprocket order and save IDs
+try {
+  const shiprocketResponse = await createShiprocketOrder(newOrder);
+  if (shiprocketResponse?.order_id) {
+    newOrder.shiprocketOrderId = shiprocketResponse.order_id.toString();
+    newOrder.shiprocketShipmentId = shiprocketResponse.shipment_id?.toString() || '';
+    await newOrder.save();
+  }
+} catch (err) {
+  console.error('Shiprocket order creation failed (non-fatal):', err);
+}
+
 
     res.json({
       success: true,
@@ -878,9 +897,21 @@ const verifyRazorpay = async (req, res) => {
     }
 
     // Create Shiprocket order (non-blocking)
-    createShiprocketOrder(updatedOrder).catch((err) =>
-      console.error("Async Shiprocket error:", err),
-    );
+    // createShiprocketOrder(updatedOrder).catch((err) =>
+    //   console.error("Async Shiprocket error:", err),
+    // );
+
+    // Create Shiprocket order and save IDs
+try {
+  const shiprocketResponse = await createShiprocketOrder(updatedOrder);
+  if (shiprocketResponse?.order_id) {
+    updatedOrder.shiprocketOrderId = shiprocketResponse.order_id.toString();
+    updatedOrder.shiprocketShipmentId = shiprocketResponse.shipment_id?.toString() || '';
+    await updatedOrder.save();
+  }
+} catch (err) {
+  console.error('Shiprocket order creation failed (non-fatal):', err);
+}
 
     res.json({
       success: true,
@@ -1237,6 +1268,131 @@ const sendStatusUpdateEmail = (order) => {
       `,
   });
 };
+
+
+
+
+
+
+// ---------------- Get Tracking Info from Shiprocket ----------------
+// controllers/orderController.js
+
+
+
+export const getTrackingInfo = async (req, res) => {
+  const { orderid } = req.params;
+  console.log(`🔍 Tracking request for orderid: ${orderid}`);
+
+  try {
+    // 1. Find order in DB
+    let order = await orderModel.findOne({ orderid });
+    if (!order && /^\d+$/.test(orderid)) {
+      order = await orderModel.findOne({ shiprocketOrderId: orderid });
+    }
+    if (!order) {
+      console.log('❌ Order not found in DB');
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    console.log(`✅ Order found in DB: orderid=${order.orderid}, shiprocketOrderId=${order.shiprocketOrderId}`);
+
+    if (!order.shiprocketOrderId) {
+      console.log('⚠️ No shiprocketOrderId, returning DB status');
+      return res.json({
+        success: true,
+        tracking: {
+          orderStatus: order.status,
+          fromDB: true,
+          message: 'No Shiprocket order linked, showing saved status.',
+          estimatedDelivery: order.estimatedDelivery || null,
+        },
+      });
+    }
+
+    // 2. Get Shiprocket token
+    console.log('🔑 Getting Shiprocket token...');
+    const token = await getShiprocketToken();
+    console.log('✅ Token obtained');
+
+    // 3. Call Shiprocket's /orders/show/{id} endpoint
+    const url = `https://apiv2.shiprocket.in/v1/external/orders/show/${order.shiprocketOrderId}`;
+    console.log(`🌐 Calling Shiprocket: ${url}`);
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log('✅ Shiprocket response received, status:', response.status);
+    // The response data is inside response.data.data
+    const shiprocketData = response.data?.data || {};
+    console.log('📦 Shiprocket order data:', JSON.stringify(shiprocketData, null, 2));
+
+    // 4. Extract fields from the nested data object
+    const liveStatus = shiprocketData.status || order.status;
+    const awb = shiprocketData.awb_data?.awb || null; // actual AWB may be here or in shipments.awb
+    const courierFromShiprocket = shiprocketData.shipments?.courier || null; // if assigned
+
+    // For courier name, if not in shipments, fallback to DB
+    const courier = courierFromShiprocket || order.estimatedDelivery?.courier || null;
+
+    // Tracking events might be available later; for now use empty array
+    // You can also fetch from /courier/track if needed
+
+    const trackingData = {
+      orderStatus: liveStatus,
+      awb: awb,
+      courier: courier,
+      estimatedDelivery: order.estimatedDelivery || null,
+      trackingEvents: [], // could fetch separately if needed
+      fulfillmentStatus: shiprocketData.fulfillment_status || null,
+      shipmentId: shiprocketData.shipments?.id || null,
+      orderId: shiprocketData.id || null,
+      // Also include sub-status if available
+      subStatus: shiprocketData.sub_status || null,
+    };
+
+    console.log('📤 Returning tracking data:', trackingData);
+    return res.json({ success: true, tracking: trackingData });
+  } catch (error) {
+    console.error('❌ Error in getTrackingInfo:');
+    if (error.response) {
+      console.error('  Status:', error.response.status);
+      console.error('  Data:', JSON.stringify(error.response.data, null, 2));
+    } else if (error.request) {
+      console.error('  No response received:', error.request);
+    } else {
+      console.error('  Error message:', error.message);
+    }
+    console.error('  Stack:', error.stack);
+
+    // Fallback: return DB status
+    try {
+      const fallbackOrder = await orderModel.findOne({
+        $or: [{ orderid }, { shiprocketOrderId: orderid }],
+      });
+      if (fallbackOrder) {
+        console.log('🔄 Falling back to DB status for order:', fallbackOrder.orderid);
+        return res.json({
+          success: true,
+          tracking: {
+            orderStatus: fallbackOrder.status,
+            fromDB: true,
+            message: 'Live tracking not available, showing saved status.',
+            estimatedDelivery: fallbackOrder.estimatedDelivery || null,
+          },
+        });
+      }
+    } catch (dbError) {
+      console.error('Fallback DB error:', dbError);
+    }
+
+    return res.status(500).json({ success: false, message: 'Unable to fetch tracking information' });
+  }
+};
+
+
 
 export {
   placeOrderCOD,

@@ -16,7 +16,7 @@ const DEFAULT_HEIGHT = 3.5;
 const DEFAULT_WEIGHT = 0.2;
 const DEFAULT_HSN = 441122;
 
-async function getShiprocketToken() {
+export async function getShiprocketToken() {
   // Return cached token if still valid (Shiprocket tokens last ~1 hour)
   if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
     return cachedToken;

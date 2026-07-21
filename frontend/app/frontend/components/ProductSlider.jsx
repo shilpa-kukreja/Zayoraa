@@ -245,10 +245,10 @@ const ProductSlider = ({ title, sectionType }) => {
 
   addToCart(product, variant, 1);
 
-  toast.success(`${product.name} added to cart!`, {
-    position: "top-right",
-    autoClose: 2000,
-  });
+  // toast.success(`${product.name} added to cart!`, {
+  //   position: "top-right",
+  //   autoClose: 2000,
+  // });
 };
 
   const settings = {

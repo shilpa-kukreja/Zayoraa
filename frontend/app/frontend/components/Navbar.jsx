@@ -7,11 +7,9 @@ import { AppContext } from "../context/AppContext";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import { HeartPlus } from "lucide-react";
 
-const BACKEND_URL =
-  (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(
-    /\/$/,
-    "",
-  );
+const BACKEND_URL = (
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
+).replace(/\/$/, "");
 
 const resolveMediaUrl = (path, fallback = "/logos/logo6.png") => {
   if (!path || typeof path !== "string") return fallback;
@@ -37,6 +35,7 @@ const Navbar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const searchRef = useRef(null);
   const userMenuRef = useRef(null);
+  const [cartGlow, setCartGlow] = useState(false);
 
   const { wishlist, products, getCartCount, categories, setIsWishlistOpen } =
     useContext(AppContext);
@@ -49,6 +48,18 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (cartCount > 0) {
+      setCartGlow(true);
+
+      const timer = setTimeout(() => {
+        setCartGlow(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [cartCount]);
 
   // Detect login + fetch user
   useEffect(() => {
@@ -141,7 +152,7 @@ const Navbar = () => {
   };
 
   return (
-   <>
+    <>
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="sm:max-w-[1650px] mx-auto h-[72px] px-6 lg:px-12 flex items-center justify-between">
           {/* Logo */}
@@ -172,16 +183,9 @@ const Navbar = () => {
               />
             </Link>
             {/* Mobile logo – now flexible and with max-width */}
-            <Link
-              href="/"
-              className="block sm:hidden flex-1 min-w-0"
-            >
+            <Link href="/" className="block sm:hidden flex-1 min-w-0">
               <div className="px-2 sm:px-5">
-                <img
-                  src="/logo/zayoraalogo.png"
-                  alt="Logo"
-                  className="h-5"
-                />
+                <img src="/logo/zayoraalogo.png" alt="Logo" className="h-5" />
               </div>
             </Link>
           </div>
@@ -194,10 +198,7 @@ const Navbar = () => {
             >
               Holiday Collection
             </Link> */}
-            <Link
-              href="/"
-              className="hover:text-black text-md transition"
-            >
+            <Link href="/" className="hover:text-black text-md transition">
               Home
             </Link>
             <Link
@@ -211,6 +212,13 @@ const Navbar = () => {
               className="hover:text-black text-md transition"
             >
               Best Sellers
+            </Link>
+
+            <Link
+              href="/frontend/view-all"
+              className="hover:text-black text-md transition"
+            >
+              Shop All
             </Link>
 
             {/* Category Dropdown */}
@@ -263,7 +271,7 @@ const Navbar = () => {
                       </span>
                     </Link>
                   ))}
-                  <Link
+                  {/* <Link
                     key="view-all"
                     href="/frontend/view-all"
                     className="group flex flex-col items-center text-center"
@@ -271,7 +279,7 @@ const Navbar = () => {
                     <span className="text-xs border bg-[#6b40c2] border-[#2f1466] rounded-md px-2 py-1 font-medium text-white group-hover:text-white">
                       View All
                     </span>
-                  </Link>
+                  </Link> */}
                 </div>
               )}
             </div>
@@ -444,6 +452,47 @@ const Navbar = () => {
                       My Orders
                     </Link>
 
+
+                    
+                    <Link
+                      href="/frontend/order-tracking"
+                      className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-150"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+             <svg
+  className="h-5 w-5 text-gray-400 mr-3"
+  fill="none"
+  viewBox="0 0 24 24"
+  stroke="currentColor"
+>
+  <path
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    d="M3 7l9-4 9 4-9 4-9-4z"
+  />
+  <path
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    d="M3 7v10l9 4 9-4V7"
+  />
+  <path
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    d="M12 11v10"
+  />
+  <path
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    d="M17 9l-5 2-5-2"
+  />
+</svg>
+                      Track Order
+                    </Link>
+
                     <div className="border-t border-gray-100 my-1"></div>
 
                     <button
@@ -520,7 +569,14 @@ const Navbar = () => {
                 className="h-5 w-5 hover:opacity-70"
               />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 text-[10px] bg-black text-white flex items-center justify-center rounded-full">
+                <span
+                  className={`absolute -top-1 -right-1 w-5 h-5 text-[10px] bg-black text-white flex items-center justify-center rounded-full transition-all duration-300 ${
+                    cartGlow
+                      ? "animate-bounce scale-125 shadow-[0_0_20px_8px_rgba(255,215,0,0.9)]"
+                      : ""
+                  }`}
+                >
+                  {" "}
                   {cartCount}
                 </span>
               )}

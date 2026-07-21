@@ -61,9 +61,9 @@ export default function AdminLogin() {
           <div className="absolute -bottom-8 -left-8 w-20 h-20 bg-blue-200 rounded-full opacity-10"></div>
           
           <div className="relative z-10">
-            <div className="flex justify-center mb-10">
+            <div className="flex justify-center mb-2">
               <img
-                src="/logo/logo.png"
+                src="/logo/zayoraalogo.png"
                 alt="Miraggiolife Logo"
                 width={280}
                 height={95}

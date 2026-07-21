@@ -2153,7 +2153,7 @@ useEffect(() => {
           key,
           amount: order.amount,
           currency: order.currency || "INR",
-          name: "My Shop",
+          // name: "My Shop",
           description: "Order Payment",
           order_id: order.id,
           handler: async (response) => {
@@ -2180,7 +2180,7 @@ useEffect(() => {
             email: selectedAddress?.email || user?.email || "",
             contact: selectedAddress?.phone || selectedAddress?.phoneNumber || "",
           },
-          theme: { color: "#ec4899" },
+          // theme: { color: "#ec4899" },
           modal: {
             ondismiss: function () {
               toast("Payment cancelled.");

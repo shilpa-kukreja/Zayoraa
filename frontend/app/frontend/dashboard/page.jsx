@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiArrowLeft, FiUser, FiShoppingBag, FiEdit, FiSave, FiX, FiLogOut, FiCamera, FiCheck, FiFileText } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiShoppingBag, FiEdit, FiSave, FiX, FiLogOut, FiCamera, FiCheck, FiFileText} from 'react-icons/fi';
+import { LuTrainTrack } from "react-icons/lu";
+
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -274,6 +276,17 @@ export default function Dashboard() {
                             My Orders
                         </button>
                         </Link>
+                        <Link href="/frontend/order-tracking">
+                        <button          
+                            className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "order-tracking"
+                                ? "border-[#6e4fca] text-[#6e4fca]"
+                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                } transition-colors duration-200`}
+                        >
+                            <LuTrainTrack className="h-5 w-5 mr-2" />
+                            Order Tracking
+                        </button>
+                        </Link>
                     </nav>
                 </div>
 
@@ -530,7 +543,7 @@ export default function Dashboard() {
 
             <footer className="bg-white mt-12 py-6 border-t border-gray-200">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
-                    © {new Date().getFullYear()} Suyta. All rights reserved.
+                    © {new Date().getFullYear()} Zayoraa. All rights reserved.
                 </div>
             </footer>
         </div>

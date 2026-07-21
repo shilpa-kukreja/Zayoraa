@@ -1,5 +1,5 @@
 import express from "express";
-import { allOrders,  placeOrderCOD, placeOrderRazorpay, updateStatus, userOrders, userSingleOrder, verifyRazorpay } from "../controllers/orderController.js";
+import { allOrders,  placeOrderCOD, placeOrderRazorpay, updateStatus, userOrders, userSingleOrder, verifyRazorpay,  getTrackingInfo,   } from "../controllers/orderController.js";
 
 
 
@@ -11,7 +11,13 @@ orderRoutes.post("/verify", verifyRazorpay);
 orderRoutes.get("/all", allOrders);
 orderRoutes.post("/user", userOrders);
 
+orderRoutes.get('/tracking/:orderid', getTrackingInfo);
+
+
 orderRoutes.get("/:id", userSingleOrder);
 orderRoutes.put("/status", updateStatus);
+
+
+
 
 export default orderRoutes;

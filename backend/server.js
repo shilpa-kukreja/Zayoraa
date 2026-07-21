@@ -48,6 +48,17 @@ import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/dashboardRoutes.js';
 import supportRoutes from './routes/supportRoutes.js';
+import abandonedCartRoutes from './routes/abandonedcartRoutes.js';   // node cron for abandoned cart jobs
+import './jobs/reviewemailJob.js';  // ✅ add this line
+
+
+import { scheduleAbandonedCartJobs } from "./jobs/abandonedcartJobs.js";
+import abandonedCartAdminRoutes from "./routes/abandonedcartadminRoutes.js";
+import recommendedRoutes from "./routes/recommendedRoutes.js";
+
+import webhookRouter from './routes/webhookRoutes.js';
+
+
 
 import dns from "dns";
 
@@ -61,6 +72,8 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 connectDB();
+scheduleAbandonedCartJobs();
+
 
 // Routes
 app.use("/api/categories", categoryRouter);
@@ -74,6 +87,16 @@ app.use("/api/blog",blogRouter);
 app.use("/api/order", orderRoutes);
 app.use('/api/dashboard', adminRoutes);
 app.use('/api/support', supportRoutes);
+
+
+app.use("/api/cart", abandonedCartRoutes);
+app.use("/api/admin/abandoned-carts", abandonedCartAdminRoutes);
+app.use("/api/recommended", recommendedRoutes);
+
+app.use('/api/webhook', webhookRouter);
+
+
+
 
 
 app.get('/', (req, res) => {

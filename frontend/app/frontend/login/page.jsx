@@ -177,6 +177,8 @@ const LoginContent = () => {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem("token", data.token);
+         window.dispatchEvent(new Event("auth-change"));  // <-- add this line
+
         toast.success("Login successful!", {
           position: "top-right",
           autoClose: 2000,

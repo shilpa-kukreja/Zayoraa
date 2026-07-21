@@ -42,7 +42,7 @@ export default function NotFound() {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/"
-              className="w-full sm:w-auto px-5 py-3 rounded-md bg-[#7a1113] text-white shadow-md transition duration-300"
+              className="w-full sm:w-auto px-5 py-3 rounded-md bg-violet-600 text-white shadow-md transition duration-300"
             >
               Go back home
             </Link>
